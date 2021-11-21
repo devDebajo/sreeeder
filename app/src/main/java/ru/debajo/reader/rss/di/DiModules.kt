@@ -9,6 +9,7 @@ import ru.debajo.reader.rss.data.db.RssDatabase
 import ru.debajo.reader.rss.data.remote.RssLoader
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.*
+import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import java.nio.charset.Charset
 
 fun appModule(context: Context): Module = module {
@@ -20,7 +21,7 @@ val NetworkModule = module {
     single {
         Parser.Builder()
             .context(get())
-            .charset(Charset.forName("ISO-8859-7"))
+            .charset(Charset.forName("UTF-8"))
             .build()
     }
 }
@@ -44,4 +45,8 @@ val RepositoryModule = module {
 val UseCaseModule = module {
     single { ArticleBookmarksUseCase(get(), get()) }
     single { ChannelsSubscriptionsUseCase(get(), get()) }
+}
+
+val ViewModelModule = module {
+    factory { ChannelsViewModel(get()) }
 }

@@ -16,6 +16,7 @@ class App : Application() {
                 DbModule,
                 RepositoryModule,
                 UseCaseModule,
+                ViewModelModule,
             )
         }
     }

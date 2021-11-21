@@ -3,31 +3,22 @@ package ru.debajo.reader.rss.ui.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
-import ru.debajo.reader.rss.data.remote.RssLoader
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import ru.debajo.reader.rss.ui.channels.ChannelsList
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
-import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
-    private val reader: RssLoader by inject(RssLoader::class.java)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SreeeederTheme {
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(color = Color(0xFFF7F9ED), modifier = Modifier.fillMaxSize()) {
+                    ChannelsList()
                 }
             }
-        }
-
-        lifecycleScope.launch(IO) {
-            val channel = reader.loadChannel("https://blog.jetbrains.com/feed")
-            Timber.d(channel.toString())
         }
     }
 }
