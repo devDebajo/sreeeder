@@ -1,18 +1,18 @@
 package ru.debajo.reader.rss.ui.channels
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -22,22 +22,14 @@ import ru.debajo.reader.rss.ui.channels.model.UiChannel
 
 @Composable
 fun ChannelsList(
+    innerPadding: PaddingValues,
     viewModel: ChannelsViewModel = diViewModel()
 ) {
-    LaunchedEffect("ChannelsList", block = {
-        viewModel.load()
-    })
+    LaunchedEffect("ChannelsList", block = { viewModel.load() })
     Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = "Каналы",
-            fontSize = 36.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
         val channels by viewModel.channels.collectAsState()
-        Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(
+            contentPadding = innerPadding,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .weight(1f),
@@ -57,21 +49,20 @@ fun ChannelsList(
 
 @Composable
 inline fun ChannelCard(channel: UiChannel, crossinline onClick: (UiChannel) -> Unit) {
-    Card(
+    Box(
         modifier = Modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
             .clickable { onClick(channel) }
             .fillMaxWidth(),
-        backgroundColor = Color(0xFFE1F3DB),
-        shape = RoundedCornerShape(20.dp),
-        elevation = 0.dp,
-        border = BorderStroke(1.dp, Color(0xFFDADADA)),
     ) {
+        val textColor = MaterialTheme.colorScheme.onSurface
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = channel.name,
-                color = Color.Black,
+                color = textColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )
@@ -79,7 +70,7 @@ inline fun ChannelCard(channel: UiChannel, crossinline onClick: (UiChannel) -> U
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = channel.description,
-                    color = Color.Black,
+                    color = textColor,
                     fontSize = 14.sp,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,

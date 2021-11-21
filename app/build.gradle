@@ -54,7 +54,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
     implementation 'androidx.activity:activity-compose:1.4.0'
@@ -69,5 +68,7 @@ dependencies {
     implementation "androidx.room:room-paging:2.4.0-beta02"
     implementation "androidx.room:room-ktx:2.4.0-beta02"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha01"
+    implementation "androidx.navigation:navigation-compose:2.4.0-beta02"
     kapt "androidx.room:room-compiler:2.4.0-beta02"
 }

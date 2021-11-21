@@ -1,5 +1,7 @@
 package ru.debajo.reader.rss.di
 
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,6 +13,10 @@ inline fun <reified VM : ViewModel> diViewModel(key: String? = null): VM {
         key = key,
         factory = KoinViewModelFactory
     )
+}
+
+inline fun <reified VM : ViewModel> ComponentActivity.diViewModels(): Lazy<VM> {
+    return viewModels(factoryProducer = { KoinViewModelFactory })
 }
 
 inline fun <reified T : Any> getFromDi(): T {
