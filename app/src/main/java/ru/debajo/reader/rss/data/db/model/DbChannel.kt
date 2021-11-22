@@ -13,6 +13,9 @@ data class DbChannel(
     @ColumnInfo(name = "name")
     val name: String,
 
+    @ColumnInfo(name = "image")
+    val image: String?,
+
     @ColumnInfo(name = "description")
     val description: String?,
 )

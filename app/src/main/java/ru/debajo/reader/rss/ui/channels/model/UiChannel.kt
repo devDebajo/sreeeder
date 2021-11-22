@@ -6,5 +6,6 @@ import androidx.compose.runtime.Stable
 data class UiChannel(
     val url: String,
     val name: String,
+    val image: String?,
     val description: String?,
 )

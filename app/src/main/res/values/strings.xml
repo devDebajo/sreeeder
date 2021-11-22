@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Sreeeeder</string>
+
+    <string name="screen_feed">Лента</string>
+    <string name="screen_channels">Каналы</string>
+    <string name="screen_favorites">Избранное</string>
+    <string name="screen_settings">Настройки</string>
+
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Темная</string>
+    <string name="theme_auto">Авто</string>
+
+    <string name="settings_app_theme">Тема приложения</string>
+    <string name="settings_dynamic_theme">Динамическая тема</string>
+
 </resources>

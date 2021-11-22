@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.Feed
+import androidx.compose.material.icons.rounded.RssFeed
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -22,11 +26,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.channels.ChannelsList
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.favorites.FavoritesList
 import ru.debajo.reader.rss.ui.feed.FeedList
+import ru.debajo.reader.rss.ui.settings.SettingsList
+import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +41,7 @@ class MainActivity : ComponentActivity() {
 
     private val state: MutableState<MainState> = mutableStateOf(MainState())
     private val channelsViewModel: ChannelsViewModel by diViewModels()
+    private val settingsViewModel: SettingsViewModel by diViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +56,7 @@ class MainActivity : ComponentActivity() {
                         composable(feedTab.route) { FeedList() }
                         composable(channelsTab.route) { ChannelsList(innerPadding, channelsViewModel) }
                         composable(favoritesTab.route) { FavoritesList() }
+                        composable(settingsTab.route) { SettingsList(settingsViewModel) }
                     }
                 }
             }
@@ -105,8 +114,10 @@ class MainActivity : ComponentActivity() {
         NavigationBarItem(
             selected = selected,
             onClick = {
-                state.value = state.value.copy(selectedTab = index)
-                navController.navigate(tab.route)
+                if (state.value.selectedTab != index) {
+                    state.value = state.value.copy(selectedTab = index)
+                    navController.navigate(tab.route)
+                }
             },
             icon = {
                 Icon(tab.icon, contentDescription = null)
@@ -118,10 +129,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private companion object {
-        val feedTab = ScreenTab("Лента", Icons.Default.Add, "Feed")
-        val channelsTab = ScreenTab("Каналы", Icons.Default.Add, "Channels")
-        val favoritesTab = ScreenTab("Избранное", Icons.Default.Add, "Favorites")
+        val feedTab = ScreenTab(R.string.screen_feed, Icons.Rounded.RssFeed, "Feed")
+        val channelsTab = ScreenTab(R.string.screen_channels, Icons.Rounded.Feed, "Channels")
+        val favoritesTab = ScreenTab(R.string.screen_favorites, Icons.Rounded.Favorite, "Favorites")
+        val settingsTab = ScreenTab(R.string.screen_settings, Icons.Rounded.Settings, "Settings")
 
-        val tabs = listOf(feedTab, channelsTab, favoritesTab)
+        val tabs = listOf(feedTab, channelsTab, favoritesTab, settingsTab)
     }
 }

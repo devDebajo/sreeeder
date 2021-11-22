@@ -1,7 +1,6 @@
 package ru.debajo.reader.rss.ui.channels
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,8 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
+import ru.debajo.reader.rss.ui.common.AppCard
 
 @Composable
 fun ChannelsList(
@@ -49,25 +50,30 @@ fun ChannelsList(
 
 @Composable
 inline fun ChannelCard(channel: UiChannel, crossinline onClick: (UiChannel) -> Unit) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
-            .clickable { onClick(channel) }
-            .fillMaxWidth(),
+    AppCard(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { onClick(channel) }
     ) {
         val textColor = MaterialTheme.colorScheme.onSurface
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                text = channel.name,
-                color = textColor,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
-            )
+            Row {
+                Text(
+                    text = channel.name,
+                    color = textColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    modifier = Modifier.weight(1f),
+                )
+                Image(
+                    painter = rememberImagePainter(channel.image),
+                    modifier = Modifier.size(36.dp).clip(RoundedCornerShape(4.dp)),
+                    contentDescription = null
+                )
+            }
             if (channel.description != null) {
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = channel.description,
                     color = textColor,

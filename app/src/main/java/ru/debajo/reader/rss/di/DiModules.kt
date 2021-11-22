@@ -10,10 +10,14 @@ import ru.debajo.reader.rss.data.remote.RssLoader
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.*
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
+import ru.debajo.reader.rss.ui.settings.SettingsViewModel
+import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 import java.nio.charset.Charset
 
 fun appModule(context: Context): Module = module {
     single { context.applicationContext }
+    single { get<Context>().getSharedPreferences("sreeeder_prefs", Context.MODE_PRIVATE) }
+    single { AppThemeProvider(get()) }
 }
 
 val NetworkModule = module {
@@ -49,4 +53,5 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
+    factory { SettingsViewModel(get()) }
 }
