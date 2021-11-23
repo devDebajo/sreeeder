@@ -58,7 +58,7 @@ fun AddChannelScreen(
             )
 
             AppCard(
-                bgColor = MaterialTheme.colorScheme.primary,
+                bgColor = MaterialTheme.colorScheme.primaryContainer,
                 onClick = { viewModel.onLoadClick() },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -67,7 +67,7 @@ fun AddChannelScreen(
                 Text(
                     text = stringResource(R.string.add_channel_load),
                     modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
