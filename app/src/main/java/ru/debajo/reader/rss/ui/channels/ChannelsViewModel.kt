@@ -23,7 +23,4 @@ class ChannelsViewModel(
                 .collect { channels.emit(it) }
         }
     }
-
-    fun onChannelClick(channel: UiChannel) {
-    }
 }
