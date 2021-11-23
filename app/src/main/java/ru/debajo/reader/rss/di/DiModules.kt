@@ -9,6 +9,7 @@ import ru.debajo.reader.rss.data.db.RssDatabase
 import ru.debajo.reader.rss.data.remote.RssLoader
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.*
+import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
@@ -54,4 +55,5 @@ val UseCaseModule = module {
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
+    factory { AddChannelScreenViewModel(get()) }
 }

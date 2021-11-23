@@ -1,6 +1,5 @@
 package ru.debajo.reader.rss.ui.main
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -71,14 +70,12 @@ private fun MainScaffold(
     var state by remember { mutableStateOf(MainState()) }
     Scaffold(
         topBar = {
-            Column {
-                Text(
-                    text = tabs[state.selectedTab].title,
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                )
-            }
+            Text(
+                text = tabs[state.selectedTab].title,
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+            )
         },
         bottomBar = {
             NavigationBar {
@@ -99,7 +96,9 @@ private fun MainScaffold(
             }
         },
         floatingActionButton = {
-            if (state.selectedTab == tabs.indexOf(channelsTab)) {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            if (currentDestination?.hierarchy?.any { it.route == channelsTab.route } == true) {
                 FloatingActionButton(
                     onClick = { parentController.navigate(AddChannelScreenRoute) },
                     content = { Icon(Icons.Default.Add, contentDescription = null) }

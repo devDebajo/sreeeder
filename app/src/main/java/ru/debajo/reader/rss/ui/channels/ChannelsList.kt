@@ -1,6 +1,5 @@
 package ru.debajo.reader.rss.ui.channels
 
-import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,14 +16,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
-import androidx.core.os.bundleOf
-import androidx.navigation.*
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesRoute
+import ru.debajo.reader.rss.ui.channel.channelArticlesRouteParams
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.navigate
 
 @Composable
 fun ChannelsList(
@@ -47,7 +46,7 @@ fun ChannelsList(
                 key = { channels[it].url }
             ) {
                 ChannelCard(channels[it]) { channel ->
-                    navController.navigate(ChannelArticlesRoute, bundleOf("channel" to channel))
+                    navController.navigate(ChannelArticlesRoute, channelArticlesRouteParams(channel))
                 }
             }
         }
@@ -91,27 +90,5 @@ inline fun ChannelCard(channel: UiChannel, crossinline onClick: (UiChannel) -> U
                 )
             }
         }
-    }
-}
-
-
-fun NavController.navigate(
-    route: String,
-    args: Bundle,
-    navOptions: NavOptions? = null,
-    navigatorExtras: Navigator.Extras? = null
-) {
-    val routeLink = NavDeepLinkRequest
-        .Builder
-        .fromUri(NavDestination.createRoute(route).toUri())
-        .build()
-
-    val deepLinkMatch = graph.matchDeepLink(routeLink)
-    if (deepLinkMatch != null) {
-        val destination = deepLinkMatch.destination
-        val id = destination.id
-        navigate(id, args, navOptions, navigatorExtras)
-    } else {
-        navigate(route, navOptions, navigatorExtras)
     }
 }

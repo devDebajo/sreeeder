@@ -9,14 +9,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-inline fun AppCard(modifier: Modifier = Modifier, crossinline onClick: () -> Unit, content: @Composable BoxScope.() -> Unit) {
+inline fun AppCard(
+    modifier: Modifier = Modifier,
+    bgColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+    crossinline onClick: () -> Unit,
+    content: @Composable BoxScope.() -> Unit
+) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
+            .background(bgColor)
             .clickable { onClick() }
             .then(modifier),
     ) {
