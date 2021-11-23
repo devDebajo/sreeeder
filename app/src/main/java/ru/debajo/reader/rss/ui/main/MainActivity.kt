@@ -93,15 +93,13 @@ class MainActivity : ComponentActivity() {
                 }
             },
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {},
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = null)
+                if (state.selectedTab == tabs.indexOf(channelsTab)) {
+                    FloatingActionButton(onClick = {}) {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                    }
                 }
             }
-        ) { innerPadding ->
-            content(innerPadding)
-        }
+        ) { innerPadding -> content(innerPadding) }
     }
 
     @Composable
