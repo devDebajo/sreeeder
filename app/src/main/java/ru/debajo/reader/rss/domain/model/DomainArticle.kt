@@ -10,3 +10,4 @@ data class DomainArticle(
     val contentHtml: String,
     val timestamp: DateTime
 )
+

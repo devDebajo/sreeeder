@@ -28,10 +28,8 @@ const val AddChannelScreenRoute = "AddChannelScreen"
 
 @Composable
 @ExperimentalMaterial3Api
-fun AddChannelScreen(
-    viewModel: AddChannelScreenViewModel = diViewModel(),
-    parentNavController: NavController,
-) {
+fun AddChannelScreen(parentNavController: NavController) {
+    val viewModel: AddChannelScreenViewModel = diViewModel()
     Scaffold(
         topBar = {
             Text(

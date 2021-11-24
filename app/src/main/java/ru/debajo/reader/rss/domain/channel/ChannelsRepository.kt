@@ -1,8 +1,8 @@
 package ru.debajo.reader.rss.domain.channel
 
-import ru.debajo.reader.rss.data.converter.channel.toDbList
-import ru.debajo.reader.rss.data.converter.channel.toDomainList
+import org.joda.time.DateTime
 import ru.debajo.reader.rss.data.converter.toDb
+import ru.debajo.reader.rss.data.converter.toDbList
 import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toDomainList
 import ru.debajo.reader.rss.data.db.dao.ArticlesDao
@@ -44,6 +44,26 @@ class ChannelsRepository(
     }
 
     suspend fun getArticles(channelUrl: String, force: Boolean = false): List<DomainArticle> {
+        val html = """
+            <p>It’s the final countdown – WebStorm 2021.3 is coming soon! In the meantime, you can try the second release candidate build. Please note that this build requires you to have an <strong>active WebStorm license</strong>. Otherwise, you will need to sign up for a 30-day free trial to install and run this build.</p>
+            <p align="center"><a class="jb-download-button" href="https://www.jetbrains.com/webstorm/nextversion">DOWNLOAD WEBSTORM 2021.3 RC</a></p>
+            <p>Check out the video from <a href="https://twitter.com/paulweveritt">Paul Everitt</a>, our Developer Advocate, where he goes over the most interesting improvements in this release.</p>
+            <p><iframe loading="lazy" title="YouTube video player" src="https://www.youtube.com/embed/Sqy0INe0ikA" width="800" height="450" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>
+            <p>To find out what else has been implemented in WebStorm 2021.3, check out our <a href="https://blog.jetbrains.com/webstorm/tag/webstorm-2021-3/">previous EAP blog posts</a>.</p>
+            <p>Please report any issues to our <a href="https://youtrack.jetbrains.com/issues/WEB">issue tracker</a>, and stay tuned for the upcoming release announcement!</p>
+            <p><em>The WebStorm team</em></p>
+        """.trimIndent()
+
+       return  listOf(
+            DomainArticle(
+                "random",
+                "kek",
+                "title",
+                "kek",
+                html,
+                DateTime.now()
+            )
+        )
         return if (!force && isCacheActual(channelUrl)) {
             articlesDao.getArticles(channelUrl).toDomainList()
         } else {

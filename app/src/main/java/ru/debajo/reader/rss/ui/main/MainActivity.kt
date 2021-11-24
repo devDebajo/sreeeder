@@ -10,7 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.add.AddChannelScreenRoute
-import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesRoute
 import ru.debajo.reader.rss.ui.channel.extractUiChannel
@@ -23,7 +22,6 @@ class MainActivity : ComponentActivity() {
 
     private val channelsViewModel: ChannelsViewModel by diViewModels()
     private val settingsViewModel: SettingsViewModel by diViewModels()
-    private val addChannelScreenViewModel: AddChannelScreenViewModel by diViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +41,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(AddChannelScreenRoute) {
-                        AddChannelScreen(addChannelScreenViewModel, navController)
+                        AddChannelScreen(navController)
                     }
 
                     composable(ChannelArticlesRoute) {

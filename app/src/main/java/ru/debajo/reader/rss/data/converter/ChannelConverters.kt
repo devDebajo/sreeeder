@@ -1,7 +1,6 @@
 package ru.debajo.reader.rss.data.converter
 
 import com.prof.rssparser.Channel
-import ru.debajo.reader.rss.data.converter.channel.toRemoteList
 import ru.debajo.reader.rss.data.db.model.DbChannel
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
 import ru.debajo.reader.rss.domain.model.DomainChannel
