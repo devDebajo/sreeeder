@@ -1,13 +1,16 @@
 package ru.debajo.reader.rss.ui.article.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
-import org.jsoup.nodes.Document
 
+@Parcelize
 data class UiArticle(
     val id: String,
-    val author: String,
+    val author: String?,
     val title: String,
-    val description: Document,
-    val content: Document,
-    val timestamp: DateTime
-)
+    val image: String?,
+    val descriptionHtml: String?,
+    val contentHtml: String?,
+    val timestamp: DateTime?
+) : Parcelable

@@ -4,10 +4,11 @@ import org.joda.time.DateTime
 
 data class DomainArticle(
     val id: String,
-    val author: String,
+    val author: String?,
     val title: String,
-    val descriptionHtml: String,
-    val contentHtml: String,
-    val timestamp: DateTime
+    val image: String?,
+    val descriptionHtml: String?,
+    val contentHtml: String?,
+    val timestamp: DateTime?
 )
 

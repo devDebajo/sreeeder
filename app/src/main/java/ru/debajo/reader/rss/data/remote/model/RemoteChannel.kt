@@ -1,6 +1,6 @@
 package ru.debajo.reader.rss.data.remote.model
 
-class RemoteChannel(
+data class RemoteChannel(
     val url: String,
     val name: String,
     val description: String?,

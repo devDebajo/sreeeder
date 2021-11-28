@@ -3,6 +3,9 @@ package ru.debajo.reader.rss.di
 import android.content.Context
 import androidx.room.Room
 import com.prof.rssparser.Parser
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ru.debajo.reader.rss.data.db.RssDatabase
@@ -10,6 +13,7 @@ import ru.debajo.reader.rss.data.remote.RssLoader
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.*
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
+import ru.debajo.reader.rss.ui.article.ArticleDetailsViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
@@ -25,7 +29,17 @@ fun appModule(context: Context): Module = module {
 val NetworkModule = module {
     single { RssLoader(get()) }
     single {
+        OkHttpClient.Builder()
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BASIC
+                }
+            )
+            .build()
+    }
+    single {
         Parser.Builder()
+            .okHttpClient(get())
             .context(get())
             .charset(Charset.forName("UTF-8"))
             .build()
@@ -48,14 +62,17 @@ val RepositoryModule = module {
     single { ChannelsSubscriptionsRepository(get()) }
 }
 
+@ExperimentalCoroutinesApi
 val UseCaseModule = module {
     single { ArticleBookmarksUseCase(get(), get()) }
     single { ChannelsSubscriptionsUseCase(get(), get()) }
 }
 
+@ExperimentalCoroutinesApi
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
     factory { AddChannelScreenViewModel(get()) }
     factory { ChannelArticlesViewModel(get()) }
+    factory { ArticleDetailsViewModel() }
 }

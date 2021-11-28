@@ -1,10 +1,6 @@
 package ru.debajo.reader.rss.data.converter
 
 import com.prof.rssparser.Article
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import ru.debajo.reader.rss.data.converter.channel.parseDateTimeSafe
 import ru.debajo.reader.rss.data.db.model.DbArticle
 import ru.debajo.reader.rss.data.db.model.toDb
@@ -17,6 +13,7 @@ fun Article.toRemote(): RemoteArticle {
         author = author,
         id = guid,
         title = title,
+        image = image ?: itunesArticleData?.image,
         descriptionHtml = description,
         contentHtml = content,
         timestamp = pubDate?.parseDateTimeSafe()
@@ -30,7 +27,8 @@ fun RemoteArticle.toDomain(): DomainArticle? {
         title = title ?: return null,
         descriptionHtml = descriptionHtml ?: return null,
         contentHtml = contentHtml ?: return null,
-        timestamp = timestamp ?: return null
+        timestamp = timestamp ?: return null,
+        image = image,
     )
 }
 
@@ -38,27 +36,25 @@ fun RemoteArticle.toDb(channelUrl: String): DbArticle? {
     return DbArticle(
         id = id ?: return null,
         channelUrl = channelUrl,
-        author = author ?: return null,
+        author = author,
         title = title ?: return null,
-        descriptionHtml = descriptionHtml ?: return null,
-        contentHtml = contentHtml ?: return null,
-        timestamp = timestamp?.toDb() ?: return null,
+        image = image,
+        descriptionHtml = descriptionHtml,
+        contentHtml = contentHtml,
+        timestamp = timestamp?.toDb(),
     )
 }
 
-suspend fun DomainArticle.toUi(): UiArticle {
+fun DomainArticle.toUi(): UiArticle {
     return UiArticle(
         id = id,
         author = author,
         title = title,
-        description = parseHtml(descriptionHtml),
-        content = parseHtml(contentHtml),
+        image = image,
+        descriptionHtml = descriptionHtml,
+        contentHtml = contentHtml,
         timestamp = timestamp
     )
-}
-
-private suspend fun parseHtml(html: String): Document {
-    return withContext(Default) { Jsoup.parse(html) }
 }
 
 fun DbArticle.toDomain(): DomainArticle {
@@ -66,9 +62,10 @@ fun DbArticle.toDomain(): DomainArticle {
         id = id,
         author = author,
         title = title,
+        image = image,
         descriptionHtml = descriptionHtml,
         contentHtml = contentHtml,
-        timestamp = timestamp.dateTime
+        timestamp = timestamp?.dateTime
     )
 }
 
@@ -79,4 +76,4 @@ fun List<DbArticle>.toDomainList(): List<DomainArticle> = map { it.toDomain() }
 fun List<RemoteArticle>.toDomainList(): List<DomainArticle> = mapNotNull { it.toDomain() }
 fun List<RemoteArticle>.toDbList(channelUrl: String): List<DbArticle> = mapNotNull { it.toDb(channelUrl) }
 
-suspend fun List<DomainArticle>.toUiList(): List<UiArticle> = map { it.toUi() }
+fun List<DomainArticle>.toUiList(): List<UiArticle> = map { it.toUi() }

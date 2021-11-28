@@ -1,6 +1,8 @@
 package ru.debajo.reader.rss.domain.channel
 
-import org.joda.time.DateTime
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import org.jsoup.Jsoup
 import ru.debajo.reader.rss.data.converter.toDb
 import ru.debajo.reader.rss.data.converter.toDbList
 import ru.debajo.reader.rss.data.converter.toDomain
@@ -8,6 +10,7 @@ import ru.debajo.reader.rss.data.converter.toDomainList
 import ru.debajo.reader.rss.data.db.dao.ArticlesDao
 import ru.debajo.reader.rss.data.db.dao.ChannelsDao
 import ru.debajo.reader.rss.data.remote.RssLoader
+import ru.debajo.reader.rss.data.remote.model.RemoteArticle
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
 import ru.debajo.reader.rss.domain.cache.BaseCacheRepository
 import ru.debajo.reader.rss.domain.model.DomainArticle
@@ -25,12 +28,20 @@ class ChannelsRepository(
 
     override val group: String = "ChannelsRepository"
 
-    suspend fun getChannelsByUrls(urls: List<String>): List<DomainChannel> {
-        val urlsIndices = urls.withIndex().associateBy({ it.value }, { it.index })
-        val (actualUrls, nonActualUrls) = splitActualIds(urls)
-        val actualChannels = channelsDao.getByUrls(actualUrls).toDomainList()
-        val loadedChannels = loadChannelsFromNetwork(nonActualUrls)
-        return (actualChannels + loadedChannels).sortedBy { urlsIndices[it.url] ?: 0 }
+    suspend fun getChannelsByUrls(urls: List<String>): Flow<List<DomainChannel>> {
+        return flow {
+            val urlsIndices = urls.withIndex().associateBy({ it.value }, { it.index })
+            val (actualUrls, nonActualUrls) = splitActualIds(urls)
+            val actualChannels = channelsDao.getByUrls(actualUrls).toDomainList()
+
+            val nonActualFromDb = channelsDao.getByUrls(nonActualUrls).toDomainList()
+            emit((actualChannels + nonActualFromDb).sortedBy { urlsIndices[it.url] ?: 0 })
+
+            if (nonActualUrls.isNotEmpty()) {
+                val loadedChannels = loadChannelsFromNetwork(nonActualUrls)
+                emit((actualChannels + loadedChannels).sortedBy { urlsIndices[it.url] ?: 0 })
+            }
+        }
     }
 
     suspend fun getChannel(url: String, force: Boolean = false): DomainChannel? {
@@ -44,26 +55,6 @@ class ChannelsRepository(
     }
 
     suspend fun getArticles(channelUrl: String, force: Boolean = false): List<DomainArticle> {
-        val html = """
-            <p>It’s the final countdown – WebStorm 2021.3 is coming soon! In the meantime, you can try the second release candidate build. Please note that this build requires you to have an <strong>active WebStorm license</strong>. Otherwise, you will need to sign up for a 30-day free trial to install and run this build.</p>
-            <p align="center"><a class="jb-download-button" href="https://www.jetbrains.com/webstorm/nextversion">DOWNLOAD WEBSTORM 2021.3 RC</a></p>
-            <p>Check out the video from <a href="https://twitter.com/paulweveritt">Paul Everitt</a>, our Developer Advocate, where he goes over the most interesting improvements in this release.</p>
-            <p><iframe loading="lazy" title="YouTube video player" src="https://www.youtube.com/embed/Sqy0INe0ikA" width="800" height="450" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>
-            <p>To find out what else has been implemented in WebStorm 2021.3, check out our <a href="https://blog.jetbrains.com/webstorm/tag/webstorm-2021-3/">previous EAP blog posts</a>.</p>
-            <p>Please report any issues to our <a href="https://youtrack.jetbrains.com/issues/WEB">issue tracker</a>, and stay tuned for the upcoming release announcement!</p>
-            <p><em>The WebStorm team</em></p>
-        """.trimIndent()
-
-       return  listOf(
-            DomainArticle(
-                "random",
-                "kek",
-                "title",
-                "kek",
-                html,
-                DateTime.now()
-            )
-        )
         return if (!force && isCacheActual(channelUrl)) {
             articlesDao.getArticles(channelUrl).toDomainList()
         } else {
@@ -86,9 +77,34 @@ class ChannelsRepository(
 
     private suspend fun loadArticlesFromNetwork(url: String): List<DomainArticle> {
         return runCatching { rssLoader.loadChannel(url) }
+            .mapCatching { it.tryExtractImages() }
             .onSuccess { persist(url, it) }
             .mapCatching { it.currentArticles.toDomainList() }
             .getOrElse { emptyList() }
+    }
+
+    private fun RemoteChannel.tryExtractImages(): RemoteChannel {
+        return copy(
+            currentArticles = currentArticles.map { article ->
+                if (article.image != null) {
+                    article
+                } else {
+                    article.tryExtractImage()
+                }
+            }
+        )
+    }
+
+    private fun RemoteArticle.tryExtractImage(): RemoteArticle {
+        val contentHtml = contentHtml ?: return this
+        val document = Jsoup.parse(contentHtml)
+        val url = document.allElements
+            .asSequence()
+            .filter { it.tagName() == "img" }
+            .map { it.attr("src") }
+            .filter { it.isNotEmpty() }
+            .firstOrNull() ?: return this
+        return copy(image = url)
     }
 
     private suspend fun persist(url: String, channel: RemoteChannel) {

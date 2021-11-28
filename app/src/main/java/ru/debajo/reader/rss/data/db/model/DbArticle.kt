@@ -14,17 +14,20 @@ data class DbArticle(
     val channelUrl: String,
 
     @ColumnInfo(name = "author")
-    val author: String,
+    val author: String?,
 
     @ColumnInfo(name = "title")
     val title: String,
 
+    @ColumnInfo(name = "image")
+    val image: String?,
+
     @ColumnInfo(name = "descriptionHtml")
-    val descriptionHtml: String,
+    val descriptionHtml: String?,
 
     @ColumnInfo(name = "contentHtml")
-    val contentHtml: String,
+    val contentHtml: String?,
 
     @ColumnInfo(name = "timestamp")
-    val timestamp: DbDateTime
+    val timestamp: DbDateTime?
 )

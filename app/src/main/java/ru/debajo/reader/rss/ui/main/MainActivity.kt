@@ -10,6 +10,9 @@ import androidx.navigation.compose.rememberNavController
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.add.AddChannelScreenRoute
+import ru.debajo.reader.rss.ui.article.ArticleDetailsRoute
+import ru.debajo.reader.rss.ui.article.ArticleDetailsScreen
+import ru.debajo.reader.rss.ui.article.extractUiArticle
 import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesRoute
 import ru.debajo.reader.rss.ui.channel.extractUiChannel
@@ -46,6 +49,10 @@ class MainActivity : ComponentActivity() {
 
                     composable(ChannelArticlesRoute) {
                         ChannelArticles(extractUiChannel(it.arguments))
+                    }
+
+                    composable(ArticleDetailsRoute) {
+                        ArticleDetailsScreen(extractUiArticle(it.arguments))
                     }
                 }
             }
