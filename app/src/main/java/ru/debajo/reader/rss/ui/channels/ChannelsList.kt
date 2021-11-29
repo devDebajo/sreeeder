@@ -18,14 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.debajo.reader.rss.di.diViewModel
-import ru.debajo.reader.rss.ui.channel.ChannelArticlesRoute
-import ru.debajo.reader.rss.ui.channel.channelArticlesRouteParams
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
-import ru.debajo.reader.rss.ui.navigate
+import ru.debajo.reader.rss.ui.main.NavGraph
 
 @Composable
+@ExperimentalCoroutinesApi
 fun ChannelsList(
     innerPadding: PaddingValues,
     navController: NavController,
@@ -46,7 +46,7 @@ fun ChannelsList(
                 key = { channels[it].url }
             ) {
                 ChannelCard(channels[it]) { channel ->
-                    navController.navigate(ChannelArticlesRoute, channelArticlesRouteParams(channel))
+                    NavGraph.ArticlesList.navigate(navController, channel)
                 }
             }
         }

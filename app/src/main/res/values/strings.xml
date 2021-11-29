@@ -17,4 +17,6 @@
     <string name="add_channel_load">Загрузить</string>
     <string name="add_channel_placeholder">Url канала</string>
 
+    <string name="share_title">Поделиться</string>
+
 </resources>

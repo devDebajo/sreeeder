@@ -1,43 +1,62 @@
 package ru.debajo.reader.rss.ui.channel
 
-import android.os.Bundle
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
-
-const val ChannelArticlesRoute = "ChannelArticles"
-private const val ChannelArticlesRouteChannelParam = "ChannelId"
-
-fun channelArticlesRouteParams(channel: UiChannel): Bundle {
-    return bundleOf(ChannelArticlesRouteChannelParam to channel)
-}
-
-fun extractUiChannel(bundle: Bundle?): UiChannel {
-    return bundle?.getParcelable(ChannelArticlesRouteChannelParam)!!
-}
+import ru.debajo.reader.rss.ui.main.NavGraph
 
 @ExperimentalMaterial3Api
 @Composable
-fun ChannelArticles(channel: UiChannel) {
+fun ChannelArticles(channel: UiChannel, navController: NavController) {
     val viewModel = diViewModel<ChannelArticlesViewModel>()
     LaunchedEffect(key1 = channel, block = {
         viewModel.load(channel)
     })
-    Scaffold {
+
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val scrollBehavior = remember(decayAnimationSpec) {
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+    }
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MediumTopAppBar(
+                title = { Text(channel.name) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { NavGraph.ShareText.navigate(navController, channel.url) }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Share,
+                            contentDescription = null
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) {
         val articles by viewModel.articles.collectAsState()
         LazyColumn(
             contentPadding = PaddingValues(vertical = 12.dp),
@@ -50,7 +69,9 @@ fun ChannelArticles(channel: UiChannel) {
                     count = articles.size,
                     key = { index -> articles[index].id }
                 ) { index ->
-                    ChannelArticle(article = articles[index])
+                    ChannelArticle(article = articles[index]) {
+                        NavGraph.ArticleDetails.navigate(navController, it)
+                    }
                 }
             })
     }

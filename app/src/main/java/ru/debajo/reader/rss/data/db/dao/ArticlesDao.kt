@@ -8,7 +8,7 @@ import ru.debajo.reader.rss.data.db.model.DbArticle
 
 @Dao
 interface ArticlesDao {
-    @Query("SELECT * FROM dbarticle WHERE channelUrl=:channelUrl")
+    @Query("SELECT * FROM dbarticle WHERE channelUrl=:channelUrl ORDER BY timestamp DESC")
     suspend fun getArticles(channelUrl: String): List<DbArticle>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

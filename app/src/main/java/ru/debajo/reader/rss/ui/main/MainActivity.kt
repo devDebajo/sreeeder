@@ -7,24 +7,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
-import ru.debajo.reader.rss.ui.add.AddChannelScreenRoute
-import ru.debajo.reader.rss.ui.article.ArticleDetailsRoute
 import ru.debajo.reader.rss.ui.article.ArticleDetailsScreen
-import ru.debajo.reader.rss.ui.article.extractUiArticle
 import ru.debajo.reader.rss.ui.channel.ChannelArticles
-import ru.debajo.reader.rss.ui.channel.ChannelArticlesRoute
-import ru.debajo.reader.rss.ui.channel.extractUiChannel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
+import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterial3Api
+@ExperimentalCoroutinesApi
 class MainActivity : ComponentActivity() {
 
     private val channelsViewModel: ChannelsViewModel by diViewModels()
     private val settingsViewModel: SettingsViewModel by diViewModels()
+    private val feedListViewModel: FeedListViewModel by diViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,26 +32,27 @@ class MainActivity : ComponentActivity() {
             SreeeederTheme {
                 NavHost(
                     navController = navController,
-                    startDestination = MainScreenRoute
+                    startDestination = NavGraph.Main.route
                 ) {
-                    composable(MainScreenRoute) {
+                    composable(NavGraph.Main.route) {
                         MainScreen(
                             parentController = navController,
                             settingsViewModel = settingsViewModel,
-                            channelsViewModel = channelsViewModel
+                            channelsViewModel = channelsViewModel,
+                            feedListViewModel = feedListViewModel
                         )
                     }
 
-                    composable(AddChannelScreenRoute) {
+                    composable(NavGraph.AddChannel.route) {
                         AddChannelScreen(navController)
                     }
 
-                    composable(ChannelArticlesRoute) {
-                        ChannelArticles(extractUiChannel(it.arguments))
+                    composable(NavGraph.ArticlesList.route) {
+                        ChannelArticles(NavGraph.ArticlesList.extract(it.arguments), navController)
                     }
 
-                    composable(ArticleDetailsRoute) {
-                        ArticleDetailsScreen(extractUiArticle(it.arguments))
+                    composable(NavGraph.ArticleDetails.route) {
+                        ArticleDetailsScreen(NavGraph.ArticleDetails.extract(it.arguments))
                     }
                 }
             }

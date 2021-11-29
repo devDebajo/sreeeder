@@ -1,4 +1,4 @@
-package ru.debajo.reader.rss.ui
+package ru.debajo.reader.rss.ui.ext
 
 import android.os.Bundle
 import androidx.core.net.toUri

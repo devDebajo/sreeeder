@@ -3,7 +3,9 @@ package ru.debajo.reader.rss.ui.theme
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -76,7 +78,9 @@ fun SreeeederTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
     })
 
     val themeConfig by themeProvider.currentAppThemeConfig.collectAsState()
-    MaterialTheme(colorScheme = themeConfig.buildScheme(darkTheme), content = content)
+    CompositionLocalProvider(LocalIndication provides rememberRipple()) {
+        MaterialTheme(colorScheme = themeConfig.buildScheme(darkTheme), content = content)
+    }
 }
 
 @Composable

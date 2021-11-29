@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 data class ScreenTab(
     @StringRes val titleRes: Int,
     val icon: ImageVector,
-    val route: String,
+    val navigation: NavigationNode,
 ) {
     val title: String
         @Composable

@@ -12,10 +12,12 @@ import ru.debajo.reader.rss.data.db.RssDatabase
 import ru.debajo.reader.rss.data.remote.RssLoader
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.*
+import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.article.ArticleDetailsViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
+import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 import java.nio.charset.Charset
@@ -66,6 +68,7 @@ val RepositoryModule = module {
 val UseCaseModule = module {
     single { ArticleBookmarksUseCase(get(), get()) }
     single { ChannelsSubscriptionsUseCase(get(), get()) }
+    single { FeedListUseCase(get(), get()) }
 }
 
 @ExperimentalCoroutinesApi
@@ -75,4 +78,5 @@ val ViewModelModule = module {
     factory { AddChannelScreenViewModel(get()) }
     factory { ChannelArticlesViewModel(get()) }
     factory { ArticleDetailsViewModel() }
+    factory { FeedListViewModel(get()) }
 }

@@ -29,9 +29,4 @@ class AddChannelScreenViewModel(
             currentChannelMutable.emit(channel?.toUi())
         }
     }
-
-    fun reset() {
-        textMutable.value = ""
-        currentChannelMutable.value = null
-    }
 }

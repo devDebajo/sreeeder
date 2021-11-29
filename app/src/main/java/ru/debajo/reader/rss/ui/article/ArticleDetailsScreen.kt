@@ -1,6 +1,6 @@
 package ru.debajo.reader.rss.ui.article
 
-import android.os.Bundle
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,23 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
+import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import timber.log.Timber
-
-const val ArticleDetailsRoute = "ArticleDetails"
-private const val ArticleDetailsRouteArticleParam = "article"
-
-fun channelArticlesRouteParams(article: UiArticle): Bundle {
-    return bundleOf(ArticleDetailsRouteArticleParam to article)
-}
-
-fun extractUiArticle(bundle: Bundle?): UiArticle {
-    return bundle?.getParcelable(ArticleDetailsRouteArticleParam)!!
-}
 
 @Composable
 @ExperimentalMaterial3Api
@@ -41,9 +31,29 @@ fun ArticleDetailsScreen(article: UiArticle) {
         viewModel.prepare(article)
     })
 
-    Scaffold {
-        val content by viewModel.content.collectAsState()
-        content?.let { RenderHtml(it) }
+    Scaffold(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                text = article.title,
+                fontSize = 28.sp,
+            )
+            if (article.image != null) {
+                Image(
+                    painter = rememberImagePainter(article.image),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentDescription = null
+                )
+            }
+            val content by viewModel.content.collectAsState()
+            content?.let { RenderHtml(it) }
+        }
     }
 }
 
@@ -52,8 +62,6 @@ fun RenderHtml(article: Document) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
     ) {
         for (child in article.body().children()) {
             RenderBlock(child)
