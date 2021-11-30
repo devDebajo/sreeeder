@@ -31,7 +31,7 @@ import ru.debajo.reader.rss.ui.settings.SettingsList
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 
 private val feedTab = ScreenTab(R.string.screen_feed, Icons.Rounded.RssFeed, NavGraph.Main.Feed)
-private val channelsTab = ScreenTab(R.string.screen_channels, Icons.Rounded.Feed, NavGraph.Main.Channels)
+private val channelsTab = ScreenTab(R.string.screen_channels, Icons.Rounded.Favorite, NavGraph.Main.Channels)
 private val favoritesTab = ScreenTab(R.string.screen_favorites, Icons.Rounded.Bookmark, NavGraph.Main.Favorites)
 private val settingsTab = ScreenTab(R.string.screen_settings, Icons.Rounded.Settings, NavGraph.Main.Settings)
 

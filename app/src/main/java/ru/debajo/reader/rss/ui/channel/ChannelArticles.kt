@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -49,6 +51,17 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                     }
                 },
                 actions = {
+                    val isSubscribed by viewModel.isSubscribed.collectAsState()
+                    IconButton(onClick = { viewModel.onSubscribeClick(channel) }) {
+                        Icon(
+                            imageVector = if (isSubscribed) {
+                                Icons.Rounded.Favorite
+                            } else {
+                                Icons.Rounded.FavoriteBorder
+                            },
+                            contentDescription = null
+                        )
+                    }
                     IconButton(onClick = { NavGraph.ShareText.navigate(navController, channel.url) }) {
                         Icon(
                             imageVector = Icons.Rounded.Share,

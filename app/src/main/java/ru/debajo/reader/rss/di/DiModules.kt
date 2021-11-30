@@ -78,6 +78,6 @@ val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
     factory { AddChannelScreenViewModel(get()) }
-    factory { ChannelArticlesViewModel(get()) }
+    factory { ChannelArticlesViewModel(get(), get()) }
     factory { FeedListViewModel(get()) }
 }
