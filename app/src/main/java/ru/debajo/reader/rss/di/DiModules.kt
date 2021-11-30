@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.prof.rssparser.Parser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.Module
@@ -14,7 +15,6 @@ import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.*
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
-import ru.debajo.reader.rss.ui.article.ArticleDetailsViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
@@ -64,6 +64,7 @@ val RepositoryModule = module {
     single { ChannelsSubscriptionsRepository(get()) }
 }
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 val UseCaseModule = module {
     single { ArticleBookmarksUseCase(get(), get()) }
@@ -71,12 +72,12 @@ val UseCaseModule = module {
     single { FeedListUseCase(get(), get()) }
 }
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
     factory { AddChannelScreenViewModel(get()) }
     factory { ChannelArticlesViewModel(get()) }
-    factory { ArticleDetailsViewModel() }
     factory { FeedListViewModel(get()) }
 }

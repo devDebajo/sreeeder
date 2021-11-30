@@ -1,4 +1,4 @@
-package ru.debajo.reader.rss.data.converter.channel
+package ru.debajo.reader.rss.data.converter
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat

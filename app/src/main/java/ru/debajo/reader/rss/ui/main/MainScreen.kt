@@ -24,6 +24,9 @@ import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.favorites.FavoritesList
 import ru.debajo.reader.rss.ui.feed.FeedList
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
+import ru.debajo.reader.rss.ui.main.model.MainState
+import ru.debajo.reader.rss.ui.main.model.ScreenTab
+import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsList
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 

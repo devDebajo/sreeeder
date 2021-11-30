@@ -22,7 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
-import ru.debajo.reader.rss.ui.main.NavGraph
+import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
 @ExperimentalCoroutinesApi

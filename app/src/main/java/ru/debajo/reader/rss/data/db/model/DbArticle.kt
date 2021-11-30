@@ -22,8 +22,8 @@ data class DbArticle(
     @ColumnInfo(name = "image")
     val image: String?,
 
-    @ColumnInfo(name = "descriptionHtml")
-    val descriptionHtml: String?,
+    @ColumnInfo(name = "url")
+    val url: String,
 
     @ColumnInfo(name = "contentHtml")
     val contentHtml: String?,

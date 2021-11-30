@@ -10,7 +10,6 @@ data class UiArticle(
     val author: String?,
     val title: String,
     val image: String?,
-    val descriptionHtml: String?,
-    val contentHtml: String?,
+    val url: String,
     val timestamp: DateTime?
 ) : Parcelable

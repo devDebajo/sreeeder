@@ -7,7 +7,7 @@ data class DomainArticle(
     val author: String?,
     val title: String,
     val image: String?,
-    val descriptionHtml: String?,
+    val url: String,
     val contentHtml: String?,
     val timestamp: DateTime?
 )

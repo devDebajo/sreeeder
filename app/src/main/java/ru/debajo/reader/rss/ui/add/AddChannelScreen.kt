@@ -20,7 +20,7 @@ import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelCard
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.Material3TextField
-import ru.debajo.reader.rss.ui.main.NavGraph
+import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
 @ExperimentalMaterial3Api

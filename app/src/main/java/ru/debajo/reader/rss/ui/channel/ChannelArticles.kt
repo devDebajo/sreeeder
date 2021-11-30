@@ -18,7 +18,9 @@ import androidx.navigation.NavController
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
-import ru.debajo.reader.rss.ui.main.NavGraph
+import ru.debajo.reader.rss.ui.ext.colorInt
+import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
+import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @ExperimentalMaterial3Api
 @Composable
@@ -32,6 +34,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
     val scrollBehavior = remember(decayAnimationSpec) {
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
     }
+    val backgroundColor = MaterialTheme.colorScheme.background.colorInt
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -70,7 +73,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                     key = { index -> articles[index].id }
                 ) { index ->
                     ChannelArticle(article = articles[index]) {
-                        NavGraph.ArticleDetails.navigate(navController, it)
+                        NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
                     }
                 }
             })

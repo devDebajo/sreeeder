@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,7 +17,9 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
-import ru.debajo.reader.rss.ui.main.NavGraph
+import ru.debajo.reader.rss.ui.ext.colorInt
+import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
+import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
 @ExperimentalMaterial3Api
@@ -27,6 +30,7 @@ fun FeedList(
     viewModel: FeedListViewModel = diViewModel()
 ) {
     LaunchedEffect(key1 = "FeedList", block = { viewModel.load() })
+    val backgroundColor = MaterialTheme.colorScheme.background.colorInt
     Scaffold(Modifier.fillMaxSize()) {
         val articles by viewModel.articles.collectAsState()
         LazyColumn(
@@ -44,7 +48,7 @@ fun FeedList(
                 ) { index ->
                     val (article, channel) = articles[index]
                     ChannelArticle(article = article, channel = channel) {
-                        NavGraph.ArticleDetails.navigate(navController, it)
+                        NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
                     }
                 }
             }

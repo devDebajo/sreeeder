@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.domain.channel
 
+import android.net.Uri
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.jsoup.Jsoup
@@ -75,6 +76,7 @@ class ChannelsRepository(
 
     private suspend fun loadChannelFromNetwork(url: String): DomainChannel? {
         return runCatching { rssLoader.loadChannel(url) }
+            .mapCatching { it.tryExtractIcon() }
             .onSuccess { persist(url, it) }
             .mapCatching { it.toDomain() }
             .getOrNull()
@@ -98,6 +100,17 @@ class ChannelsRepository(
                 }
             }
         )
+    }
+
+    private fun RemoteChannel.tryExtractIcon(): RemoteChannel {
+        if (image != null) {
+            return this
+        }
+        val newUri = Uri.parse(url).buildUpon()
+            .clearQuery()
+            .path("favicon.ico")
+            .build()
+        return copy(image = newUri.toString())
     }
 
     private fun RemoteArticle.tryExtractImage(): RemoteArticle {

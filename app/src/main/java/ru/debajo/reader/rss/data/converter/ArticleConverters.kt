@@ -1,7 +1,6 @@
 package ru.debajo.reader.rss.data.converter
 
 import com.prof.rssparser.Article
-import ru.debajo.reader.rss.data.converter.channel.parseDateTimeSafe
 import ru.debajo.reader.rss.data.db.model.DbArticle
 import ru.debajo.reader.rss.data.db.model.toDb
 import ru.debajo.reader.rss.data.remote.model.RemoteArticle
@@ -14,7 +13,7 @@ fun Article.toRemote(): RemoteArticle {
         id = guid,
         title = title,
         image = image ?: itunesArticleData?.image,
-        descriptionHtml = description,
+        url = link,
         contentHtml = content,
         timestamp = pubDate?.parseDateTimeSafe()
     )
@@ -23,11 +22,11 @@ fun Article.toRemote(): RemoteArticle {
 fun RemoteArticle.toDomain(): DomainArticle? {
     return DomainArticle(
         id = id ?: return null,
-        author = author ?: return null,
+        author = author,
         title = title ?: return null,
-        descriptionHtml = descriptionHtml ?: return null,
-        contentHtml = contentHtml ?: return null,
-        timestamp = timestamp ?: return null,
+        url = url ?: return null,
+        contentHtml = contentHtml,
+        timestamp = timestamp,
         image = image,
     )
 }
@@ -39,7 +38,7 @@ fun RemoteArticle.toDb(channelUrl: String): DbArticle? {
         author = author,
         title = title ?: return null,
         image = image,
-        descriptionHtml = descriptionHtml,
+        url = url ?: return null,
         contentHtml = contentHtml,
         timestamp = timestamp?.toDb(),
     )
@@ -51,8 +50,7 @@ fun DomainArticle.toUi(): UiArticle {
         author = author,
         title = title,
         image = image,
-        descriptionHtml = descriptionHtml,
-        contentHtml = contentHtml,
+        url = url,
         timestamp = timestamp
     )
 }
@@ -63,7 +61,7 @@ fun DbArticle.toDomain(): DomainArticle {
         author = author,
         title = title,
         image = image,
-        descriptionHtml = descriptionHtml,
+        url = url,
         contentHtml = contentHtml,
         timestamp = timestamp?.dateTime
     )
