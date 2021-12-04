@@ -67,7 +67,7 @@ fun AddChannelScreen(parentNavController: NavController) {
 
             val channel by viewModel.currentChannel.collectAsState()
             channel?.let { localChannel ->
-                ChannelCard(localChannel) {
+                ChannelCard(channel = localChannel) {
                     parentNavController.popBackStack()
                     NavGraph.ArticlesList.navigate(parentNavController, localChannel)
                 }

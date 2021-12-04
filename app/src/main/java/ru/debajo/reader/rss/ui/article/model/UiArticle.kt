@@ -11,5 +11,6 @@ data class UiArticle(
     val title: String,
     val image: String?,
     val url: String,
+    val bookmarked: Boolean,
     val timestamp: DateTime?
 ) : Parcelable

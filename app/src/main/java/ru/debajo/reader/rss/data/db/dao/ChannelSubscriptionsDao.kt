@@ -19,5 +19,5 @@ interface ChannelSubscriptionsDao {
     suspend fun remove(url: String)
 
     @Query("SELECT * FROM dbchannelsubscription WHERE url=:url")
-    suspend fun getByUrl(url: String): DbChannelSubscription?
+    fun observeByUrl(url: String): Flow<List<DbChannelSubscription>>
 }

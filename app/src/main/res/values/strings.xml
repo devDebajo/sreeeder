@@ -19,4 +19,7 @@
 
     <string name="share_title">Поделиться</string>
 
+    <string name="article_date_time_today">Сегодня в %s</string>
+    <string name="article_date_time_yesterday">Вчера в %s</string>
+
 </resources>

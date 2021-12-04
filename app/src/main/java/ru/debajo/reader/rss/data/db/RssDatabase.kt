@@ -16,6 +16,7 @@ import ru.debajo.reader.rss.data.db.model.*
         DbCacheMarker::class,
     ],
     version = 1,
+    exportSchema = false
 )
 @TypeConverters(DbDateTimeConverter::class)
 abstract class RssDatabase : RoomDatabase() {

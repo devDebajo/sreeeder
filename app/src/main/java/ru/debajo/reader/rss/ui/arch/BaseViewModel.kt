@@ -1,4 +1,4 @@
-package ru.debajo.reader.rss.arch
+package ru.debajo.reader.rss.ui.arch
 
 import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModel

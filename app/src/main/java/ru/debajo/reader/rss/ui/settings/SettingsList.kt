@@ -101,13 +101,13 @@ private fun AppThemeWidget(theme: AppTheme, selected: Boolean, modifier: Modifie
 private fun SettingsDynamicThemeSwitch(state: SettingsState, viewModel: SettingsViewModel) {
     if (state.supportDynamicTheme) {
         AppCard(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 18.dp, horizontal = 16.dp),
             onClick = {}) {
             Row {
                 Text(
-                    stringResource(id = R.string.settings_dynamic_theme),
+                    text = stringResource(id = R.string.settings_dynamic_theme),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier

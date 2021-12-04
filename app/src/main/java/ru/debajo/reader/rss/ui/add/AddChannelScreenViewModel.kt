@@ -4,9 +4,9 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import ru.debajo.reader.rss.arch.BaseViewModel
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.domain.channel.ChannelsRepository
+import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 
 class AddChannelScreenViewModel(

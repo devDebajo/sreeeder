@@ -8,8 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
+import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
@@ -18,6 +20,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
 
+@FlowPreview
 @ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 class HostActivity : ComponentActivity() {
@@ -25,6 +28,7 @@ class HostActivity : ComponentActivity() {
     private val channelsViewModel: ChannelsViewModel by diViewModels()
     private val settingsViewModel: SettingsViewModel by diViewModels()
     private val feedListViewModel: FeedListViewModel by diViewModels()
+    private val bookmarksListViewModel: BookmarksListViewModel by diViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +44,8 @@ class HostActivity : ComponentActivity() {
                             parentController = navController,
                             settingsViewModel = settingsViewModel,
                             channelsViewModel = channelsViewModel,
-                            feedListViewModel = feedListViewModel
+                            feedListViewModel = feedListViewModel,
+                            bookmarksListViewModel = bookmarksListViewModel,
                         )
                     }
 

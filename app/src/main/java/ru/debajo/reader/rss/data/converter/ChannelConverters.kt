@@ -20,7 +20,7 @@ fun Channel.toRemote(channelUrl: String): RemoteChannel {
         name = title!!,
         description = description,
         image = image?.url,
-        currentArticles = articles.toRemoteList()
+        currentArticles = articles.toRemoteList(channelUrl)
     )
 }
 

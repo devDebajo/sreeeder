@@ -7,7 +7,7 @@ import ru.debajo.reader.rss.data.remote.model.RemoteArticle
 import ru.debajo.reader.rss.domain.model.DomainArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 
-fun Article.toRemote(): RemoteArticle {
+fun Article.toRemote(channelUrl: String): RemoteArticle {
     return RemoteArticle(
         author = author,
         id = guid,
@@ -15,7 +15,8 @@ fun Article.toRemote(): RemoteArticle {
         image = image ?: itunesArticleData?.image,
         url = link,
         contentHtml = content,
-        timestamp = pubDate?.parseDateTimeSafe()
+        timestamp = pubDate?.parseDateTimeSafe(),
+        channelUrl = channelUrl,
     )
 }
 
@@ -28,6 +29,8 @@ fun RemoteArticle.toDomain(): DomainArticle? {
         contentHtml = contentHtml,
         timestamp = timestamp,
         image = image,
+        bookmarked = false,
+        channelUrl = channelUrl
     )
 }
 
@@ -51,6 +54,7 @@ fun DomainArticle.toUi(): UiArticle {
         title = title,
         image = image,
         url = url,
+        bookmarked = bookmarked,
         timestamp = timestamp
     )
 }
@@ -63,11 +67,13 @@ fun DbArticle.toDomain(): DomainArticle {
         image = image,
         url = url,
         contentHtml = contentHtml,
-        timestamp = timestamp?.dateTime
+        timestamp = timestamp?.dateTime,
+        channelUrl = channelUrl,
+        bookmarked = false
     )
 }
 
-fun List<Article>.toRemoteList(): List<RemoteArticle> = map { it.toRemote() }
+fun List<Article>.toRemoteList(channelUrl: String): List<RemoteArticle> = map { it.toRemote(channelUrl) }
 fun List<DbArticle>.toDomainList(): List<DomainArticle> = map { it.toDomain() }
 
 @JvmName("toDomainListRemoteArticle")

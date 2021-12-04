@@ -11,6 +11,9 @@ interface ArticlesDao {
     @Query("SELECT * FROM dbarticle WHERE channelUrl=:channelUrl ORDER BY timestamp DESC")
     suspend fun getArticles(channelUrl: String): List<DbArticle>
 
+    @Query("SELECT * FROM dbarticle WHERE id in (:ids) ORDER BY timestamp DESC")
+    suspend fun getArticles(ids: List<String>): List<DbArticle>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(articles: List<DbArticle>)
 }

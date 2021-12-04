@@ -18,10 +18,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import ru.debajo.reader.rss.R
+import ru.debajo.reader.rss.ui.bookmarks.BookmarksList
+import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsList
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
-import ru.debajo.reader.rss.ui.favorites.FavoritesList
 import ru.debajo.reader.rss.ui.feed.FeedList
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.main.model.MainState
@@ -38,6 +40,7 @@ private val settingsTab = ScreenTab(R.string.screen_settings, Icons.Rounded.Sett
 private val tabs = listOf(feedTab, channelsTab, favoritesTab, settingsTab)
 
 @Composable
+@FlowPreview
 @ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 fun MainScreen(
@@ -45,6 +48,7 @@ fun MainScreen(
     settingsViewModel: SettingsViewModel,
     channelsViewModel: ChannelsViewModel,
     feedListViewModel: FeedListViewModel,
+    bookmarksListViewModel: BookmarksListViewModel
 ) {
     val navController = rememberNavController()
     MainScaffold(parentController, navController) { innerPadding ->
@@ -54,7 +58,7 @@ fun MainScreen(
         ) {
             composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, feedListViewModel) }
             composable(channelsTab.navigation.route) { ChannelsList(innerPadding, parentController, channelsViewModel) }
-            composable(favoritesTab.navigation.route) { FavoritesList() }
+            composable(favoritesTab.navigation.route) { BookmarksList(innerPadding, parentController, bookmarksListViewModel) }
             composable(settingsTab.navigation.route) { SettingsList(settingsViewModel) }
         }
     }
@@ -99,7 +103,10 @@ private fun MainScaffold(
         floatingActionButton = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
-            if (currentDestination?.hierarchy?.any { it.route == channelsTab.navigation.route } == true) {
+            val showButton = currentDestination?.hierarchy?.any {
+                it.route == channelsTab.navigation.route || it.route == feedTab.navigation.route
+            } == true
+            if (showButton) {
                 FloatingActionButton(
                     onClick = { NavGraph.AddChannel.navigate(parentController) },
                     content = { Icon(Icons.Rounded.Add, contentDescription = null) }

@@ -1,6 +1,5 @@
-package ru.debajo.reader.rss.ui.feed
+package ru.debajo.reader.rss.ui.bookmarks
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,17 +22,16 @@ import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @FlowPreview
-@ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
-fun FeedList(
+@ExperimentalMaterial3Api
+fun BookmarksList(
     innerPadding: PaddingValues,
     navController: NavController,
-    viewModel: FeedListViewModel = diViewModel()
+    viewModel: BookmarksListViewModel = diViewModel()
 ) {
-    LaunchedEffect(key1 = "FeedList", block = { viewModel.load() })
+    LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
     val backgroundColor = MaterialTheme.colorScheme.background.colorInt
     Scaffold(Modifier.fillMaxSize()) {
         val articles by viewModel.articles.collectAsState()
@@ -51,11 +49,7 @@ fun FeedList(
                     key = { index -> articles[index].first.id + articles[index].second?.url }
                 ) { index ->
                     val (article, channel) = articles[index]
-                    ChannelArticle(
-                        article = article,
-                        channel = channel,
-                        onFavoriteClick = { viewModel.onFavoriteClick(it) }
-                    ) {
+                    ChannelArticle(article = article, channel = channel, onFavoriteClick = { viewModel.onFavoriteClick(it) }) {
                         NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
                     }
                 }
@@ -63,3 +57,4 @@ fun FeedList(
         )
     }
 }
+

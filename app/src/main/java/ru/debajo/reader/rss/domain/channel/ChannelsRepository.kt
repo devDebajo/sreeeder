@@ -55,11 +55,13 @@ class ChannelsRepository(
         }
     }
 
+    suspend fun getArticles(articlesIds: List<String>): List<DomainArticle> {
+        return articlesDao.getArticles(articlesIds).toDomainList()
+    }
+
     fun getArticles(channelUrl: String, force: Boolean = false): Flow<List<DomainArticle>> {
         return flow {
-            if (!force) {
-                emit(articlesDao.getArticles(channelUrl).toDomainList())
-            }
+            emit(articlesDao.getArticles(channelUrl).toDomainList())
 
             if (force || !isCacheActual(channelUrl)) {
                 val networkArticles = loadArticlesFromNetwork(channelUrl)

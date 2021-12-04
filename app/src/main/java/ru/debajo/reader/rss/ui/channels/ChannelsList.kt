@@ -1,9 +1,11 @@
 package ru.debajo.reader.rss.ui.channels
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,7 +52,7 @@ fun ChannelsList(
                 count = channels.size,
                 key = { channels[it].url }
             ) {
-                ChannelCard(channels[it]) { channel ->
+                ChannelCardInList(channels[it]) { channel ->
                     NavGraph.ArticlesList.navigate(navController, channel)
                 }
             }
@@ -59,9 +61,25 @@ fun ChannelsList(
 }
 
 @Composable
-inline fun ChannelCard(channel: UiChannel, crossinline onClick: (UiChannel) -> Unit) {
+@OptIn(ExperimentalFoundationApi::class)
+inline fun LazyItemScope.ChannelCardInList(channel: UiChannel, crossinline onClick: (UiChannel) -> Unit) {
+    ChannelCard(
+        modifier = Modifier.animateItemPlacement(),
+        channel = channel,
+        onClick = onClick
+    )
+}
+
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+inline fun ChannelCard(
+    modifier: Modifier = Modifier,
+    channel: UiChannel,
+    crossinline onClick: (UiChannel) -> Unit
+) {
     AppCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         onClick = { onClick(channel) }
     ) {
         Column(
