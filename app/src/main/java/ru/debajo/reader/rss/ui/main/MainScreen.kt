@@ -17,8 +17,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksList
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -40,9 +38,6 @@ private val settingsTab = ScreenTab(R.string.screen_settings, Icons.Rounded.Sett
 private val tabs = listOf(feedTab, channelsTab, favoritesTab, settingsTab)
 
 @Composable
-@FlowPreview
-@ExperimentalMaterial3Api
-@ExperimentalCoroutinesApi
 fun MainScreen(
     parentController: NavController,
     settingsViewModel: SettingsViewModel,
@@ -65,7 +60,7 @@ fun MainScreen(
 }
 
 @Composable
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 private fun MainScaffold(
     parentController: NavController,
     navController: NavController,

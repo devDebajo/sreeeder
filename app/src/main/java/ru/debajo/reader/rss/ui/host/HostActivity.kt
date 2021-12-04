@@ -3,12 +3,9 @@ package ru.debajo.reader.rss.ui.host
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -20,9 +17,6 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
 
-@FlowPreview
-@ExperimentalMaterial3Api
-@ExperimentalCoroutinesApi
 class HostActivity : ComponentActivity() {
 
     private val channelsViewModel: ChannelsViewModel by diViewModels()

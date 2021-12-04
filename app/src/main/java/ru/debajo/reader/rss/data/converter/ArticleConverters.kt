@@ -4,7 +4,9 @@ import com.prof.rssparser.Article
 import ru.debajo.reader.rss.data.db.model.DbArticle
 import ru.debajo.reader.rss.data.db.model.toDb
 import ru.debajo.reader.rss.data.remote.model.RemoteArticle
+import ru.debajo.reader.rss.data.remote.model.RemoteChannelUrl
 import ru.debajo.reader.rss.domain.model.DomainArticle
+import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 
 fun Article.toRemote(channelUrl: String): RemoteArticle {
@@ -16,7 +18,7 @@ fun Article.toRemote(channelUrl: String): RemoteArticle {
         url = link,
         contentHtml = content,
         timestamp = pubDate?.parseDateTimeSafe(),
-        channelUrl = channelUrl,
+        channelUrl = RemoteChannelUrl(channelUrl),
     )
 }
 
@@ -30,14 +32,14 @@ fun RemoteArticle.toDomain(): DomainArticle? {
         timestamp = timestamp,
         image = image,
         bookmarked = false,
-        channelUrl = channelUrl
+        channelUrl = channelUrl.toDomain(),
     )
 }
 
-fun RemoteArticle.toDb(channelUrl: String): DbArticle? {
+fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
     return DbArticle(
         id = id ?: return null,
-        channelUrl = channelUrl,
+        channelUrl = channelUrl.url,
         author = author,
         title = title ?: return null,
         image = image,
@@ -68,7 +70,7 @@ fun DbArticle.toDomain(): DomainArticle {
         url = url,
         contentHtml = contentHtml,
         timestamp = timestamp?.dateTime,
-        channelUrl = channelUrl,
+        channelUrl = DomainChannelUrl(channelUrl),
         bookmarked = false
     )
 }
@@ -78,6 +80,6 @@ fun List<DbArticle>.toDomainList(): List<DomainArticle> = map { it.toDomain() }
 
 @JvmName("toDomainListRemoteArticle")
 fun List<RemoteArticle>.toDomainList(): List<DomainArticle> = mapNotNull { it.toDomain() }
-fun List<RemoteArticle>.toDbList(channelUrl: String): List<DbArticle> = mapNotNull { it.toDb(channelUrl) }
+fun List<RemoteArticle>.toDbList(channelUrl: RemoteChannelUrl): List<DbArticle> = mapNotNull { it.toDb(channelUrl) }
 
 fun List<DomainArticle>.toUiList(): List<UiArticle> = map { it.toUi() }

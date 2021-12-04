@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import ru.debajo.reader.rss.data.db.model.DbChannel
 
 @Dao
@@ -12,10 +13,10 @@ interface ChannelsDao {
     suspend fun getAll(): List<DbChannel>
 
     @Query("SELECT * FROM dbchannel WHERE url IN (:urls)")
-    suspend fun getByUrls(urls: List<String>): List<DbChannel>
+    fun observeByUrls(urls: List<String>): Flow<List<DbChannel>>
 
     @Query("SELECT * FROM dbchannel WHERE url=:url")
-    suspend fun getByUrl(url: String): DbChannel?
+    fun observeByUrl(url: String): Flow<List<DbChannel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(channel: DbChannel)

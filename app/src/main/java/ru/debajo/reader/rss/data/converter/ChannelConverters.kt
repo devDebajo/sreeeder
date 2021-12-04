@@ -3,20 +3,22 @@ package ru.debajo.reader.rss.data.converter
 import com.prof.rssparser.Channel
 import ru.debajo.reader.rss.data.db.model.DbChannel
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
+import ru.debajo.reader.rss.data.remote.model.RemoteChannelUrl
 import ru.debajo.reader.rss.domain.model.DomainChannel
+import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 
-fun RemoteChannel.toDb(): DbChannel = DbChannel(url, name, image, description)
+fun RemoteChannel.toDb(): DbChannel = DbChannel(url.url, name, image, description)
 
-fun RemoteChannel.toDomain(): DomainChannel = DomainChannel(url, name, image, description)
+fun RemoteChannel.toDomain(): DomainChannel = DomainChannel(url.toDomain(), name, image, description)
 
-fun DbChannel.toDomain(): DomainChannel = DomainChannel(url, name, image, description)
+fun DbChannel.toDomain(): DomainChannel = DomainChannel(DomainChannelUrl(url), name, image, description)
 
-fun DomainChannel.toUi(): UiChannel = UiChannel(url, name, image, description)
+fun DomainChannel.toUi(): UiChannel = UiChannel(url.toUi(), name, image, description)
 
 fun Channel.toRemote(channelUrl: String): RemoteChannel {
     return RemoteChannel(
-        url = channelUrl,
+        url = RemoteChannelUrl(channelUrl),
         name = title!!,
         description = description,
         image = image?.url,

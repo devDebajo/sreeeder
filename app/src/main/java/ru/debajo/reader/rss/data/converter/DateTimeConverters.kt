@@ -23,8 +23,3 @@ fun String.parseDateTimeSafe(): DateTime? {
         .onFailure { Timber.tag("Date parsing error").e(it) }
         .getOrNull()
 }
-
-
-fun main() {
-    print(formatter.withLocale(Locale.US).parseDateTime("Tue, 30 Nov 2021 14:13:20 +0000"))
-}

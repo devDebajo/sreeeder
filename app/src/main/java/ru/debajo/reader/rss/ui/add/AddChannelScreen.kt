@@ -23,7 +23,7 @@ import ru.debajo.reader.rss.ui.common.Material3TextField
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 fun AddChannelScreen(parentNavController: NavController) {
     val viewModel: AddChannelScreenViewModel = diViewModel()
     Scaffold(
@@ -65,12 +65,17 @@ fun AddChannelScreen(parentNavController: NavController) {
                 )
             }
 
-            val channel by viewModel.currentChannel.collectAsState()
-            channel?.let { localChannel ->
-                ChannelCard(channel = localChannel) {
-                    parentNavController.popBackStack()
-                    NavGraph.ArticlesList.navigate(parentNavController, localChannel)
+            val state by viewModel.state.collectAsState()
+            when (val stateLocal = state) {
+                is AddChannelScreenState.Error -> Text("Ошибка загрузки канала")
+                is AddChannelScreenState.Idle -> Unit
+                is AddChannelScreenState.Loaded -> {
+                    ChannelCard(channel = stateLocal.channel) {
+                        parentNavController.popBackStack()
+                        NavGraph.ArticlesList.navigate(parentNavController, stateLocal.channel)
+                    }
                 }
+                is AddChannelScreenState.Loading -> Text("Загрузка канала")
             }
         }
     }

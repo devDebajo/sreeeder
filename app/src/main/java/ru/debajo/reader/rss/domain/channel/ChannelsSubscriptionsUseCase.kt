@@ -5,15 +5,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import ru.debajo.reader.rss.domain.model.DomainChannel
 
-@ExperimentalCoroutinesApi
 class ChannelsSubscriptionsUseCase(
     private val channelsRepository: ChannelsRepository,
     private val channelsSubscriptionsRepository: ChannelsSubscriptionsRepository,
 ) {
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun observe(): Flow<List<DomainChannel>> {
         return channelsSubscriptionsRepository.observe()
-            .flatMapLatest { urls ->
-                channelsRepository.getChannelsByUrls(urls)
-            }
+            .flatMapLatest { urls -> channelsRepository.getChannelsByUrls(urls) }
     }
 }

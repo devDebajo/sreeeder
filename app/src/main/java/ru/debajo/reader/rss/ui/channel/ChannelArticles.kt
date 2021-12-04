@@ -24,13 +24,11 @@ import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
-@ExperimentalMaterial3Api
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun ChannelArticles(channel: UiChannel, navController: NavController) {
     val viewModel = diViewModel<ChannelArticlesViewModel>()
-    LaunchedEffect(key1 = channel, block = {
-        viewModel.load(channel)
-    })
+    LaunchedEffect(key1 = channel, block = { viewModel.load(channel) })
 
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = remember(decayAnimationSpec) {
@@ -62,7 +60,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                             contentDescription = null
                         )
                     }
-                    IconButton(onClick = { NavGraph.ShareText.navigate(navController, channel.url) }) {
+                    IconButton(onClick = { NavGraph.ShareText.navigate(navController, channel.url.url) }) {
                         Icon(
                             imageVector = Icons.Rounded.Share,
                             contentDescription = null

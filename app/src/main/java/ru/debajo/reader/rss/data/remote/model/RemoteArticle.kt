@@ -8,7 +8,7 @@ data class RemoteArticle(
     val title: String?,
     val image: String?,
     val url: String?,
-    val channelUrl: String,
+    val channelUrl: RemoteChannelUrl,
     val contentHtml: String?,
     val timestamp: DateTime?
 )

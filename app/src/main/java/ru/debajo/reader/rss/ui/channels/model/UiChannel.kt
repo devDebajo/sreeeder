@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Stable
 @Parcelize
 data class UiChannel(
-    val url: String,
+    val url: UiChannelUrl,
     val name: String,
     val image: String?,
     val description: String?,

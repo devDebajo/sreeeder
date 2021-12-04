@@ -1,4 +1,4 @@
-package ru.debajo.reader.rss.domain.channel
+package ru.debajo.reader.rss.domain.article
 
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow

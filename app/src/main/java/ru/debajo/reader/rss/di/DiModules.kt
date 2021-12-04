@@ -3,16 +3,16 @@ package ru.debajo.reader.rss.di
 import android.content.Context
 import androidx.room.Room
 import com.prof.rssparser.BuildConfig
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ru.debajo.reader.rss.data.db.RssDatabase
+import ru.debajo.reader.rss.data.remote.RssLoadDbManager
 import ru.debajo.reader.rss.data.remote.RssLoader
+import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ArticlesRepository
 import ru.debajo.reader.rss.domain.cache.CacheManager
-import ru.debajo.reader.rss.domain.channel.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsUseCase
@@ -57,28 +57,26 @@ val DbModule = module {
     single { get<RssDatabase>(RssDatabase::class.java).articleBookmarksDao() }
     single { get<RssDatabase>(RssDatabase::class.java).channelSubscriptionsDao() }
     single { CacheManager(get()) }
+    single { RssLoadDbManager(get(), get(), get(), get(), get()) }
 }
 
 val RepositoryModule = module {
     single { ArticleBookmarksRepository(get()) }
-    single { ChannelsRepository(get(), get(), get()) }
+    single { ArticlesRepository(get()) }
+    single { ChannelsRepository(get()) }
     single { ChannelsSubscriptionsRepository(get()) }
 }
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 val UseCaseModule = module {
     single { ChannelsSubscriptionsUseCase(get(), get()) }
     single { FeedListUseCase(get(), get()) }
-    single { LoadArticlesUseCase(get(), get()) }
+    single { LoadArticlesUseCase(get(), get(), get()) }
 }
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
-    factory { AddChannelScreenViewModel(get()) }
+    factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get()) }
     factory { FeedListViewModel(get(), get()) }
     factory { BookmarksListViewModel(get(), get()) }

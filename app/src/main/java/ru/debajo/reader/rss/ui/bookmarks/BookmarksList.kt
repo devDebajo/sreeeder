@@ -14,8 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
@@ -23,9 +21,7 @@ import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
-@FlowPreview
-@ExperimentalCoroutinesApi
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 fun BookmarksList(
     innerPadding: PaddingValues,
     navController: NavController,

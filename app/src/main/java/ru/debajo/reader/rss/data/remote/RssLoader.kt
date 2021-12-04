@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import ru.debajo.reader.rss.data.converter.toRemote
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
+import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import java.io.IOException
 import java.nio.charset.Charset
 import kotlin.coroutines.resumeWithException
@@ -18,12 +19,12 @@ class RssLoader(
     private val client: OkHttpClient,
 ) {
 
-    suspend fun loadChannel(channelUrl: String): RemoteChannel {
-        val bytes = loadChannelRaw(channelUrl)
+    suspend fun loadChannel(channelUrl: DomainChannelUrl): RemoteChannel {
+        val bytes = loadChannelRaw(channelUrl.url)
         val charset = detectCharset(bytes)
         val parser = buildParser(charset)
 
-        return parser.parse(String(bytes, charset)).toRemote(channelUrl)
+        return parser.parse(String(bytes, charset)).toRemote(channelUrl.url)
     }
 
     private fun buildParser(charset: Charset): Parser {

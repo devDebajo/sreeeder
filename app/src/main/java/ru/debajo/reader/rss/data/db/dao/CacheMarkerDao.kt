@@ -11,9 +11,6 @@ interface CacheMarkerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(marker: DbCacheMarker)
 
-    @Query("SELECT * FROM dbcachemarker WHERE cacheGroup=:group AND dataId=:dataId")
-    suspend fun get(group: String, dataId: String): DbCacheMarker?
-
-    @Query("SELECT * FROM dbcachemarker WHERE cacheGroup=:group AND dataId in (:dataIds)")
-    suspend fun get(group: String, dataIds: List<String>): List<DbCacheMarker>
+    @Query("SELECT * FROM dbcachemarker WHERE key=:key")
+    suspend fun get(key: String): DbCacheMarker?
 }

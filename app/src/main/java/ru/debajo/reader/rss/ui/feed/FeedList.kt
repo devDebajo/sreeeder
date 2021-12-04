@@ -1,6 +1,5 @@
 package ru.debajo.reader.rss.ui.feed
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,19 +14,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-@FlowPreview
-@ExperimentalMaterial3Api
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalMaterial3Api::class)
 fun FeedList(
     innerPadding: PaddingValues,
     navController: NavController,
