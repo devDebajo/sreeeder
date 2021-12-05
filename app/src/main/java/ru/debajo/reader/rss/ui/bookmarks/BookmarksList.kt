@@ -57,10 +57,9 @@ fun BookmarksList(
                 content = {
                     items(
                         count = articles.size,
-                        key = { index -> articles[index].first.id + articles[index].second?.url }
+                        key = { index -> articles[index].id + articles[index].channelName }
                     ) { index ->
-                        val (article, channel) = articles[index]
-                        ChannelArticle(article = article, channel = channel, onFavoriteClick = { viewModel.onFavoriteClick(it) }) {
+                        ChannelArticle(article = articles[index], onFavoriteClick = { viewModel.onFavoriteClick(it) }) {
                             NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
                         }
                     }
@@ -69,4 +68,3 @@ fun BookmarksList(
         }
     }
 }
-

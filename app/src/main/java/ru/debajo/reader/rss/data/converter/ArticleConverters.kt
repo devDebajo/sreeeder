@@ -8,6 +8,7 @@ import ru.debajo.reader.rss.data.remote.model.RemoteChannelUrl
 import ru.debajo.reader.rss.domain.model.DomainArticle
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import ru.debajo.reader.rss.ui.article.model.UiArticle
+import ru.debajo.reader.rss.ui.channels.model.UiChannel
 
 fun Article.toRemote(channelUrl: String): RemoteArticle {
     return RemoteArticle(
@@ -49,7 +50,7 @@ fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
     )
 }
 
-fun DomainArticle.toUi(): UiArticle {
+fun DomainArticle.toUi(channel: UiChannel?): UiArticle {
     return UiArticle(
         id = id,
         author = author,
@@ -57,7 +58,9 @@ fun DomainArticle.toUi(): UiArticle {
         image = image,
         url = url,
         bookmarked = bookmarked,
-        timestamp = timestamp
+        timestamp = timestamp,
+        channelImage = channel?.image,
+        channelName = channel?.name,
     )
 }
 
@@ -82,4 +85,4 @@ fun List<DbArticle>.toDomainList(): List<DomainArticle> = map { it.toDomain() }
 fun List<RemoteArticle>.toDomainList(): List<DomainArticle> = mapNotNull { it.toDomain() }
 fun List<RemoteArticle>.toDbList(channelUrl: RemoteChannelUrl): List<DbArticle> = mapNotNull { it.toDb(channelUrl) }
 
-fun List<DomainArticle>.toUiList(): List<UiArticle> = map { it.toUi() }
+fun List<DomainArticle>.toUiList(channel: UiChannel?): List<UiArticle> = map { it.toUi(channel) }

@@ -27,14 +27,12 @@ import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyItemScope.ChannelArticle(
     article: UiArticle,
-    channel: UiChannel? = null,
     onFavoriteClick: (UiArticle) -> Unit,
     onClick: (UiArticle) -> Unit,
 ) {
@@ -70,8 +68,8 @@ fun LazyItemScope.ChannelArticle(
                 Text(it.format(), Modifier.padding(horizontal = 16.dp), fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(12.dp))
             }
-            channel?.let {
-                ChannelBar(channel)
+            if (article.channelName != null) {
+                ChannelBar(article.channelName, article.channelImage)
             }
 
             Row(
@@ -91,16 +89,16 @@ fun LazyItemScope.ChannelArticle(
 }
 
 @Composable
-private fun ChannelBar(channel: UiChannel) {
+private fun ChannelBar(name: String, image: String?) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (channel.image != null) {
+        if (image != null) {
             Image(
-                painter = rememberImagePainter(channel.image),
+                painter = rememberImagePainter(image),
                 modifier = Modifier
                     .size(14.dp)
                     .clip(RoundedCornerShape(4.dp)),
@@ -108,7 +106,7 @@ private fun ChannelBar(channel: UiChannel) {
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
-        Text(channel.name, fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary)
+        Text(name, fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary)
     }
 }
 

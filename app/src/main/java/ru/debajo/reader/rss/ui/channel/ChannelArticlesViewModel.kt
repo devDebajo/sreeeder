@@ -33,7 +33,7 @@ class ChannelArticlesViewModel(
     fun load(channel: UiChannel) {
         launch {
             loadArticlesUseCase.load(channel.toDomain())
-                .map { domain -> domain.map { entry -> entry.article.toUi() } }
+                .map { domain -> domain.map { entry -> entry.article.toUi(null) } }
                 .collectTo(articlesMutable)
         }
         launch {

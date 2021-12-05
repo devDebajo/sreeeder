@@ -13,7 +13,6 @@ import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.ext.collectTo
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.channels.model.UiChannel
 
 class FeedListViewModel(
     private val useCase: FeedListUseCase,
@@ -22,16 +21,16 @@ class FeedListViewModel(
 ) : BaseViewModel() {
 
     private var refreshingJob: Job? = null
-    private val articlesMutable: MutableStateFlow<List<Pair<UiArticle, UiChannel?>>> = MutableStateFlow(emptyList())
+    private val articlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
     private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
-    val articles: StateFlow<List<Pair<UiArticle, UiChannel?>>> = articlesMutable
+    val articles: StateFlow<List<UiArticle>> = articlesMutable
     val isRefreshing: StateFlow<Boolean> = isRefreshingMutable
 
     fun load() {
         launch(IO) {
             useCase()
-                .map { domain -> domain.map { entry -> entry.article.toUi() to entry.channel?.toUi() } }
+                .map { domain -> domain.map { entry -> entry.article.toUi(entry.channel?.toUi()) } }
                 .collectTo(articlesMutable)
         }
 

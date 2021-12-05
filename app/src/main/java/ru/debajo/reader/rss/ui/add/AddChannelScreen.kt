@@ -102,7 +102,11 @@ private fun NoDataLoaded(state: LoadingState, message: String) {
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                LoadingState.ERROR -> Icon(Icons.Rounded.Error, contentDescription = null)
+                LoadingState.ERROR -> Icon(
+                    imageVector = Icons.Rounded.Error,
+                    tint = MaterialTheme.colorScheme.error,
+                    contentDescription = null
+                )
             }
             Spacer(Modifier.size(20.dp))
             Text(message)
