@@ -18,16 +18,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.debajo.reader.rss.R
-import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.Switch
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.title
 
 @Composable
-fun SettingsList(
-    viewModel: SettingsViewModel = diViewModel()
-) {
+fun SettingsList(viewModel: SettingsViewModel) {
     val state by viewModel.state.collectAsState()
 
     Column(

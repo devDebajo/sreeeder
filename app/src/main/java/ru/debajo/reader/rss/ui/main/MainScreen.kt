@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,7 +26,6 @@ import ru.debajo.reader.rss.ui.channels.ChannelsList
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedList
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
-import ru.debajo.reader.rss.ui.main.model.MainState
 import ru.debajo.reader.rss.ui.main.model.ScreenTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsList
@@ -40,13 +41,14 @@ private val tabs = listOf(feedTab, channelsTab, favoritesTab, settingsTab)
 @Composable
 fun MainScreen(
     parentController: NavController,
+    mainViewModel: MainViewModel,
     settingsViewModel: SettingsViewModel,
     channelsViewModel: ChannelsViewModel,
     feedListViewModel: FeedListViewModel,
     bookmarksListViewModel: BookmarksListViewModel
 ) {
     val navController = rememberNavController()
-    MainScaffold(parentController, navController) { innerPadding ->
+    MainScaffold(parentController, navController, mainViewModel) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = tabs[0].navigation.route
@@ -64,14 +66,14 @@ fun MainScreen(
 private fun MainScaffold(
     parentController: NavController,
     navController: NavController,
+    viewModel: MainViewModel,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    // вот это отсюда убрать
-    var state by remember { mutableStateOf(MainState()) }
+    val selectedTab by viewModel.selectedTab.collectAsState()
     Scaffold(
         topBar = {
             Text(
-                text = tabs[state.selectedTab].title,
+                text = tabs[selectedTab].title,
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
@@ -86,8 +88,8 @@ private fun MainScaffold(
                         tab = tab,
                         selected = currentDestination?.hierarchy?.any { it.route == tab.navigation.route } == true,
                         onClick = {
-                            if (state.selectedTab != index) {
-                                state = state.copy(selectedTab = index)
+                            if (selectedTab != index) {
+                                viewModel.updateSelectedTab(index)
                                 tab.navigation.navigate(navController)
                             }
                         }

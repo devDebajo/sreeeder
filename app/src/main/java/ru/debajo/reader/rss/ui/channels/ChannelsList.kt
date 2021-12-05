@@ -28,7 +28,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
 import ru.debajo.reader.rss.R
-import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -37,7 +36,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun ChannelsList(
     innerPadding: PaddingValues,
     navController: NavController,
-    viewModel: ChannelsViewModel = diViewModel()
+    viewModel: ChannelsViewModel
 ) {
     LaunchedEffect("ChannelsList", block = { viewModel.load() })
     Column(modifier = Modifier.fillMaxSize()) {

@@ -13,6 +13,7 @@ import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.main.MainScreen
+import ru.debajo.reader.rss.ui.main.MainViewModel
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
@@ -23,6 +24,7 @@ class HostActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by diViewModels()
     private val feedListViewModel: FeedListViewModel by diViewModels()
     private val bookmarksListViewModel: BookmarksListViewModel by diViewModels()
+    private val mainViewModel: MainViewModel by diViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,7 @@ class HostActivity : ComponentActivity() {
                             channelsViewModel = channelsViewModel,
                             feedListViewModel = feedListViewModel,
                             bookmarksListViewModel = bookmarksListViewModel,
+                            mainViewModel = mainViewModel,
                         )
                     }
 

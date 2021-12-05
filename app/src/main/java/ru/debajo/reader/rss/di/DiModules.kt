@@ -23,6 +23,7 @@ import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
+import ru.debajo.reader.rss.ui.main.MainViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 
@@ -80,4 +81,5 @@ val ViewModelModule = module {
     factory { ChannelArticlesViewModel(get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get()) }
     factory { BookmarksListViewModel(get(), get()) }
+    factory { MainViewModel() }
 }

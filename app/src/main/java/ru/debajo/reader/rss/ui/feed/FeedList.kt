@@ -19,7 +19,6 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import ru.debajo.reader.rss.R
-import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
@@ -30,7 +29,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun FeedList(
     innerPadding: PaddingValues,
     navController: NavController,
-    viewModel: FeedListViewModel = diViewModel()
+    viewModel: FeedListViewModel
 ) {
     LaunchedEffect(key1 = "FeedList", block = { viewModel.load() })
     val backgroundColor = MaterialTheme.colorScheme.background.colorInt

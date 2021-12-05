@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
-import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
@@ -28,7 +27,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun BookmarksList(
     innerPadding: PaddingValues,
     navController: NavController,
-    viewModel: BookmarksListViewModel = diViewModel()
+    viewModel: BookmarksListViewModel
 ) {
     LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
     val backgroundColor = MaterialTheme.colorScheme.background.colorInt
