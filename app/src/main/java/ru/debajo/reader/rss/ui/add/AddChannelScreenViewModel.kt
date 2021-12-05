@@ -20,7 +20,7 @@ class AddChannelScreenViewModel(
     private val rssLoadDbManager: RssLoadDbManager
 ) : BaseViewModel() {
 
-    private val textMutable: MutableStateFlow<String> = MutableStateFlow("https://4pda.to/feed/")
+    private val textMutable: MutableStateFlow<String> = MutableStateFlow("")
     private val currentChannelMutable: MutableStateFlow<AddChannelScreenState> = MutableStateFlow(AddChannelScreenState.Idle)
     private var currentJob: Job? = null
 

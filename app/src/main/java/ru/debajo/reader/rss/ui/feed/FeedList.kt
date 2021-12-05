@@ -14,6 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
@@ -31,29 +33,35 @@ fun FeedList(
     val backgroundColor = MaterialTheme.colorScheme.background.colorInt
     Scaffold(Modifier.fillMaxSize()) {
         val articles by viewModel.articles.collectAsState()
-        LazyColumn(
-            contentPadding = PaddingValues(
-                top = 12.dp,
-                bottom = innerPadding.calculateBottomPadding(),
-                start = 16.dp,
-                end = 16.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            content = {
-                items(
-                    count = articles.size,
-                    key = { index -> articles[index].first.id + articles[index].second?.url }
-                ) { index ->
-                    val (article, channel) = articles[index]
-                    ChannelArticle(
-                        article = article,
-                        channel = channel,
-                        onFavoriteClick = { viewModel.onFavoriteClick(it) }
-                    ) {
-                        NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
+        val isRefreshing by viewModel.isRefreshing.collectAsState()
+        SwipeRefresh(
+            state =  rememberSwipeRefreshState(isRefreshing),
+            onRefresh = { viewModel.onPullToRefresh() }
+        ) {
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    top = 12.dp,
+                    bottom = innerPadding.calculateBottomPadding(),
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                content = {
+                    items(
+                        count = articles.size,
+                        key = { index -> articles[index].first.id + articles[index].second?.url }
+                    ) { index ->
+                        val (article, channel) = articles[index]
+                        ChannelArticle(
+                            article = article,
+                            channel = channel,
+                            onFavoriteClick = { viewModel.onFavoriteClick(it) }
+                        ) {
+                            NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 }

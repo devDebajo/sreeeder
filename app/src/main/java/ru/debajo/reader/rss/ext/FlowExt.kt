@@ -8,3 +8,7 @@ import kotlinx.coroutines.flow.onStart
 suspend infix fun <T> Flow<T>.collectTo(target: MutableStateFlow<T>) = collect { target.value = it }
 
 fun <T> Flow<T>.withLeading(item: T): Flow<T> = onStart { emit(item) }
+
+suspend fun <T> Flow<T>.ignoreElements() {
+    collect { }
+}
