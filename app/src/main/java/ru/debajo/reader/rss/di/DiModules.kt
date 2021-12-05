@@ -1,7 +1,10 @@
 package ru.debajo.reader.rss.di
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.prof.rssparser.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,6 +21,7 @@ import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsUseCase
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
+import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
@@ -30,7 +34,14 @@ import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 fun appModule(context: Context): Module = module {
     single { context.applicationContext }
     single { get<Context>().getSharedPreferences("sreeeder_prefs", Context.MODE_PRIVATE) }
-    single { AppThemeProvider(get()) }
+    single { AppThemeProvider(get(), get()) }
+}
+
+@SuppressLint("MissingPermission")
+val MetricsModule = module {
+    single { FirebaseCrashlytics.getInstance() }
+    single { FirebaseAnalytics.getInstance(get()) }
+    single { Analytics(get()) }
 }
 
 val NetworkModule = module {
@@ -62,10 +73,10 @@ val DbModule = module {
 }
 
 val RepositoryModule = module {
-    single { ArticleBookmarksRepository(get()) }
+    single { ArticleBookmarksRepository(get(), get()) }
     single { ArticlesRepository(get()) }
     single { ChannelsRepository(get()) }
-    single { ChannelsSubscriptionsRepository(get()) }
+    single { ChannelsSubscriptionsRepository(get(), get()) }
 }
 
 val UseCaseModule = module {
@@ -77,8 +88,8 @@ val UseCaseModule = module {
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
-    factory { AddChannelScreenViewModel(get(), get()) }
-    factory { ChannelArticlesViewModel(get(), get(), get()) }
+    factory { AddChannelScreenViewModel(get(), get(), get()) }
+    factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get()) }
     factory { BookmarksListViewModel(get(), get()) }
     factory { MainViewModel() }

@@ -3,6 +3,8 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -81,5 +83,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
     implementation "androidx.browser:browser:1.4.0"
     implementation "com.google.accompanist:accompanist-swiperefresh:0.21.4-beta"
+    implementation platform('com.google.firebase:firebase-bom:29.0.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     kapt "androidx.room:room-compiler:2.4.0-rc01"
 }

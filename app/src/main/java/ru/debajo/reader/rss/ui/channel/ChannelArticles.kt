@@ -60,7 +60,10 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                             contentDescription = null
                         )
                     }
-                    IconButton(onClick = { NavGraph.ShareText.navigate(navController, channel.url.url) }) {
+                    IconButton(onClick = {
+                        viewModel.onShare()
+                        NavGraph.ShareText.navigate(navController, channel.url.url)
+                    }) {
                         Icon(
                             imageVector = Icons.Rounded.Share,
                             contentDescription = null

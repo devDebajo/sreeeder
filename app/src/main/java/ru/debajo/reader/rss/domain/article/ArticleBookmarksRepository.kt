@@ -8,9 +8,11 @@ import kotlinx.coroutines.withContext
 import ru.debajo.reader.rss.data.db.dao.ArticleBookmarksDao
 import ru.debajo.reader.rss.data.db.model.DbArticleBookmark
 import ru.debajo.reader.rss.data.db.model.DbDateTime
+import ru.debajo.reader.rss.metrics.Analytics
 
 class ArticleBookmarksRepository(
     private val articleBookmarksDao: ArticleBookmarksDao,
+    private val analytics: Analytics,
 ) {
     fun observe(): Flow<List<String>> {
         return articleBookmarksDao.getAll()
@@ -23,8 +25,10 @@ class ArticleBookmarksRepository(
             val saved = articleBookmarksDao.getById(articleId) != null
             if (saved) {
                 articleBookmarksDao.remove(articleId)
+                analytics.onRemoveBookmark()
             } else {
                 articleBookmarksDao.add(DbArticleBookmark(articleId, DbDateTime.now()))
+                analytics.onBookmark()
             }
         }
     }

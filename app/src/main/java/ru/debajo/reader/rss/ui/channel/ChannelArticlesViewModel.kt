@@ -12,6 +12,7 @@ import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.ext.collectTo
+import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
@@ -20,6 +21,7 @@ class ChannelArticlesViewModel(
     private val subscriptionsRepository: ChannelsSubscriptionsRepository,
     private val articleBookmarksRepository: ArticleBookmarksRepository,
     private val loadArticlesUseCase: LoadArticlesUseCase,
+    private val analytics: Analytics,
 ) : BaseViewModel() {
 
     private val articlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
@@ -51,5 +53,9 @@ class ChannelArticlesViewModel(
         launch {
             articleBookmarksRepository.toggle(article.id)
         }
+    }
+
+    fun onShare() {
+        analytics.onShareChannel()
     }
 }

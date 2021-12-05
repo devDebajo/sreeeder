@@ -10,18 +10,22 @@ import ru.debajo.reader.rss.data.db.dao.ChannelSubscriptionsDao
 import ru.debajo.reader.rss.data.db.model.DbChannelSubscription
 import ru.debajo.reader.rss.data.db.model.DbDateTime
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
+import ru.debajo.reader.rss.metrics.Analytics
 import timber.log.Timber
 
 class ChannelsSubscriptionsRepository(
-    private val dao: ChannelSubscriptionsDao
+    private val dao: ChannelSubscriptionsDao,
+    private val analytics: Analytics,
 ) {
     suspend fun toggle(url: DomainChannelUrl) {
-        withContext(IO) {
+        return withContext(IO) {
             val isSubscribed = isSubscribed(url).first()
             if (isSubscribed) {
                 dao.remove(url.url)
+                analytics.onUnsubscribeChannel()
             } else {
                 dao.add(DbChannelSubscription(url.url, DbDateTime.now()))
+                analytics.onSubscribeChannel()
             }
         }
     }

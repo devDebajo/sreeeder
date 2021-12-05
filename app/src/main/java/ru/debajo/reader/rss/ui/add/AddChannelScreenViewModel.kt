@@ -14,11 +14,13 @@ import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import ru.debajo.reader.rss.ext.collectTo
 import ru.debajo.reader.rss.ext.trimLastSlash
 import ru.debajo.reader.rss.ext.withLeading
+import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 
 class AddChannelScreenViewModel(
     private val channelsRepository: ChannelsRepository,
-    private val rssLoadDbManager: RssLoadDbManager
+    private val rssLoadDbManager: RssLoadDbManager,
+    private val analytics: Analytics,
 ) : BaseViewModel() {
 
     private val textMutable: MutableStateFlow<String> = MutableStateFlow("")
@@ -33,6 +35,7 @@ class AddChannelScreenViewModel(
     }
 
     fun onLoadClick() {
+        analytics.onLoadChannel()
         val url = DomainChannelUrl(text.value.trimLastSlash())
         currentJob?.cancel()
         currentJob = launch(IO) {

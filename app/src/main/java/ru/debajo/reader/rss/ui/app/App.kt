@@ -3,12 +3,25 @@ package ru.debajo.reader.rss.ui.app
 import android.app.Application
 import org.koin.core.context.startKoin
 import ru.debajo.reader.rss.di.*
+import ru.debajo.reader.rss.metrics.TimberProdTree
 import timber.log.Timber
 
-class App : Application() {
-    override fun onCreate() {
+open class App : Application() {
+    final override fun onCreate() {
         super.onCreate()
-        Timber.plant(Timber.DebugTree())
+
+        initDi()
+        initTimber()
+        initAnalytics()
+    }
+
+    open fun initTimber() {
+        Timber.plant(TimberProdTree())
+    }
+
+    open fun initAnalytics() = Unit
+
+    private fun initDi() {
         startKoin {
             modules(
                 appModule(this@App),
@@ -17,6 +30,7 @@ class App : Application() {
                 RepositoryModule,
                 UseCaseModule,
                 ViewModelModule,
+                MetricsModule,
             )
         }
     }
