@@ -16,6 +16,8 @@ fun DbChannel.toDomain(): DomainChannel = DomainChannel(DomainChannelUrl(url), n
 
 fun DomainChannel.toUi(): UiChannel = UiChannel(url.toUi(), name, image, description)
 
+fun UiChannel.toDomain(): DomainChannel = DomainChannel(url.toDomain(), name, image, description)
+
 fun Channel.toRemote(channelUrl: String): RemoteChannel {
     return RemoteChannel(
         url = RemoteChannelUrl(channelUrl),

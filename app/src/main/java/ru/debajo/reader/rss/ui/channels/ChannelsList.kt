@@ -92,7 +92,7 @@ inline fun ChannelCard(
                         painter = rememberImagePainter(channel.image, builder = {
                             transformations(BlurTransformation(context, 3f, 2f))
                         }),
-                        contentScale = ContentScale.FillWidth,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(100.dp)
