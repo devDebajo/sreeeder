@@ -18,13 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
+import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
@@ -39,19 +42,34 @@ fun ChannelsList(
     LaunchedEffect("ChannelsList", block = { viewModel.load() })
     Column(modifier = Modifier.fillMaxSize()) {
         val channels by viewModel.channels.collectAsState()
-        LazyColumn(
-            contentPadding = innerPadding,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            items(
-                count = channels.size,
-                key = { channels[it].url.url }
+        if (channels.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
             ) {
-                ChannelCardInList(channels[it]) { channel ->
-                    NavGraph.ArticlesList.navigate(navController, channel)
+                Text(
+                    text = stringResource(R.string.channels_is_empty),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 26.dp),
+                )
+            }
+        } else {
+
+            LazyColumn(
+                contentPadding = innerPadding,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                items(
+                    count = channels.size,
+                    key = { channels[it].url.url }
+                ) {
+                    ChannelCardInList(channels[it]) { channel ->
+                        NavGraph.ArticlesList.navigate(navController, channel)
+                    }
                 }
             }
         }

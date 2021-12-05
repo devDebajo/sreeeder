@@ -10,6 +10,9 @@ import ru.debajo.reader.rss.data.db.model.DbChannelSubscription
 @Dao
 interface ChannelSubscriptionsDao {
     @Query("SELECT * FROM dbchannelsubscription ORDER BY timestamp DESC")
+    suspend fun getSubscriptions(): List<DbChannelSubscription>
+
+    @Query("SELECT * FROM dbchannelsubscription ORDER BY timestamp DESC")
     fun observeSubscriptions(): Flow<List<DbChannelSubscription>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

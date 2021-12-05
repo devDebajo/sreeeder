@@ -50,12 +50,16 @@ class RssLoadDbManager(
 
     fun refreshSubscriptions(force: Boolean): Flow<SubscriptionLoadingState> {
         return flow {
-            emit(SubscriptionLoadingState.Refreshing)
-            val channels = channelsSubscriptionsRepository.observe().filter { it.isNotEmpty() }.firstOrNull().orEmpty()
-            if (channels.isNotEmpty()) {
-                channels.map { url -> async { refreshChannelIgnoreError(url, force) } }.awaitAll()
+            if (!channelsSubscriptionsRepository.hasSubscriptions()) {
+                emit(SubscriptionLoadingState.UpToDate)
+            } else {
+                 emit(SubscriptionLoadingState.Refreshing)
+                val channels = channelsSubscriptionsRepository.observe().filter { it.isNotEmpty() }.firstOrNull().orEmpty()
+                if (channels.isNotEmpty()) {
+                    channels.map { url -> async { refreshChannelIgnoreError(url, force) } }.awaitAll()
+                }
+                emit(SubscriptionLoadingState.UpToDate)
             }
-            emit(SubscriptionLoadingState.UpToDate)
         }
     }
 

@@ -67,7 +67,7 @@ fun AddChannelScreen(parentNavController: NavController) {
 
             val state by viewModel.state.collectAsState()
             when (val stateLocal = state) {
-                is AddChannelScreenState.Error -> NoDataLoaded(LoadingState.ERROR, "Ошибка загрузки канала")
+                is AddChannelScreenState.Error -> NoDataLoaded(LoadingState.ERROR, stringResource(R.string.add_channel_loading_error))
                 is AddChannelScreenState.Idle -> Unit
                 is AddChannelScreenState.Loaded -> {
                     ChannelCard(channel = stateLocal.channel) {
@@ -75,7 +75,7 @@ fun AddChannelScreen(parentNavController: NavController) {
                         NavGraph.ArticlesList.navigate(parentNavController, stateLocal.channel)
                     }
                 }
-                is AddChannelScreenState.Loading -> NoDataLoaded(LoadingState.LOADING, "Загрузка канала")
+                is AddChannelScreenState.Loading -> NoDataLoaded(LoadingState.LOADING, stringResource(R.string.add_channel_loading))
             }
         }
     }

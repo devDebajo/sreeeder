@@ -23,7 +23,7 @@ class FeedListViewModel(
 
     private var refreshingJob: Job? = null
     private val articlesMutable: MutableStateFlow<List<Pair<UiArticle, UiChannel?>>> = MutableStateFlow(emptyList())
-    private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
     val articles: StateFlow<List<Pair<UiArticle, UiChannel?>>> = articlesMutable
     val isRefreshing: StateFlow<Boolean> = isRefreshingMutable

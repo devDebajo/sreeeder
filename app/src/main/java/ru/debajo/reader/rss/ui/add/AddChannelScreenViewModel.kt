@@ -12,6 +12,7 @@ import ru.debajo.reader.rss.data.remote.RssLoadDbManager
 import ru.debajo.reader.rss.domain.channel.ChannelsRepository
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import ru.debajo.reader.rss.ext.collectTo
+import ru.debajo.reader.rss.ext.trimLastSlash
 import ru.debajo.reader.rss.ext.withLeading
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 
@@ -32,7 +33,7 @@ class AddChannelScreenViewModel(
     }
 
     fun onLoadClick() {
-        val url = DomainChannelUrl(text.value)
+        val url = DomainChannelUrl(text.value.trimLastSlash())
         currentJob?.cancel()
         currentJob = launch(IO) {
             combine(
@@ -51,6 +52,13 @@ class AddChannelScreenViewModel(
                     }
                 }
             } collectTo currentChannelMutable
+        }
+    }
+
+    fun initWithUrl(url: String?) {
+        if (url != null) {
+            textMutable.value = url
+            onLoadClick()
         }
     }
 }

@@ -30,6 +30,10 @@ class ChannelsSubscriptionsRepository(
         return dao.observeByUrl(url.url).map { it.isNotEmpty() }
     }
 
+    suspend fun hasSubscriptions(): Boolean {
+        return withContext(IO) { dao.getSubscriptions().isNotEmpty() }
+    }
+
     fun observe(): Flow<List<DomainChannelUrl>> {
         return dao.observeSubscriptions()
             .map { list ->

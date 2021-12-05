@@ -3,7 +3,7 @@
 
     <string name="screen_feed">Лента</string>
     <string name="screen_channels">Каналы</string>
-    <string name="screen_favorites">Избранное</string>
+    <string name="screen_favorites">Закладки</string>
     <string name="screen_settings">Настройки</string>
 
     <string name="theme_light">Светлая</string>
@@ -16,10 +16,16 @@
     <string name="add_channel_title">Добавить канал</string>
     <string name="add_channel_load">Загрузить</string>
     <string name="add_channel_placeholder">Url канала</string>
+    <string name="add_channel_loading">Загрузка канала</string>
+    <string name="add_channel_loading_error">Ошибка загрузки канала</string>
 
     <string name="share_title">Поделиться</string>
 
     <string name="article_date_time_today">Сегодня в %s</string>
     <string name="article_date_time_yesterday">Вчера в %s</string>
+
+    <string name="feed_is_empty">Ваша лента пуста, подпишитесь на интересные вам RSS-каналы</string>
+    <string name="channels_is_empty">У вас нет подписок на каналы. Подпишитесь же на свой первый канал :-)</string>
+    <string name="bookmarks_is_empty">Добавьте статьи в закладки и они будут на этом экране</string>
 
 </resources>
