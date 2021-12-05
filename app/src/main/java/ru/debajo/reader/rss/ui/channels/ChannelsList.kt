@@ -48,7 +48,7 @@ fun ChannelsList(
         ) {
             items(
                 count = channels.size,
-                key = { channels[it].url }
+                key = { channels[it].url.url }
             ) {
                 ChannelCardInList(channels[it]) { channel ->
                     NavGraph.ArticlesList.navigate(navController, channel)

@@ -1,10 +1,10 @@
 package ru.debajo.reader.rss.ui.add
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -67,7 +67,7 @@ fun AddChannelScreen(parentNavController: NavController) {
 
             val state by viewModel.state.collectAsState()
             when (val stateLocal = state) {
-                is AddChannelScreenState.Error -> Text("Ошибка загрузки канала")
+                is AddChannelScreenState.Error -> NoDataLoaded(LoadingState.ERROR, "Ошибка загрузки канала")
                 is AddChannelScreenState.Idle -> Unit
                 is AddChannelScreenState.Loaded -> {
                     ChannelCard(channel = stateLocal.channel) {
@@ -75,8 +75,44 @@ fun AddChannelScreen(parentNavController: NavController) {
                         NavGraph.ArticlesList.navigate(parentNavController, stateLocal.channel)
                     }
                 }
-                is AddChannelScreenState.Loading -> Text("Загрузка канала")
+                is AddChannelScreenState.Loading -> NoDataLoaded(LoadingState.LOADING, "Загрузка канала")
             }
         }
     }
 }
+
+@Composable
+private fun NoDataLoaded(state: LoadingState, message: String) {
+    AppCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        onClick = { }
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            when (state) {
+                LoadingState.LOADING -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 1.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                LoadingState.ERROR -> Icon(Icons.Rounded.Error, contentDescription = null)
+            }
+            Spacer(Modifier.size(20.dp))
+            Text(message)
+        }
+    }
+}
+
+private enum class LoadingState {
+    LOADING,
+    ERROR
+}
+
+
