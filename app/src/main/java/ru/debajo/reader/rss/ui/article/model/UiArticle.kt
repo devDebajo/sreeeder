@@ -15,4 +15,5 @@ data class UiArticle(
     val timestamp: DateTime?,
     val channelImage: String?,
     val channelName: String?,
+    val categories: List<String>,
 ) : Parcelable

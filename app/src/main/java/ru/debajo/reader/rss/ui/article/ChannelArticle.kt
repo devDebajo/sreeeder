@@ -1,9 +1,6 @@
 package ru.debajo.reader.rss.ui.article
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -78,6 +75,16 @@ fun LazyItemScope.ChannelArticle(
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.End
             ) {
+                Row(
+                    Modifier
+                        .weight(1f)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    for (category in article.categories) {
+                        CategoryText(category)
+                    }
+                }
                 Icon(
                     modifier = Modifier.clickable { onFavoriteClick(article) },
                     imageVector = if (article.bookmarked) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
@@ -85,6 +92,25 @@ fun LazyItemScope.ChannelArticle(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CategoryText(text: String) {
+    Box(
+        modifier = Modifier
+            .height(26.dp)
+            .clip(RoundedCornerShape(13.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 12.dp)
+    ) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = text,
+            maxLines = 1,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }
 

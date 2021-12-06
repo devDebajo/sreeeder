@@ -64,6 +64,7 @@ fun DomainArticle.toUi(channel: UiChannel?): UiArticle {
         timestamp = timestamp,
         channelImage = channel?.image,
         channelName = channel?.name,
+        categories = categories,
     )
 }
 
