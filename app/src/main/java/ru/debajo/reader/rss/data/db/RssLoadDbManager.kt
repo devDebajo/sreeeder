@@ -1,4 +1,4 @@
-package ru.debajo.reader.rss.data.remote
+package ru.debajo.reader.rss.data.db
 
 import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
@@ -13,13 +13,16 @@ import kotlinx.coroutines.flow.flow
 import org.jsoup.Jsoup
 import ru.debajo.reader.rss.data.converter.toDb
 import ru.debajo.reader.rss.data.converter.toDbList
+import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toRemote
 import ru.debajo.reader.rss.data.db.dao.ArticlesDao
 import ru.debajo.reader.rss.data.db.dao.ChannelsDao
+import ru.debajo.reader.rss.data.remote.load.RssLoader
 import ru.debajo.reader.rss.data.remote.model.RemoteArticle
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
+import ru.debajo.reader.rss.domain.model.DomainChannel
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import java.util.concurrent.TimeUnit
 
@@ -34,16 +37,24 @@ class RssLoadDbManager(
     fun refreshChannel(channelUrl: DomainChannelUrl, force: Boolean): Flow<ChannelLoadingState> {
         return flow {
             emit(ChannelLoadingState.Refreshing)
-            if (!force && cacheManager.isActual(createCacheKey(channelUrl), TimeUnit.DAYS.toMillis(1))) {
-                emit(ChannelLoadingState.UpToDate)
+            val channelFromDb = if (!force && cacheManager.isActual(createCacheKey(channelUrl), TimeUnit.DAYS.toMillis(1))) {
+                channelsDao.getByUrl(channelUrl.url)
+            } else {
+                null
+            }
+
+            if (channelFromDb != null) {
+                emit(ChannelLoadingState.UpToDate(channelFromDb.toDomain()))
             } else {
                 runCatching { rssLoader.loadChannel(channelUrl) }
                     .mapCatching { it.tryExtractIcon().tryExtractImages() }
                     .onSuccess {
                         persist(channelUrl, it)
-                        emit(ChannelLoadingState.UpToDate)
+                        emit(ChannelLoadingState.UpToDate(it.toDomain()))
                     }
-                    .onFailure { emit(ChannelLoadingState.Error(it)) }
+                    .onFailure {
+                        emit(ChannelLoadingState.Error(it))
+                    }
             }
         }
     }
@@ -53,7 +64,7 @@ class RssLoadDbManager(
             if (!channelsSubscriptionsRepository.hasSubscriptions()) {
                 emit(SubscriptionLoadingState.UpToDate)
             } else {
-                 emit(SubscriptionLoadingState.Refreshing)
+                emit(SubscriptionLoadingState.Refreshing)
                 val channels = channelsSubscriptionsRepository.observe().filter { it.isNotEmpty() }.firstOrNull().orEmpty()
                 if (channels.isNotEmpty()) {
                     channels.map { url -> async { refreshChannelIgnoreError(url, force) } }.awaitAll()
@@ -120,7 +131,7 @@ class RssLoadDbManager(
     sealed interface ChannelLoadingState {
         object Refreshing : ChannelLoadingState
         class Error(val throwable: Throwable) : ChannelLoadingState
-        object UpToDate : ChannelLoadingState
+        class UpToDate(val channel: DomainChannel) : ChannelLoadingState
     }
 
     private companion object {

@@ -5,14 +5,19 @@ import android.content.Context
 import androidx.room.Room
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
 import com.prof.rssparser.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ru.debajo.reader.rss.data.db.RssDatabase
-import ru.debajo.reader.rss.data.remote.RssLoadDbManager
-import ru.debajo.reader.rss.data.remote.RssLoader
+import ru.debajo.reader.rss.data.db.RssLoadDbManager
+import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
+import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
+import ru.debajo.reader.rss.data.remote.load.RssLoader
+import ru.debajo.reader.rss.data.remote.service.FeedlyService
+import ru.debajo.reader.rss.data.remote.service.ServiceFactory
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.ArticlesRepository
 import ru.debajo.reader.rss.domain.cache.CacheManager
@@ -21,6 +26,7 @@ import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsUseCase
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
+import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
 import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -59,6 +65,11 @@ val NetworkModule = module {
             )
             .build()
     }
+    single { Gson() }
+    single { ServiceFactory(get(), get()) }
+    single<FeedlyService> { get<ServiceFactory>().createService("https://feedly.com") }
+    single { ChannelsSearchRepository(get()) }
+    single { HtmlChannelUrlExtractor(get()) }
 }
 
 val DbModule = module {
@@ -83,12 +94,13 @@ val UseCaseModule = module {
     single { ChannelsSubscriptionsUseCase(get(), get()) }
     single { FeedListUseCase(get(), get()) }
     single { LoadArticlesUseCase(get(), get(), get()) }
+    single { SearchChannelsUseCase(get(), get(), get()) }
 }
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
-    factory { AddChannelScreenViewModel(get(), get(), get()) }
+    factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get()) }
     factory { BookmarksListViewModel(get(), get()) }

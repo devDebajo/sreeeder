@@ -18,6 +18,9 @@ interface ChannelsDao {
     @Query("SELECT * FROM dbchannel WHERE url=:url")
     fun observeByUrl(url: String): Flow<List<DbChannel>>
 
+    @Query("SELECT * FROM dbchannel WHERE url=:url")
+    suspend fun getByUrl(url: String): DbChannel?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(channel: DbChannel)
 

@@ -16,8 +16,8 @@
     <string name="add_channel_title">Добавить канал</string>
     <string name="add_channel_load">Загрузить</string>
     <string name="add_channel_placeholder">Url канала</string>
-    <string name="add_channel_loading">Загрузка канала</string>
-    <string name="add_channel_loading_error">Ошибка загрузки канала</string>
+    <string name="add_channel_loading">Поиск каналов</string>
+    <string name="add_channel_loading_not_found">Не нашлось ни одного канала :-(</string>
 
     <string name="share_title">Поделиться</string>
 

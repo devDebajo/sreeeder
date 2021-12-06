@@ -1,6 +1,7 @@
 package ru.debajo.reader.rss.ui.add
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Error
@@ -17,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
-import ru.debajo.reader.rss.ui.channels.ChannelCard
+import ru.debajo.reader.rss.ui.channels.ChannelCardInList
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.Material3TextField
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -67,15 +68,25 @@ fun AddChannelScreen(parentNavController: NavController) {
 
             val state by viewModel.state.collectAsState()
             when (val stateLocal = state) {
-                is AddChannelScreenState.Error -> NoDataLoaded(LoadingState.ERROR, stringResource(R.string.add_channel_loading_error))
+                is AddChannelScreenState.NotFound -> NoDataLoaded(LoadingState.ERROR, stringResource(R.string.add_channel_loading_not_found))
+                is AddChannelScreenState.Loading -> NoDataLoaded(LoadingState.LOADING, stringResource(R.string.add_channel_loading))
                 is AddChannelScreenState.Idle -> Unit
                 is AddChannelScreenState.Loaded -> {
-                    ChannelCard(channel = stateLocal.channel) {
-                        parentNavController.popBackStack()
-                        NavGraph.ArticlesList.navigate(parentNavController, stateLocal.channel)
-                    }
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        content = {
+                            items(
+                                count = stateLocal.channels.size,
+                                key = { stateLocal.channels[it].url.url }
+                            ) {
+                                val channel = stateLocal.channels[it]
+                                ChannelCardInList(channel = channel) {
+                                    NavGraph.ArticlesList.navigate(parentNavController, channel)
+                                }
+                            }
+                        }
+                    )
                 }
-                is AddChannelScreenState.Loading -> NoDataLoaded(LoadingState.LOADING, stringResource(R.string.add_channel_loading))
             }
         }
     }

@@ -55,35 +55,51 @@ android {
 }
 
 dependencies {
+    // androidx
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "com.google.android.material:material:$appcompat_version"
+    implementation "androidx.browser:browser:$androidx_browser"
+    implementation "com.google.android.material:material:1.6.0-alpha01"
+
+    // compose
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.activity:activity-compose:$compose_activity_version"
+    implementation "androidx.compose.material3:material3:$compose_meterial3_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_view_model_version"
+    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
+    implementation "io.coil-kt:coil-compose:$coil_version"
+    implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "com.prof18.rssparser:rssparser:$rss_parser_version"
-    implementation "joda-time:joda-time:$joda_time_version"
-    implementation "com.jakewharton.timber:timber:$timber_version"
-    implementation "org.koin:koin-core:$koin_version"
+
+    // kotlin
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+    // db
     implementation "androidx.room:room-runtime:$room_version"
+    implementation "org.koin:koin-core:$koin_version"
     implementation "androidx.room:room-paging:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_view_model_version"
-    implementation "androidx.compose.material3:material3:$compose_meterial3_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "io.coil-kt:coil-compose:$coil_version"
-    implementation "org.jsoup:jsoup:$jsoup_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-    implementation "androidx.browser:browser:$androidx_browser"
-    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // firebase
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
     implementation "com.google.firebase:firebase-analytics-ktx"
     implementation "com.google.firebase:firebase-crashlytics-ktx"
-    implementation 'com.google.android.material:material:1.6.0-alpha01'
-    kapt "androidx.room:room-compiler:$room_version"
+
+    // retrofit
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+
+    // other
+    implementation "com.prof18.rssparser:rssparser:$rss_parser_version"
+    implementation "joda-time:joda-time:$joda_time_version"
+    implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation "org.jsoup:jsoup:$jsoup_version"
 }

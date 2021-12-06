@@ -1,18 +1,16 @@
-package ru.debajo.reader.rss.data.remote
+package ru.debajo.reader.rss.data.remote.load
 
 import android.content.Context
 import com.prof.rssparser.Parser
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import ru.debajo.reader.rss.data.converter.toRemote
+import ru.debajo.reader.rss.data.remote.load.ext.await
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
-import java.io.IOException
 import java.nio.charset.Charset
-import kotlin.coroutines.resumeWithException
 
 class RssLoader(
     private val context: Context,
@@ -47,28 +45,6 @@ class RssLoader(
             val request = Request.Builder().url(channelUrl).build()
             val response = client.newCall(request).await()
             response.body?.bytes()!!
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private suspend fun Call.await(): Response {
-        return suspendCancellableCoroutine {
-            enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    it.resumeWithException(e)
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    try {
-                        it.resume(response, null)
-                    } catch (e: Throwable) {
-                        it.resumeWithException(e)
-                    }
-                }
-
-            })
-
-            it.invokeOnCancellation { this@await.cancel() }
         }
     }
 

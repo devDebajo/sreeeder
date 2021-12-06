@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.converter.toUi
-import ru.debajo.reader.rss.data.remote.RssLoadDbManager
+import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.ext.collectTo

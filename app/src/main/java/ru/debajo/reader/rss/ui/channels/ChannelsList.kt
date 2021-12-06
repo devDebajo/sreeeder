@@ -54,7 +54,6 @@ fun ChannelsList(
                 )
             }
         } else {
-
             LazyColumn(
                 contentPadding = innerPadding,
                 modifier = Modifier
