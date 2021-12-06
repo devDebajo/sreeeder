@@ -13,9 +13,9 @@
     <string name="settings_app_theme">Тема приложения</string>
     <string name="settings_dynamic_theme">Динамическая тема</string>
 
-    <string name="add_channel_title">Добавить канал</string>
-    <string name="add_channel_load">Загрузить</string>
-    <string name="add_channel_placeholder">Url канала</string>
+    <string name="add_channel_title">Поиск каналов</string>
+    <string name="add_channel_load">Поиск</string>
+    <string name="add_channel_placeholder">Url канала или название</string>
     <string name="add_channel_loading">Поиск каналов</string>
     <string name="add_channel_loading_not_found">Не нашлось ни одного канала :-(</string>
 

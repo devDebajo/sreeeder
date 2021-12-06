@@ -1,8 +1,8 @@
 package ru.debajo.reader.rss.ui.theme
 
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.core.content.edit
-import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,7 +61,7 @@ class AppThemeProvider(
         currentAppThemeConfigMutable.emit(AppThemeConfig(mode, dynamicTheme))
     }
 
-    fun supportDynamicTheme(): Boolean = DynamicColors.isDynamicColorAvailable()
+    fun supportDynamicTheme(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     private companion object {
         const val THEME_KEY = "current_theme"

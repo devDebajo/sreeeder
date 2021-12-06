@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Sreeeder</string>
+
+    <string name="screen_feed">Feed</string>
+    <string name="screen_channels">Channels</string>
+    <string name="screen_favorites">Bookmarks</string>
+    <string name="screen_settings">Settings</string>
+
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_auto">Auto</string>
+
+    <string name="settings_app_theme">Theme</string>
+    <string name="settings_dynamic_theme">Dynamic theme</string>
+
+    <string name="add_channel_title">Search channels</string>
+    <string name="add_channel_load">Search</string>
+    <string name="add_channel_placeholder">Channel url or title</string>
+    <string name="add_channel_loading">Searching</string>
+    <string name="add_channel_loading_not_found">No channels found :-(</string>
+
+    <string name="share_title">Share</string>
+
+    <string name="article_date_time_today">Today at %s</string>
+    <string name="article_date_time_yesterday">Yesterday at %s</string>
+
+    <string name="feed_is_empty">Your feed is empty, subscribe to RSS feeds that interest you</string>
+    <string name="channels_is_empty">You have no channel subscriptions. Subscribe to your first channel :-)</string>
+    <string name="bookmarks_is_empty">Bookmark articles and they will be on this screen</string>
+
+</resources>
