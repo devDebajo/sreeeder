@@ -4,6 +4,7 @@ import ru.debajo.reader.rss.data.remote.model.RemoteChannelUrl
 import ru.debajo.reader.rss.data.remote.model.feedly.FeedlyContentType
 import ru.debajo.reader.rss.data.remote.service.FeedlyService
 import ru.debajo.reader.rss.ext.trimLastSlash
+import timber.log.Timber
 
 class ChannelsSearchRepository(
     private val feedlyService: FeedlyService,
@@ -14,7 +15,9 @@ class ChannelsSearchRepository(
                 .filter { it.contentType == FeedlyContentType.ARTICLE }
                 .mapNotNull { it.feedId }
                 .map { RemoteChannelUrl(clearUrl(it)) }
-        }.getOrElse { emptyList() }
+        }
+            .onFailure { Timber.e(it) }
+            .getOrElse { emptyList() }
     }
 
     private fun clearUrl(feedlyUrl: String): String {
