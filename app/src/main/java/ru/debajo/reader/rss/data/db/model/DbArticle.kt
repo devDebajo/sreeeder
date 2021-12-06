@@ -29,5 +29,8 @@ data class DbArticle(
     val contentHtml: String?,
 
     @ColumnInfo(name = "timestamp")
-    val timestamp: DbDateTime?
+    val timestamp: DbDateTime?,
+
+    @ColumnInfo(name = "categories", defaultValue = "[]")
+    val categories: List<String>,
 )

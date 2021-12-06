@@ -13,6 +13,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import ru.debajo.reader.rss.data.db.RssDatabase
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
+import ru.debajo.reader.rss.data.db.migrations.MIGRATION_1_2
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.load.RssLoader
@@ -73,7 +74,11 @@ val NetworkModule = module {
 }
 
 val DbModule = module {
-    single { Room.databaseBuilder(get(), RssDatabase::class.java, "sreeeder_db").build() }
+    single {
+        Room.databaseBuilder(get(), RssDatabase::class.java, "sreeeder_db")
+            .addMigrations(MIGRATION_1_2)
+            .build()
+    }
     single { get<RssDatabase>(RssDatabase::class.java).favoriteChannelsDao() }
     single { get<RssDatabase>(RssDatabase::class.java).articlesDao() }
     single { get<RssDatabase>(RssDatabase::class.java).cacheMarkerDao() }

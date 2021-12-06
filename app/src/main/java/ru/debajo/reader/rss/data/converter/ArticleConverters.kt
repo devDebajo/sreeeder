@@ -20,6 +20,7 @@ fun Article.toRemote(channelUrl: String): RemoteArticle {
         contentHtml = content,
         timestamp = pubDate?.parseDateTimeSafe(),
         channelUrl = RemoteChannelUrl(channelUrl),
+        categories = categories,
     )
 }
 
@@ -34,6 +35,7 @@ fun RemoteArticle.toDomain(): DomainArticle? {
         image = image,
         bookmarked = false,
         channelUrl = channelUrl.toDomain(),
+        categories = categories,
     )
 }
 
@@ -47,6 +49,7 @@ fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
         url = url ?: return null,
         contentHtml = contentHtml,
         timestamp = timestamp?.toDb(),
+        categories = categories,
     )
 }
 
@@ -74,7 +77,8 @@ fun DbArticle.toDomain(): DomainArticle {
         contentHtml = contentHtml,
         timestamp = timestamp?.dateTime,
         channelUrl = DomainChannelUrl(channelUrl),
-        bookmarked = false
+        bookmarked = false,
+        categories = categories,
     )
 }
 

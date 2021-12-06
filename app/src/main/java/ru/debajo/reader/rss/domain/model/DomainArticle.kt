@@ -11,6 +11,7 @@ data class DomainArticle(
     val url: String,
     val bookmarked: Boolean,
     val contentHtml: String?,
-    val timestamp: DateTime?
+    val timestamp: DateTime?,
+    val categories: List<String>,
 )
 
