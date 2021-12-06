@@ -31,6 +31,6 @@ data class DbArticle(
     @ColumnInfo(name = "timestamp")
     val timestamp: DbDateTime?,
 
-    @ColumnInfo(name = "categories", defaultValue = "[]")
+    @ColumnInfo(name = "categories")
     val categories: List<String>,
 )
