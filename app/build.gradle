@@ -23,6 +23,7 @@ android {
         }
 
         buildConfigField "boolean", "CACHE_ENABLED", 'true'
+        buildConfigField "String", "PRIVACY_POLICY", '"https://debajoapps.ru/static/sreeeder/privacy_policy.html"'
     }
 
     buildTypes {

@@ -28,4 +28,6 @@
     <string name="channels_is_empty">You have no channel subscriptions. Subscribe to your first channel :-)</string>
     <string name="bookmarks_is_empty">Bookmark articles and they will be on this screen</string>
 
+    <string name="privacy_policy">Privacy policy</string>
+
 </resources>

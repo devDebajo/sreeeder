@@ -17,14 +17,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.Switch
+import ru.debajo.reader.rss.ui.ext.colorInt
+import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
+import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.title
 
 @Composable
-fun SettingsList(viewModel: SettingsViewModel) {
+fun SettingsList(parentNavController: NavController, viewModel: SettingsViewModel) {
     val state by viewModel.state.collectAsState()
 
     Column(
@@ -33,6 +38,7 @@ fun SettingsList(viewModel: SettingsViewModel) {
     ) {
         SettingsThemeButton(state, viewModel)
         SettingsDynamicThemeSwitch(state, viewModel)
+        SettingsPrivacyPolicy(parentNavController)
     }
 }
 
@@ -118,5 +124,23 @@ private fun SettingsDynamicThemeSwitch(state: SettingsState, viewModel: Settings
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SettingsPrivacyPolicy(navController: NavController) {
+    val backgroundColor = MaterialTheme.colorScheme.background.colorInt
+    AppCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 18.dp, horizontal = 16.dp),
+        onClick = {
+            NavGraph.ChromeTabs.navigate(navController, BuildConfig.PRIVACY_POLICY.toChromeTabsParams(backgroundColor))
+        }) {
+        Text(
+            text = stringResource(id = R.string.privacy_policy),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
