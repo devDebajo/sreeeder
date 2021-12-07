@@ -74,6 +74,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     implementation "io.coil-kt:coil-compose:$coil_version"
     implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // kotlin

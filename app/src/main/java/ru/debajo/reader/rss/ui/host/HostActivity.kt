@@ -3,9 +3,11 @@ package ru.debajo.reader.rss.ui.host
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -29,8 +31,10 @@ class HostActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()
             SreeeederTheme {
+                systemUiController.setSystemBarsColor(color = MaterialTheme.colorScheme.background)
                 NavHost(
                     navController = navController,
                     startDestination = NavGraph.Main.route
