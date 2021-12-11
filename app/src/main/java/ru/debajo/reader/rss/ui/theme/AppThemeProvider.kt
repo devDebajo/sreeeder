@@ -1,16 +1,17 @@
 package ru.debajo.reader.rss.ui.theme
 
-import android.content.SharedPreferences
 import android.os.Build
-import androidx.core.content.edit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
+import ru.debajo.reader.rss.data.preferences.AppThemePreference
+import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
 import ru.debajo.reader.rss.metrics.Analytics
 
 class AppThemeProvider(
-    private val sharedPreferences: SharedPreferences,
+    private val appThemePreference: AppThemePreference,
+    private val dynamicThemePreference: DynamicThemePreference,
     private val analytics: Analytics,
 ) {
 
@@ -23,34 +24,20 @@ class AppThemeProvider(
 
     suspend fun loadCurrentConfig(): AppThemeConfig {
         return withContext(Dispatchers.IO) {
-            val currentMode = runCatching {
-                AppTheme.values()[sharedPreferences.getInt(THEME_KEY, AppTheme.DARK.ordinal)]
-            }.getOrElse { AppTheme.LIGHT }
-            val isDynamicTheme = sharedPreferences.getBoolean(DYNAMIC_THEME_KEY, false)
-
-            AppThemeConfig(
-                currentMode.orDefault(),
-                isDynamicTheme && supportDynamicTheme()
-            )
+            val currentMode = appThemePreference.get()
+            val isDynamicTheme = dynamicThemePreference.get()
+            AppThemeConfig(currentMode.orDefault(), isDynamicTheme && supportDynamicTheme())
         }
     }
 
     suspend fun update(mode: AppTheme) {
-        withContext(Dispatchers.IO) {
-            sharedPreferences.edit(commit = true) {
-                putInt(THEME_KEY, mode.ordinal)
-            }
-        }
+        appThemePreference.set(mode)
         updateConfig(mode = mode)
     }
 
     suspend fun update(dynamicTheme: Boolean) {
         analytics.onEnableDynamicTheme(dynamicTheme)
-        withContext(Dispatchers.IO) {
-            sharedPreferences.edit(commit = true) {
-                putBoolean(DYNAMIC_THEME_KEY, dynamicTheme)
-            }
-        }
+        dynamicThemePreference.set(dynamicTheme)
         updateConfig(dynamicTheme = dynamicTheme)
     }
 
@@ -62,9 +49,4 @@ class AppThemeProvider(
     }
 
     fun supportDynamicTheme(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-
-    private companion object {
-        const val THEME_KEY = "current_theme"
-        const val DYNAMIC_THEME_KEY = "is_dynamic_theme"
-    }
 }

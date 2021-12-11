@@ -75,15 +75,8 @@ fun LazyItemScope.ChannelArticle(
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.End
             ) {
-                Row(
-                    Modifier
-                        .weight(1f)
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    for (category in article.categories) {
-                        CategoryText(category)
-                    }
+                Box(Modifier.weight(1f)) {
+                    article.categories.firstOrNull()?.let { CategoryText(it) }
                 }
                 Icon(
                     modifier = Modifier.clickable { onFavoriteClick(article) },

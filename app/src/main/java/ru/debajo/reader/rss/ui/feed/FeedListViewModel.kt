@@ -22,19 +22,17 @@ class FeedListViewModel(
 
     private var refreshingJob: Job? = null
     private val articlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
-    private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val articles: StateFlow<List<UiArticle>> = articlesMutable
     val isRefreshing: StateFlow<Boolean> = isRefreshingMutable
 
-    fun load() {
+    init {
         launch(IO) {
             useCase()
                 .map { domain -> domain.map { entry -> entry.article.toUi(entry.channel?.toUi()) } }
                 .collectTo(articlesMutable)
         }
-
-        onPullToRefresh(force = false)
     }
 
     fun onPullToRefresh(force: Boolean = true) {

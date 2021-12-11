@@ -25,6 +25,7 @@ open class App : Application() {
         startKoin {
             modules(
                 appModule(this@App),
+                PreferencesModule,
                 NetworkModule,
                 DbModule,
                 RepositoryModule,

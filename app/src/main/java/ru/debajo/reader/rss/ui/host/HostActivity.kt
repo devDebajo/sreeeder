@@ -22,6 +22,7 @@ import ru.debajo.reader.rss.ui.theme.SreeeederTheme
 
 class HostActivity : ComponentActivity() {
 
+    private val hostViewModel: HostViewModel by diViewModels()
     private val channelsViewModel: ChannelsViewModel by diViewModels()
     private val settingsViewModel: SettingsViewModel by diViewModels()
     private val feedListViewModel: FeedListViewModel by diViewModels()
@@ -30,6 +31,9 @@ class HostActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            hostViewModel.refreshFeed()
+        }
         setContent {
             val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()
