@@ -2,17 +2,21 @@ package ru.debajo.reader.rss.ui.add
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -24,7 +28,7 @@ import ru.debajo.reader.rss.ui.common.Material3TextField
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 fun AddChannelScreen(parentNavController: NavController) {
     val viewModel: AddChannelScreenViewModel = diViewModel()
     Scaffold(
@@ -37,6 +41,15 @@ fun AddChannelScreen(parentNavController: NavController) {
             )
         }
     ) {
+        val softwareKeyboardController = LocalSoftwareKeyboardController.current
+        val focusRequester = remember { FocusRequester() }
+        val keyboardActions = remember(softwareKeyboardController) {
+            KeyboardActions(onSearch = {
+                viewModel.onLoadClick()
+                softwareKeyboardController?.hide()
+            })
+        }
+        LaunchedEffect(key1 = "AddChannelScreen", block = { focusRequester.requestFocus() })
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -45,10 +58,13 @@ fun AddChannelScreen(parentNavController: NavController) {
         ) {
             val text by viewModel.text.collectAsState()
             Material3TextField(
+                focusRequester = focusRequester,
                 value = text,
+                singleLine = true,
+                keyboardActions = keyboardActions,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                 onValueChange = { viewModel.onTextChanged(it) },
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text(stringResource(R.string.add_channel_placeholder)) }
             )
 

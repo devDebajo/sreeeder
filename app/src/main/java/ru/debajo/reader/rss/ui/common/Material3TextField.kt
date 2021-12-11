@@ -1,6 +1,8 @@
 package ru.debajo.reader.rss.ui.common
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
@@ -10,12 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 
 @Composable
 fun Material3TextField(
     value: String,
+    focusRequester: FocusRequester,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    singleLine: Boolean = false,
+    keyboardActions: KeyboardActions = KeyboardActions(),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     placeholder: @Composable (() -> Unit)? = null,
 ) {
@@ -26,12 +34,15 @@ fun Material3TextField(
         )
     ) {
         TextField(
-            modifier = modifier,
+            modifier = modifier.focusRequester(focusRequester),
             value = value,
+            singleLine = singleLine,
+            keyboardActions = keyboardActions,
+            keyboardOptions = keyboardOptions,
             placeholder = placeholder,
             interactionSource = interactionSource,
             colors = material3Colors(),
-            onValueChange = onValueChange
+            onValueChange = onValueChange,
         )
     }
 }

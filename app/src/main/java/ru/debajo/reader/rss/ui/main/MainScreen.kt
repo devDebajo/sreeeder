@@ -112,7 +112,7 @@ private fun MainScaffold(
             if (showButton) {
                 FloatingActionButton(
                     onClick = { NavGraph.AddChannel.navigate(parentController) },
-                    content = { Icon(Icons.Rounded.Add, contentDescription = null) }
+                    content = { Icon(Icons.Rounded.Search, contentDescription = null) }
                 )
             }
         }
