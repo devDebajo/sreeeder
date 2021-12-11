@@ -31,11 +31,13 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.reader.rss.ui.scroll.ScrollController
 
 @Composable
 fun ChannelsList(
     innerPadding: PaddingValues,
     navController: NavController,
+    scrollController: ScrollController,
     viewModel: ChannelsViewModel
 ) {
     LaunchedEffect("ChannelsList", block = { viewModel.load() })
@@ -55,6 +57,7 @@ fun ChannelsList(
             }
         } else {
             LazyColumn(
+                state = scrollController.rememberLazyListState(NavGraph.Main.Channels.route),
                 contentPadding = innerPadding,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)

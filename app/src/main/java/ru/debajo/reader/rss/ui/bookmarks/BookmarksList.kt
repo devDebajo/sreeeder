@@ -21,12 +21,14 @@ import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.reader.rss.ui.scroll.ScrollController
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun BookmarksList(
     innerPadding: PaddingValues,
     navController: NavController,
+    scrollController: ScrollController,
     viewModel: BookmarksListViewModel
 ) {
     LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
@@ -47,6 +49,7 @@ fun BookmarksList(
             }
         } else {
             LazyColumn(
+                state = scrollController.rememberLazyListState(NavGraph.Main.Favorites.route),
                 contentPadding = PaddingValues(
                     top = 12.dp,
                     bottom = innerPadding.calculateBottomPadding(),

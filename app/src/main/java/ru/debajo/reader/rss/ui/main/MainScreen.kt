@@ -28,6 +28,8 @@ import ru.debajo.reader.rss.ui.feed.FeedList
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.main.model.ScreenTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.reader.rss.ui.scroll.ScrollController
+import ru.debajo.reader.rss.ui.scroll.rememberScrollController
 import ru.debajo.reader.rss.ui.settings.SettingsList
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 
@@ -48,14 +50,15 @@ fun MainScreen(
     bookmarksListViewModel: BookmarksListViewModel
 ) {
     val navController = rememberNavController()
-    MainScaffold(parentController, navController, mainViewModel) { innerPadding ->
+    val scrollController = rememberScrollController()
+    MainScaffold(parentController, navController, scrollController, mainViewModel) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = tabs[0].navigation.route
         ) {
-            composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, feedListViewModel) }
-            composable(channelsTab.navigation.route) { ChannelsList(innerPadding, parentController, channelsViewModel) }
-            composable(favoritesTab.navigation.route) { BookmarksList(innerPadding, parentController, bookmarksListViewModel) }
+            composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, scrollController, feedListViewModel) }
+            composable(channelsTab.navigation.route) { ChannelsList(innerPadding, parentController, scrollController, channelsViewModel) }
+            composable(favoritesTab.navigation.route) { BookmarksList(innerPadding, parentController, scrollController, bookmarksListViewModel) }
             composable(settingsTab.navigation.route) { SettingsList(parentController, settingsViewModel) }
         }
     }
@@ -66,6 +69,7 @@ fun MainScreen(
 private fun MainScaffold(
     parentController: NavController,
     navController: NavController,
+    scrollController: ScrollController,
     viewModel: MainViewModel,
     content: @Composable (PaddingValues) -> Unit
 ) {
@@ -91,6 +95,8 @@ private fun MainScaffold(
                             if (selectedTab != index) {
                                 viewModel.updateSelectedTab(index)
                                 tab.navigation.navigate(navController)
+                            } else {
+                                scrollController.scrollToTop(tab.navigation.route)
                             }
                         }
                     )

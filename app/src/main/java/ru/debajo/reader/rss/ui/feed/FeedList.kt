@@ -23,12 +23,14 @@ import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.reader.rss.ui.scroll.ScrollController
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun FeedList(
     innerPadding: PaddingValues,
     navController: NavController,
+    scrollController: ScrollController,
     viewModel: FeedListViewModel
 ) {
     LaunchedEffect(key1 = "FeedList", block = { viewModel.load() })
@@ -48,11 +50,14 @@ fun FeedList(
                     Text(
                         text = stringResource(R.string.feed_is_empty),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 26.dp),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(horizontal = 26.dp),
                     )
                 }
             } else {
                 LazyColumn(
+                    state = scrollController.rememberLazyListState(NavGraph.Main.Feed.route),
                     contentPadding = PaddingValues(
                         top = 12.dp,
                         bottom = innerPadding.calculateBottomPadding(),
