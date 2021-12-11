@@ -19,9 +19,9 @@ import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.ext.colorInt
+import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.reader.rss.ui.scroll.ScrollController
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +62,11 @@ fun BookmarksList(
                         count = articles.size,
                         key = { index -> articles[index].id + articles[index].channelName }
                     ) { index ->
-                        ChannelArticle(article = articles[index], onFavoriteClick = { viewModel.onFavoriteClick(it) }) {
+                        ChannelArticle(
+                            article = articles[index],
+                            onFavoriteClick = { viewModel.onFavoriteClick(it) },
+                            onLaunched = { viewModel.onArticleViewed(it) }
+                        ) {
                             NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
                         }
                     }

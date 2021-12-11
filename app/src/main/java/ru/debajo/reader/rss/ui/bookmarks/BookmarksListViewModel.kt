@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ViewedArticlesRepository
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.ext.collectTo
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
@@ -15,6 +16,7 @@ import ru.debajo.reader.rss.ui.article.model.UiArticle
 class BookmarksListViewModel(
     private val loadArticlesUseCase: LoadArticlesUseCase,
     private val articleBookmarksRepository: ArticleBookmarksRepository,
+    private val viewedArticlesRepository: ViewedArticlesRepository,
 ) : BaseViewModel() {
 
     private val articlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
@@ -31,6 +33,12 @@ class BookmarksListViewModel(
     fun onFavoriteClick(article: UiArticle) {
         launch {
             articleBookmarksRepository.toggle(article.id)
+        }
+    }
+
+    fun onArticleViewed(article: UiArticle) {
+        launch {
+            viewedArticlesRepository.onViewed(article.id)
         }
     }
 }

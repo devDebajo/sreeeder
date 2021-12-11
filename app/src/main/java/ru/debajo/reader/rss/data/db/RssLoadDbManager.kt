@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import org.joda.time.DateTime
 import org.jsoup.Jsoup
 import ru.debajo.reader.rss.data.converter.toDb
 import ru.debajo.reader.rss.data.converter.toDbList
@@ -18,7 +17,6 @@ import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toRemote
 import ru.debajo.reader.rss.data.db.dao.ArticlesDao
 import ru.debajo.reader.rss.data.db.dao.ChannelsDao
-import ru.debajo.reader.rss.data.preferences.LastFeedRefreshPreference
 import ru.debajo.reader.rss.data.remote.load.RssLoader
 import ru.debajo.reader.rss.data.remote.model.RemoteArticle
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
@@ -34,7 +32,6 @@ class RssLoadDbManager(
     private val channelsDao: ChannelsDao,
     private val channelsSubscriptionsRepository: ChannelsSubscriptionsRepository,
     private val cacheManager: CacheManager,
-    private val lastFeedRefreshPreference: LastFeedRefreshPreference,
 ) : CoroutineScope by CoroutineScope(SupervisorJob() + IO) {
 
     fun refreshChannel(channelUrl: DomainChannelUrl, force: Boolean): Flow<ChannelLoadingState> {
@@ -120,7 +117,6 @@ class RssLoadDbManager(
         channelsDao.add(channel.toDb())
         articlesDao.insert(channel.currentArticles.toDbList(url.toRemote()))
         cacheManager.saveMarker(createCacheKey(url))
-        lastFeedRefreshPreference.set(DateTime.now())
     }
 
     private fun createCacheKey(url: DomainChannelUrl): String = CHANNEL_URL_CACHE_PREFIX + url.url

@@ -14,9 +14,9 @@ import org.koin.dsl.module
 import ru.debajo.reader.rss.data.db.RssDatabase
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_1_2
+import ru.debajo.reader.rss.data.db.migrations.MIGRATION_2_3
 import ru.debajo.reader.rss.data.preferences.AppThemePreference
 import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
-import ru.debajo.reader.rss.data.preferences.LastFeedRefreshPreference
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.load.RssLoader
@@ -24,6 +24,7 @@ import ru.debajo.reader.rss.data.remote.service.FeedlyService
 import ru.debajo.reader.rss.data.remote.service.ServiceFactory
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.ArticlesRepository
+import ru.debajo.reader.rss.domain.article.ViewedArticlesRepository
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.ChannelsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
@@ -59,7 +60,6 @@ val PreferencesModule = module {
 
     single { AppThemePreference(get()) }
     single { DynamicThemePreference(get()) }
-    single { LastFeedRefreshPreference(get()) }
 }
 
 val NetworkModule = module {
@@ -87,7 +87,7 @@ val NetworkModule = module {
 val DbModule = module {
     single {
         Room.databaseBuilder(get(), RssDatabase::class.java, "sreeeder_db")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
     }
     single { get<RssDatabase>(RssDatabase::class.java).favoriteChannelsDao() }
@@ -95,8 +95,9 @@ val DbModule = module {
     single { get<RssDatabase>(RssDatabase::class.java).cacheMarkerDao() }
     single { get<RssDatabase>(RssDatabase::class.java).articleBookmarksDao() }
     single { get<RssDatabase>(RssDatabase::class.java).channelSubscriptionsDao() }
+    single { get<RssDatabase>(RssDatabase::class.java).viewedArticlesDao() }
     single { CacheManager(get()) }
-    single { RssLoadDbManager(get(), get(), get(), get(), get(), get()) }
+    single { RssLoadDbManager(get(), get(), get(), get(), get()) }
 }
 
 val RepositoryModule = module {
@@ -104,6 +105,7 @@ val RepositoryModule = module {
     single { ArticlesRepository(get()) }
     single { ChannelsRepository(get()) }
     single { ChannelsSubscriptionsRepository(get(), get()) }
+    single { ViewedArticlesRepository(get()) }
 }
 
 val UseCaseModule = module {
@@ -117,9 +119,9 @@ val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
-    factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
-    factory { FeedListViewModel(get(), get(), get()) }
-    factory { BookmarksListViewModel(get(), get()) }
+    factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
+    factory { FeedListViewModel(get(), get(), get(), get()) }
+    factory { BookmarksListViewModel(get(), get(), get()) }
     factory { MainViewModel() }
     factory { HostViewModel(get()) }
 }

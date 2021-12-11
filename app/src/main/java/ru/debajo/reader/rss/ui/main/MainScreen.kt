@@ -26,10 +26,10 @@ import ru.debajo.reader.rss.ui.channels.ChannelsList
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedList
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
+import ru.debajo.reader.rss.ui.list.ScrollController
+import ru.debajo.reader.rss.ui.list.rememberScrollController
 import ru.debajo.reader.rss.ui.main.model.ScreenTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.reader.rss.ui.scroll.ScrollController
-import ru.debajo.reader.rss.ui.scroll.rememberScrollController
 import ru.debajo.reader.rss.ui.settings.SettingsList
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 

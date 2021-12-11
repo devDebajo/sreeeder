@@ -25,6 +25,7 @@
     <string name="article_date_time_yesterday">Yesterday at %s</string>
 
     <string name="feed_is_empty">Your feed is empty, subscribe to RSS feeds that interest you</string>
+    <string name="feed_no_new_articles">No new articles</string>
     <string name="channels_is_empty">You have no channel subscriptions. Subscribe to your first channel :-)</string>
     <string name="bookmarks_is_empty">Bookmark articles and they will be on this screen</string>
 

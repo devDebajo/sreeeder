@@ -30,8 +30,8 @@ import coil.transform.BlurTransformation
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.reader.rss.ui.scroll.ScrollController
 
 @Composable
 fun ChannelsList(

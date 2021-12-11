@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ViewedArticlesRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.ext.collectTo
@@ -22,6 +23,7 @@ class ChannelArticlesViewModel(
     private val articleBookmarksRepository: ArticleBookmarksRepository,
     private val loadArticlesUseCase: LoadArticlesUseCase,
     private val analytics: Analytics,
+    private val viewedArticlesRepository: ViewedArticlesRepository
 ) : BaseViewModel() {
 
     private val articlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
@@ -57,5 +59,11 @@ class ChannelArticlesViewModel(
 
     fun onShare() {
         analytics.onShareChannel()
+    }
+
+    fun onArticleViewed(article: UiArticle) {
+        launch {
+            viewedArticlesRepository.onViewed(article.id)
+        }
     }
 }

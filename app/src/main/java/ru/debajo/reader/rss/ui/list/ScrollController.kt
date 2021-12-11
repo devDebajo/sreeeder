@@ -1,4 +1,4 @@
-package ru.debajo.reader.rss.ui.scroll
+package ru.debajo.reader.rss.ui.list
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import ru.debajo.reader.rss.ui.scroll.ScrollController.Scroller
+import ru.debajo.reader.rss.ui.list.ScrollController.Scroller
 
 class ScrollController(coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
