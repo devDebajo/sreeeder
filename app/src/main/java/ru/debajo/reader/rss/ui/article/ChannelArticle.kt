@@ -1,6 +1,9 @@
 package ru.debajo.reader.rss.ui.article
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +31,6 @@ import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.AppCard
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun LazyItemScope.ChannelArticle(
     article: UiArticle,
     onLaunched: (UiArticle) -> Unit,
@@ -39,7 +41,7 @@ fun LazyItemScope.ChannelArticle(
     AppCard(
         onClick = { onClick(article) },
         modifier = Modifier
-            .animateItemPlacement()
+            //.animateItemPlacement()
             .fillMaxWidth()
     ) {
         Column {

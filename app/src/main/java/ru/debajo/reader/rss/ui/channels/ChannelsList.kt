@@ -81,7 +81,7 @@ fun ChannelsList(
 @OptIn(ExperimentalFoundationApi::class)
 inline fun LazyItemScope.ChannelCardInList(channel: UiChannel, crossinline onClick: (UiChannel) -> Unit) {
     ChannelCard(
-        modifier = Modifier.animateItemPlacement(),
+        //modifier = Modifier.animateItemPlacement(),
         channel = channel,
         onClick = onClick
     )

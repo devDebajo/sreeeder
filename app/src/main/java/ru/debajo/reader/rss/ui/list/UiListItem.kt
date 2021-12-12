@@ -8,9 +8,9 @@ interface UiListItem {
     val id: String
 }
 
-inline fun <T : UiListItem> LazyListScope.uiListItems(
+fun <T : UiListItem> LazyListScope.uiListItems(
     items: List<T>,
-    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit
+    itemContent: @Composable LazyItemScope.(item: T) -> Unit
 ) {
     items(
         count = items.size,
