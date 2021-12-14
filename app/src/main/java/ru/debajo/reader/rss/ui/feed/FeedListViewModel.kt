@@ -4,8 +4,10 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
@@ -15,9 +17,8 @@ import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.ext.collectTo
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.feed.model.UiArticleListItem
-import ru.debajo.reader.rss.ui.feed.model.UiNoNewArticlesListItem
-import ru.debajo.reader.rss.ui.list.UiListItem
+import ru.debajo.reader.rss.ui.feed.model.FeedListState
+import ru.debajo.reader.rss.ui.feed.model.UiFeedTab
 
 class FeedListViewModel(
     private val useCase: FeedListUseCase,
@@ -27,29 +28,40 @@ class FeedListViewModel(
 ) : BaseViewModel() {
 
     private var refreshingJob: Job? = null
-    private val articlesMutable: MutableStateFlow<List<UiListItem>> = MutableStateFlow(emptyList())
+    private val stateMutable: MutableStateFlow<FeedListState> = MutableStateFlow(FeedListState())
     private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    private val hasNewArticlesMutable: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val articles: StateFlow<List<UiListItem>> = articlesMutable
+    val state: MutableStateFlow<FeedListState> = stateMutable
     val isRefreshing: StateFlow<Boolean> = isRefreshingMutable
-    val hasNewArticles: StateFlow<Boolean> = hasNewArticlesMutable
 
     init {
         launch(IO) {
             useCase()
-                .map { domain -> prepareArticles(domain) }
-                .collectTo(articlesMutable)
+                .map { domain -> prepareState(stateMutable.value, domain) }
+                .distinctUntilChanged()
+                .collectTo(stateMutable)
         }
     }
 
     fun onPullToRefresh(force: Boolean = true) {
+        val newArticlesIds = stateMutable.value.dataSet[NEW_ARTICLES_TAB.code].orEmpty().map { it.id }
         refreshingJob?.cancel()
         refreshingJob = launch(IO) {
+            viewedArticlesRepository.onViewed(newArticlesIds)
             rssLoadDbManager.refreshSubscriptions(force = force)
                 .map { it is RssLoadDbManager.SubscriptionLoadingState.Refreshing }
                 .collectTo(isRefreshingMutable)
         }
+    }
+
+    fun onTabClick(tab: UiFeedTab) {
+        val currentState = stateMutable.value
+        stateMutable.value = currentState.copy(
+            selectedTab = fixSelectedTabIfNeed(
+                tabs = currentState.tabs,
+                newSelectedTab = currentState.tabs.indexOfFirst { it.code == tab.code }.takeIf { it != -1 } ?: 0
+            )
+        )
     }
 
     fun onFavoriteClick(article: UiArticle) {
@@ -58,23 +70,69 @@ class FeedListViewModel(
         }
     }
 
-    fun onArticleViewed(article: UiArticle) {
-        launch {
-            viewedArticlesRepository.onViewed(article.id)
+    private suspend fun prepareState(
+        currentState: FeedListState,
+        loadedArticles: List<LoadArticlesUseCase.EnrichedDomainArticle>
+    ): FeedListState {
+        val viewedArticlesIds = viewedArticlesRepository.getViewedArticlesIds(loadedArticles.map { it.article.id })
+
+        val (newArticles, oldArticles) = loadedArticles.partition { it.article.id !in viewedArticlesIds }
+        return when {
+            newArticles.isNotEmpty() && oldArticles.isNotEmpty() -> {
+                val tabs = listOf(NEW_ARTICLES_TAB, ALL_ARTICLES_TAB)
+                currentState.copy(
+                    selectedTab = fixSelectedTabIfNeed(tabs, currentState.selectedTab),
+                    tabs = tabs,
+                    dataSet = mapOf(
+                        NEW_ARTICLES_TAB.code to newArticles.convert(),
+                        ALL_ARTICLES_TAB.code to oldArticles.convert()
+                    )
+                )
+            }
+
+            newArticles.isEmpty() && oldArticles.isNotEmpty() -> {
+                currentState.copy(
+                    selectedTab = 0,
+                    tabs = emptyList(),
+                    dataSet = mapOf(ALL_ARTICLES_TAB.code to oldArticles.convert())
+                )
+            }
+
+            newArticles.isNotEmpty() && oldArticles.isEmpty() -> {
+                currentState.copy(
+                    selectedTab = 0,
+                    tabs = emptyList(),
+                    dataSet = mapOf(NEW_ARTICLES_TAB.code to newArticles.convert())
+                )
+            }
+
+            else -> {
+                currentState.copy(
+                    selectedTab = 0,
+                    tabs = emptyList(),
+                    dataSet = emptyMap()
+                )
+            }
         }
     }
 
-    private suspend fun prepareArticles(domain: List<LoadArticlesUseCase.EnrichedDomainArticle>): List<UiListItem> {
-        val viewedArticlesIds = viewedArticlesRepository.getViewedArticlesIds(domain.map { it.article.id })
-
-        val (newArticles, oldArticles) = domain.partition { it.article.id !in viewedArticlesIds }
-        if (newArticles.isEmpty() || oldArticles.isEmpty()) {
-            return domain.convert()
+    private fun fixSelectedTabIfNeed(
+        tabs: List<UiFeedTab>,
+        newSelectedTab: Int
+    ): Int {
+        if (newSelectedTab in tabs.indices) {
+            return newSelectedTab
         }
-        return newArticles.convert() + listOf(UiNoNewArticlesListItem) + oldArticles.convert()
+        return 0
     }
 
-    private fun List<LoadArticlesUseCase.EnrichedDomainArticle>.convert(): List<UiListItem> {
-        return map { entry -> UiArticleListItem(entry.article.toUi(entry.channel?.toUi())) }
+    private fun List<LoadArticlesUseCase.EnrichedDomainArticle>.convert(): List<UiArticle> {
+        return map { entry -> entry.article.toUi(entry.channel?.toUi()) }
+            .sortedByDescending { it.timestamp }
+    }
+
+    private companion object {
+        val NEW_ARTICLES_TAB = UiFeedTab("NEW_ARTICLES_TAB", R.string.feed_new_articles)
+        val ALL_ARTICLES_TAB = UiFeedTab("ALL_ARTICLES_TAB", R.string.feed_all_articles)
     }
 }

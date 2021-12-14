@@ -89,7 +89,6 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                     ChannelArticle(
                         article = articles[index],
                         onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                        onLaunched = { viewModel.onArticleViewed(it) }
                     ) {
                         NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
                     }

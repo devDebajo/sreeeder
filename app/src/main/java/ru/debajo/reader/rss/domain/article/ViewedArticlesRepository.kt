@@ -8,31 +8,15 @@ import ru.debajo.reader.rss.data.db.model.DbViewedArticle
 class ViewedArticlesRepository(
     private val viewedArticlesDao: ViewedArticlesDao
 ) {
-    private val viewedCache: HashSet<String> = HashSet()
-
-    suspend fun onViewed(articleId: String) {
-        if (synchronized(viewedCache) { viewedCache.contains(articleId) }) {
-            return
-        }
-
+    suspend fun onViewed(articleIds: List<String>) {
         withContext(IO) {
-            viewedArticlesDao.insert(DbViewedArticle(articleId))
-        }
-
-        synchronized(viewedCache) {
-            viewedCache.add(articleId)
+            viewedArticlesDao.insert(articleIds.map { DbViewedArticle(it) })
         }
     }
 
     suspend fun getViewedArticlesIds(articleIds: List<String>): Set<String> {
-        val viewedArticles = withContext(IO) {
+        return withContext(IO) {
             viewedArticlesDao.getByIds(articleIds).map { it.articleId }.toSet()
         }
-
-        synchronized(viewedCache) {
-            viewedCache.addAll(viewedArticles)
-        }
-
-        return viewedArticles
     }
 }

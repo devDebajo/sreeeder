@@ -49,7 +49,7 @@ fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
         url = url ?: return null,
         contentHtml = contentHtml,
         timestamp = timestamp?.toDb(),
-        categories = categories,
+        categories = categories.filter { it.isNotEmpty() },
     )
 }
 

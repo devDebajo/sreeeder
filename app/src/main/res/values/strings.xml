@@ -25,8 +25,8 @@
     <string name="article_date_time_yesterday">Вчера в %s</string>
 
     <string name="feed_is_empty">Ваша лента пуста, подпишитесь на интересные вам RSS-каналы</string>
-    <string name="feed_no_new_articles">Больше нет новых статей</string>
     <string name="feed_new_articles">Новые статьи</string>
+    <string name="feed_all_articles">Старые статьи</string>
     <string name="channels_is_empty">У вас нет подписок на каналы. Подпишитесь же на свой первый канал :-)</string>
     <string name="bookmarks_is_empty">Добавьте статьи в закладки и они будут на этом экране</string>
 

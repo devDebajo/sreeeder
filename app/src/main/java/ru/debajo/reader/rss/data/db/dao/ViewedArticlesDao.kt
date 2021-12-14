@@ -9,7 +9,7 @@ import ru.debajo.reader.rss.data.db.model.DbViewedArticle
 @Dao
 interface ViewedArticlesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(article: DbViewedArticle)
+    suspend fun insert(articles: List<DbViewedArticle>)
 
     @Query("SELECT * FROM dbviewedarticle WHERE articleId IN (:ids)")
     suspend fun getByIds(ids: List<String>): List<DbViewedArticle>

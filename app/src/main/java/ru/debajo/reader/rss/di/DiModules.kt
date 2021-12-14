@@ -119,9 +119,9 @@ val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
-    factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
+    factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get()) }
-    factory { BookmarksListViewModel(get(), get(), get()) }
+    factory { BookmarksListViewModel(get(), get()) }
     factory { MainViewModel() }
     factory { HostViewModel(get()) }
 }
