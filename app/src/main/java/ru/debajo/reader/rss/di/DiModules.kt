@@ -33,6 +33,7 @@ import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
 import ru.debajo.reader.rss.metrics.Analytics
+import ru.debajo.reader.rss.metrics.AnalyticsProd
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
@@ -43,6 +44,19 @@ import ru.debajo.reader.rss.ui.main.MainViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 
+fun nonVariantModules(context: Context): List<Module> {
+    return listOf(
+        appModule(context),
+        PreferencesModule,
+        NetworkModule,
+        DbModule,
+        RepositoryModule,
+        UseCaseModule,
+        ViewModelModule,
+        MetricsModule,
+    )
+}
+
 fun appModule(context: Context): Module = module {
     single { context.applicationContext }
     single { AppThemeProvider(get(), get(), get()) }
@@ -52,7 +66,11 @@ fun appModule(context: Context): Module = module {
 val MetricsModule = module {
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseAnalytics.getInstance(get()) }
-    single { Analytics(get()) }
+}
+
+@SuppressLint("MissingPermission")
+val MetricsProdModule = module {
+    single<Analytics> { AnalyticsProd(get()) }
 }
 
 val PreferencesModule = module {

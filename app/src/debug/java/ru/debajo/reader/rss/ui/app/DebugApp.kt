@@ -1,18 +1,16 @@
 package ru.debajo.reader.rss.ui.app
 
-import com.google.firebase.analytics.FirebaseAnalytics
-import ru.debajo.reader.rss.di.inject
+import org.koin.core.module.Module
+import ru.debajo.reader.rss.di.MetricsDebugModule
+import ru.debajo.reader.rss.di.nonVariantModules
 import timber.log.Timber
 
 class DebugApp : App() {
 
-    private val firebaseAnalytics: FirebaseAnalytics by inject()
+    override val diModules: List<Module>
+        get() = nonVariantModules(this) + listOf(MetricsDebugModule)
 
     override fun initTimber() {
         Timber.plant(Timber.DebugTree())
-    }
-
-    override fun initAnalytics() {
-        firebaseAnalytics.setAnalyticsCollectionEnabled(false)
     }
 }

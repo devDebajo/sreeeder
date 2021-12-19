@@ -31,6 +31,7 @@ class AppThemeProvider(
     }
 
     suspend fun update(mode: AppTheme) {
+        analytics.onChangeTheme(mode)
         appThemePreference.set(mode)
         updateConfig(mode = mode)
     }
