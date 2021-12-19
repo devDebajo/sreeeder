@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +23,6 @@ import androidx.navigation.NavController
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.common.AppCard
-import ru.debajo.reader.rss.ui.common.Switch
 import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -36,10 +37,21 @@ fun SettingsList(parentNavController: NavController, viewModel: SettingsViewMode
         Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        SettingsBackgroundUpdatesSwitch(state, viewModel)
         SettingsThemeButton(state, viewModel)
         SettingsDynamicThemeSwitch(state, viewModel)
         SettingsPrivacyPolicy(parentNavController)
         SettingsAppVersion()
+    }
+}
+
+@Composable
+private fun SettingsBackgroundUpdatesSwitch(state: SettingsState, viewModel: SettingsViewModel) {
+    SettingsSwitch(
+        text = stringResource(id = R.string.settings_background_updates),
+        checked = state.backgroundUpdates,
+    ) {
+        viewModel.toggleBackgroundUpdates()
     }
 }
 
@@ -104,26 +116,11 @@ private fun AppThemeWidget(theme: AppTheme, selected: Boolean, modifier: Modifie
 @Composable
 private fun SettingsDynamicThemeSwitch(state: SettingsState, viewModel: SettingsViewModel) {
     if (state.supportDynamicTheme) {
-        AppCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 18.dp, horizontal = 16.dp)
+        SettingsSwitch(
+            text = stringResource(id = R.string.settings_dynamic_theme),
+            checked = state.isDynamicColor,
         ) {
-            Row {
-                Text(
-                    text = stringResource(id = R.string.settings_dynamic_theme),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .weight(1f)
-                )
-
-                Switch(
-                    checked = state.isDynamicColor,
-                    onCheckedChange = { viewModel.toggleDynamicColor() }
-                )
-            }
+            viewModel.toggleDynamicColor()
         }
     }
 }
@@ -155,5 +152,36 @@ private fun SettingsText(text: String, onClick: (() -> Unit)? = null) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
         )
+    }
+}
+
+@Composable
+private fun SettingsSwitch(text: String, checked: Boolean, onClick: () -> Unit) {
+    AppCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Row {
+            Text(
+                text = text,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .weight(1f)
+            )
+
+            Switch(
+                checked = checked,
+                onCheckedChange = { onClick() },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSecondary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.secondary,
+                )
+            )
+        }
     }
 }

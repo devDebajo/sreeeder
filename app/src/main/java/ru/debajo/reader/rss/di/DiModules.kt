@@ -16,6 +16,7 @@ import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_1_2
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_2_3
 import ru.debajo.reader.rss.data.preferences.AppThemePreference
+import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
@@ -78,6 +79,7 @@ val PreferencesModule = module {
 
     single { AppThemePreference(get()) }
     single { DynamicThemePreference(get()) }
+    single { BackgroundUpdatesEnabledPreference(get()) }
 }
 
 val NetworkModule = module {
@@ -135,7 +137,7 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get()) }
+    factory { SettingsViewModel(get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get()) }

@@ -9,6 +9,7 @@ data class SettingsState(
     val dropDownExpanded: Boolean = false,
     val isDynamicColor: Boolean = false,
     val supportDynamicTheme: Boolean = false,
+    val backgroundUpdates: Boolean = true,
 ) {
 
     val dropDownThemes: List<AppTheme>

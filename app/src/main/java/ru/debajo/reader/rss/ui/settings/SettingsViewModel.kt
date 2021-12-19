@@ -1,20 +1,23 @@
 package ru.debajo.reader.rss.ui.settings
 
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 
 class SettingsViewModel(
     private val appThemeProvider: AppThemeProvider,
+    private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
 ) : BaseViewModel() {
 
     private val stateMutable: MutableStateFlow<SettingsState> = MutableStateFlow(
         SettingsState(
-            supportDynamicTheme = appThemeProvider.supportDynamicTheme()
+            supportDynamicTheme = appThemeProvider.supportDynamicTheme(),
+            backgroundUpdates = backgroundUpdatesEnabledPreference.get(),
         )
     )
 
@@ -47,5 +50,15 @@ class SettingsViewModel(
         launch {
             appThemeProvider.update(theme)
         }
+    }
+
+    fun toggleBackgroundUpdates() {
+        val state = stateMutable.value
+        stateMutable.value = state.copy(backgroundUpdates = !state.backgroundUpdates)
+        launch(IO) {
+            backgroundUpdatesEnabledPreference.set(!state.backgroundUpdates)
+        }
+
+        // stop scheduler
     }
 }

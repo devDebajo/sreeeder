@@ -11,6 +11,7 @@
     <string name="theme_auto">Авто</string>
 
     <string name="settings_app_theme">Тема приложения</string>
+    <string name="settings_background_updates">Фоновые обновления ленты</string>
     <string name="settings_dynamic_theme">Динамическая тема</string>
     <string name="settings_app_version">Версия приложения: %s</string>
 
