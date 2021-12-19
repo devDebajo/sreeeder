@@ -39,6 +39,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+
+        kotlin {
+            kotlinOptions {
+                freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+            }
+        }
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -75,9 +81,9 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_view_model_version"
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "io.coil-kt:coil-compose:$coil_version"
     implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // kotlin
@@ -99,7 +105,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$retrofit_coroutines_adapter"
 
     // other
     implementation "com.prof18.rssparser:rssparser:$rss_parser_version"

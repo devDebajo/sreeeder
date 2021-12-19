@@ -12,6 +12,7 @@
 
     <string name="settings_app_theme">Тема приложения</string>
     <string name="settings_dynamic_theme">Динамическая тема</string>
+    <string name="settings_app_version">Версия приложения: %s</string>
 
     <string name="add_channel_title">Поиск каналов</string>
     <string name="add_channel_load">Поиск</string>

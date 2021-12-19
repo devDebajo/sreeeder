@@ -39,6 +39,7 @@ fun SettingsList(parentNavController: NavController, viewModel: SettingsViewMode
         SettingsThemeButton(state, viewModel)
         SettingsDynamicThemeSwitch(state, viewModel)
         SettingsPrivacyPolicy(parentNavController)
+        SettingsAppVersion()
     }
 }
 
@@ -106,8 +107,8 @@ private fun SettingsDynamicThemeSwitch(state: SettingsState, viewModel: Settings
         AppCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 18.dp, horizontal = 16.dp),
-            onClick = {}) {
+                .padding(vertical = 18.dp, horizontal = 16.dp)
+        ) {
             Row {
                 Text(
                     text = stringResource(id = R.string.settings_dynamic_theme),
@@ -130,15 +131,27 @@ private fun SettingsDynamicThemeSwitch(state: SettingsState, viewModel: Settings
 @Composable
 private fun SettingsPrivacyPolicy(navController: NavController) {
     val backgroundColor = MaterialTheme.colorScheme.background.colorInt
+    SettingsText(stringResource(id = R.string.privacy_policy)) {
+        NavGraph.ChromeTabs.navigate(navController, BuildConfig.PRIVACY_POLICY.toChromeTabsParams(backgroundColor))
+    }
+}
+
+@Composable
+private fun SettingsAppVersion() {
+    val text = stringResource(R.string.settings_app_version, BuildConfig.VERSION_NAME)
+    SettingsText(text)
+}
+
+@Composable
+private fun SettingsText(text: String, onClick: (() -> Unit)? = null) {
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 18.dp, horizontal = 16.dp),
-        onClick = {
-            NavGraph.ChromeTabs.navigate(navController, BuildConfig.PRIVACY_POLICY.toChromeTabsParams(backgroundColor))
-        }) {
+        onClick = onClick
+    ) {
         Text(
-            text = stringResource(id = R.string.privacy_policy),
+            text = text,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
         )
