@@ -1,8 +1,10 @@
 package ru.debajo.reader.rss.di
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
@@ -23,6 +25,8 @@ import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.load.RssLoader
 import ru.debajo.reader.rss.data.remote.service.FeedlyService
 import ru.debajo.reader.rss.data.remote.service.ServiceFactory
+import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
+import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.ArticlesRepository
 import ru.debajo.reader.rss.domain.article.ViewedArticlesRepository
@@ -55,11 +59,13 @@ fun nonVariantModules(context: Context): List<Module> {
         UseCaseModule,
         ViewModelModule,
         MetricsModule,
+        RefresherModule,
     )
 }
 
 fun appModule(context: Context): Module = module {
     single { context.applicationContext }
+    single { get<Context>().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     single { AppThemeProvider(get(), get(), get()) }
 }
 
@@ -125,7 +131,7 @@ val RepositoryModule = module {
     single { ArticlesRepository(get()) }
     single { ChannelsRepository(get()) }
     single { ChannelsSubscriptionsRepository(get(), get()) }
-    single { ViewedArticlesRepository(get()) }
+    single { ViewedArticlesRepository(get(), get()) }
 }
 
 val UseCaseModule = module {
@@ -137,11 +143,17 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get()) }
+    factory { SettingsViewModel(get(), get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get()) }
     factory { BookmarksListViewModel(get(), get()) }
     factory { MainViewModel() }
     factory { HostViewModel(get()) }
+}
+
+val RefresherModule = module {
+    single { WorkManager.getInstance(get()) }
+    single { BackgroundUpdatesScheduler(get(), get()) }
+    single { BackgroundUpdatesNotificationManager(get(), get()) }
 }

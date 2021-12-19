@@ -31,13 +31,13 @@ class AppThemeProvider(
     }
 
     suspend fun update(mode: AppTheme) {
-        analytics.onChangeTheme(mode)
+        analytics.setThemeUserProperty(mode)
         appThemePreference.set(mode)
         updateConfig(mode = mode)
     }
 
     suspend fun update(dynamicTheme: Boolean) {
-        analytics.onEnableDynamicTheme(dynamicTheme)
+        analytics.setDynamicThemeUserProperty(dynamicTheme)
         dynamicThemePreference.set(dynamicTheme)
         updateConfig(dynamicTheme = dynamicTheme)
     }

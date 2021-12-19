@@ -29,12 +29,28 @@ class AnalyticsDebug : Analytics {
         log("onRemoveBookmark")
     }
 
-    override fun onEnableDynamicTheme(value: Boolean) {
-        log("onEnableDynamicTheme")
+    override fun setDynamicThemeUserProperty(value: Boolean) {
+        log("onEnableDynamicTheme $value")
     }
 
-    override fun onChangeTheme(mode: AppTheme) {
-        log("onChangeTheme")
+    override fun setThemeUserProperty(mode: AppTheme) {
+        log("onChangeTheme $mode")
+    }
+
+    override fun setBackgroundUpdatesToggleState(enabled: Boolean) {
+        log("setBackgroundUpdatesToggleState $enabled")
+    }
+
+    override fun onStartWorker() {
+        log("onStartWorker")
+    }
+
+    override fun onSuccessWorker() {
+        log("onSuccessWorker")
+    }
+
+    override fun onFailWorker() {
+        log("onFailWorker")
     }
 
     private fun log(message: String) {

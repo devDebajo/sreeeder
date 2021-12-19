@@ -44,10 +44,9 @@ class FeedListViewModel(
     }
 
     fun onPullToRefresh(force: Boolean = true) {
-        val newArticlesIds = stateMutable.value.dataSet[NEW_ARTICLES_TAB.code].orEmpty().map { it.id }
         refreshingJob?.cancel()
         refreshingJob = launch(IO) {
-            viewedArticlesRepository.onViewed(newArticlesIds)
+            viewedArticlesRepository.onViewed()
             rssLoadDbManager.refreshSubscriptions(force = force)
                 .map { it is RssLoadDbManager.SubscriptionLoadingState.Refreshing }
                 .collectTo(isRefreshingMutable)

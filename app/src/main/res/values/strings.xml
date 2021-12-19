@@ -34,4 +34,7 @@
 
     <string name="privacy_policy">Политика конфиденциальности</string>
 
+    <string name="notification_text">У вас %d новых статей</string>
+    <string name="notification_channel_name">Новые статьи</string>
+    <string name="notification_channel_description">Уведомления о новых статьях</string>
 </resources>

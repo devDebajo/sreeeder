@@ -11,6 +11,7 @@ buildscript {
         kotlin_version = '1.6.0'
         coroutines_version = '1.6.0-RC3'
         core_ktx_version = '1.7.0'
+        work_version = "2.7.1"
 
         lifecycle_version = '2.4.0'
         appcompat_version = '1.4.0'

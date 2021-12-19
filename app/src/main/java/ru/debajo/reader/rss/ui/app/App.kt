@@ -6,6 +6,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.di.MetricsProdModule
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.di.nonVariantModules
@@ -14,10 +15,12 @@ import ru.debajo.reader.rss.metrics.TimberProdTree
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 import timber.log.Timber
 
-open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()) {
+open class App : Application(),
+    CoroutineScope by CoroutineScope(SupervisorJob()) {
 
     private val analytics: Analytics by inject()
     private val themeProvider: AppThemeProvider by inject()
+    private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler by inject()
 
     open val diModules: List<Module>
         get() = nonVariantModules(this) + listOf(MetricsProdModule)
@@ -37,8 +40,9 @@ open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()
     private fun initApp() {
         launch {
             val themeConfig = themeProvider.loadCurrentConfig()
-            analytics.onEnableDynamicTheme(themeConfig.dynamic)
-            analytics.onChangeTheme(themeConfig.theme)
+            analytics.setDynamicThemeUserProperty(themeConfig.dynamic)
+            analytics.setThemeUserProperty(themeConfig.theme)
+            backgroundUpdatesScheduler.rescheduleOrCancel()
         }
     }
 

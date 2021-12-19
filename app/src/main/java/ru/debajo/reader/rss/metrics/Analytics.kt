@@ -18,9 +18,17 @@ interface Analytics {
 
     fun onRemoveBookmark()
 
-    fun onEnableDynamicTheme(value: Boolean)
+    fun setDynamicThemeUserProperty(value: Boolean)
 
-    fun onChangeTheme(mode: AppTheme)
+    fun setThemeUserProperty(mode: AppTheme)
+
+    fun setBackgroundUpdatesToggleState(enabled: Boolean)
+
+    fun onStartWorker()
+
+    fun onSuccessWorker()
+
+    fun onFailWorker()
 }
 
 class AnalyticsProd(
@@ -51,11 +59,11 @@ class AnalyticsProd(
         logEvent("bookmark_remove")
     }
 
-    override fun onEnableDynamicTheme(value: Boolean) {
+    override fun setDynamicThemeUserProperty(value: Boolean) {
         firebaseAnalytics.setUserProperty("dynamic_theme_enabled", value.toString())
     }
 
-    override fun onChangeTheme(mode: AppTheme) {
+    override fun setThemeUserProperty(mode: AppTheme) {
         firebaseAnalytics.setUserProperty(
             "app_theme", when (mode) {
                 AppTheme.LIGHT -> "light"
@@ -63,6 +71,22 @@ class AnalyticsProd(
                 AppTheme.AUTO -> "auto"
             }
         )
+    }
+
+    override fun setBackgroundUpdatesToggleState(enabled: Boolean) {
+        firebaseAnalytics.setUserProperty("bg_updates_toggle_state", enabled.toString())
+    }
+
+    override fun onStartWorker() {
+        logEvent("worker_start")
+    }
+
+    override fun onSuccessWorker() {
+        logEvent("worker_success")
+    }
+
+    override fun onFailWorker() {
+        logEvent("worker_fail")
     }
 
     private fun logEvent(event: String, bundle: Bundle? = null) {

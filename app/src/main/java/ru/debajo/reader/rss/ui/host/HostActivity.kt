@@ -1,5 +1,7 @@
 package ru.debajo.reader.rss.ui.host
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -63,6 +65,12 @@ class HostActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    companion object {
+        fun createIntent(context: Context): Intent {
+            return Intent(context, HostActivity::class.java)
         }
     }
 }

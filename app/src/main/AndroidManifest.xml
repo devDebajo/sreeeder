@@ -19,6 +19,7 @@
             android:name=".ui.host.HostActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.Sreeeeder.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

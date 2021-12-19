@@ -34,4 +34,7 @@
 
     <string name="privacy_policy">Privacy policy</string>
 
+    <string name="notification_text">You have %d new articles</string>
+    <string name="notification_channel_name">New articles</string>
+    <string name="notification_channel_description">New articles notifications</string>
 </resources>

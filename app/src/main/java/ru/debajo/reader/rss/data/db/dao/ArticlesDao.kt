@@ -17,4 +17,10 @@ interface ArticlesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(articles: List<DbArticle>)
+
+    @Query("SELECT COUNT(*) FROM dbarticle WHERE id NOT IN (SELECT articleId FROM dbviewedarticle)")
+    suspend fun getUnreadArticlesCount(): Long
+
+    @Query("SELECT id FROM dbarticle WHERE id NOT IN (SELECT articleId FROM dbviewedarticle)")
+    suspend fun getUnreadArticlesIds(): List<String>
 }

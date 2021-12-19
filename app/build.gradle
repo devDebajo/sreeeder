@@ -112,4 +112,6 @@ dependencies {
     implementation "joda-time:joda-time:$joda_time_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "org.jsoup:jsoup:$jsoup_version"
+
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 }
