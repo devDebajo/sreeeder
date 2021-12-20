@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
+import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.ViewedArticlesRepository
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
@@ -25,6 +26,7 @@ class FeedListViewModel(
     private val articleBookmarksRepository: ArticleBookmarksRepository,
     private val rssLoadDbManager: RssLoadDbManager,
     private val viewedArticlesRepository: ViewedArticlesRepository,
+    private val backgroundUpdatesNotificationManager: BackgroundUpdatesNotificationManager,
 ) : BaseViewModel() {
 
     private var refreshingJob: Job? = null
@@ -47,6 +49,7 @@ class FeedListViewModel(
         refreshingJob?.cancel()
         refreshingJob = launch(IO) {
             viewedArticlesRepository.onViewed()
+            backgroundUpdatesNotificationManager.cancel()
             rssLoadDbManager.refreshSubscriptions(force = force)
                 .map { it is RssLoadDbManager.SubscriptionLoadingState.Refreshing }
                 .collectTo(isRefreshingMutable)

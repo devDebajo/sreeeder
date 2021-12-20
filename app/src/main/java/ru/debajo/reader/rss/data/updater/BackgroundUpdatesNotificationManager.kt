@@ -17,7 +17,7 @@ class BackgroundUpdatesNotificationManager(
 
     fun send(count: Long) {
         if (count == 0L) {
-            notificationManager.cancel(NOTIFICATION_ID)
+            cancel()
             return
         }
 
@@ -56,6 +56,10 @@ class BackgroundUpdatesNotificationManager(
             }
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    fun cancel() {
+        notificationManager.cancel(NOTIFICATION_ID)
     }
 
     private companion object {

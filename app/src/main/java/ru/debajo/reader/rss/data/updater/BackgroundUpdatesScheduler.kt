@@ -35,7 +35,9 @@ class BackgroundUpdatesScheduler(
             BackgroundUpdatesWorker::class.java,
             4,
             TimeUnit.HOURS
-        ).build()
+        )
+            .setInitialDelay(1, TimeUnit.HOURS)
+            .build()
     }
 
     private companion object {
