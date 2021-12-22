@@ -28,6 +28,7 @@
     <string name="add_channel_loading_not_found">Не нашлось ни одного канала :-(</string>
 
     <string name="share_title">Поделиться</string>
+    <string name="cancel">Отмена</string>
 
     <string name="article_date_time_today">Сегодня в %s</string>
     <string name="article_date_time_yesterday">Вчера в %s</string>
@@ -41,4 +42,10 @@
     <string name="notification_text">У вас %d новых статей</string>
     <string name="notification_channel_name">Новые статьи</string>
     <string name="notification_channel_description">Уведомления о новых статьях</string>
+
+    <string name="channel_subscribe">Подписаться</string>
+    <string name="channel_you_subscribed">Вы подписаны</string>
+    <string name="channel_unsubscribe">Отписаться</string>
+    <string name="channel_unsubscribe_dialog_title">Отписаться от канала?</string>
+    <string name="channel_unsubscribe_dialog_text">Вы уверены что хотите описаться от канала %s?</string>
 </resources>

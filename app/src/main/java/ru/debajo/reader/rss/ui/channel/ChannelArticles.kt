@@ -1,22 +1,18 @@
 package ru.debajo.reader.rss.ui.channel
 
-import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
@@ -30,13 +26,9 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
     val viewModel = diViewModel<ChannelArticlesViewModel>()
     LaunchedEffect(key1 = channel, block = { viewModel.load(channel) })
 
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
-    }
     val backgroundColor = MaterialTheme.colorScheme.background.colorInt
+    val unsubscribeDialogVisible = rememberSaveable { mutableStateOf(false) }
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
                 title = { Text(channel.name) },
@@ -50,15 +42,15 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                 },
                 actions = {
                     val isSubscribed by viewModel.isSubscribed.collectAsState()
-                    IconButton(onClick = { viewModel.onSubscribeClick(channel) }) {
-                        Icon(
-                            imageVector = if (isSubscribed) {
-                                Icons.Rounded.Favorite
-                            } else {
-                                Icons.Rounded.FavoriteBorder
-                            },
-                            contentDescription = null
-                        )
+                    TextButton(onClick = {
+                        if (isSubscribed) {
+                            unsubscribeDialogVisible.value = true
+                        } else {
+                            viewModel.onSubscribeClick(channel)
+                        }
+                    }) {
+                        val stringRes = if (isSubscribed) R.string.channel_you_subscribed else R.string.channel_subscribe
+                        Text(stringResource(stringRes).uppercase())
                     }
                     IconButton(onClick = {
                         viewModel.onShare()
@@ -70,29 +62,60 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
             )
         }
     ) {
-        val articles by viewModel.articles.collectAsState()
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            content = {
-                items(
-                    count = articles.size,
-                    key = { index -> articles[index].id }
-                ) { index ->
-                    ChannelArticle(
-                        article = articles[index],
-                        onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                    ) {
-                        NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
+        Box {
+            val articles by viewModel.articles.collectAsState()
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                content = {
+                    items(
+                        count = articles.size,
+                        key = { index -> articles[index].id }
+                    ) { index ->
+                        ChannelArticle(
+                            article = articles[index],
+                            onFavoriteClick = { viewModel.onFavoriteClick(it) },
+                        ) {
+                            NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
+                        }
                     }
+                })
+
+            UnsubscribeDialog(channel, viewModel, unsubscribeDialogVisible)
+        }
+    }
+}
+
+@Composable
+private fun UnsubscribeDialog(
+    channel: UiChannel,
+    viewModel: ChannelArticlesViewModel,
+    visible: MutableState<Boolean>,
+) {
+    if (visible.value) {
+        AlertDialog(
+            onDismissRequest = { visible.value = false },
+            confirmButton = {
+                TextButton(onClick = { visible.value = false }) {
+                    Text(stringResource(R.string.cancel))
                 }
-            })
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.onSubscribeClick(channel)
+                    visible.value = false
+                }) {
+                    Text(stringResource(R.string.channel_unsubscribe))
+                }
+            },
+            title = { Text(stringResource(R.string.channel_unsubscribe_dialog_title)) },
+            text = { Text(stringResource(R.string.channel_unsubscribe_dialog_text, channel.name)) }
+        )
     }
 }

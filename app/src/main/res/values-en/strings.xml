@@ -28,6 +28,7 @@
     <string name="add_channel_loading_not_found">No channels found :-(</string>
 
     <string name="share_title">Share</string>
+    <string name="cancel">Cancel</string>
 
     <string name="article_date_time_today">Today at %s</string>
     <string name="article_date_time_yesterday">Yesterday at %s</string>
@@ -41,4 +42,10 @@
     <string name="notification_text">You have %d new articles</string>
     <string name="notification_channel_name">New articles</string>
     <string name="notification_channel_description">New articles notifications</string>
+
+    <string name="channel_subscribe">Subscribe</string>
+    <string name="channel_you_subscribed">Subscribed</string>
+    <string name="channel_unsubscribe">Unsubscribe</string>
+    <string name="channel_unsubscribe_dialog_title">Unsubscribe from a channel?</string>
+    <string name="channel_unsubscribe_dialog_text">Are you sure you want to unsubscribe from %s channel?</string>
 </resources>
