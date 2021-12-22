@@ -40,7 +40,7 @@ import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
 import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
-import ru.debajo.reader.rss.metrics.AnalyticsProd
+import ru.debajo.reader.rss.metrics.AnalyticsEnabledManagerProd
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
@@ -75,12 +75,12 @@ fun appModule(context: Context): Module = module {
 val MetricsModule = module {
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseAnalytics.getInstance(get()) }
-    single { AnalyticsEnabledManager(get(), get(), get()) }
+    single { Analytics(get()) }
 }
 
 @SuppressLint("MissingPermission")
 val MetricsProdModule = module {
-    single<Analytics> { AnalyticsProd(get()) }
+    single<AnalyticsEnabledManager> { AnalyticsEnabledManagerProd(get(), get(), get()) }
 }
 
 val PreferencesModule = module {

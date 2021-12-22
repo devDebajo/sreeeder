@@ -1,30 +1,81 @@
 package ru.debajo.reader.rss.metrics
 
+import android.os.Bundle
+import androidx.annotation.Size
+import com.google.firebase.analytics.FirebaseAnalytics
 import ru.debajo.reader.rss.ui.theme.AppTheme
+import timber.log.Timber
 
-interface Analytics {
-    fun onLoadChannel()
+class Analytics(
+    private val firebaseAnalytics: FirebaseAnalytics,
+) {
 
-    fun onShareChannel()
+    fun onLoadChannel() {
+        logEvent("load_channel")
+    }
 
-    fun onSubscribeChannel()
+    fun onShareChannel() {
+        logEvent("share_channel")
+    }
 
-    fun onUnsubscribeChannel()
+    fun onSubscribeChannel() {
+        logEvent("subscribe_channel")
+    }
 
-    fun onBookmark()
+    fun onUnsubscribeChannel() {
+        logEvent("unsubscribe_channel")
+    }
 
-    fun onRemoveBookmark()
+    fun onBookmark() {
+        logEvent("bookmarked_add")
+    }
 
-    fun setDynamicThemeUserProperty(value: Boolean)
+    fun onRemoveBookmark() {
+        logEvent("bookmark_remove")
+    }
 
-    fun setThemeUserProperty(mode: AppTheme)
+    fun setDynamicThemeUserProperty(value: Boolean) {
+        setUserProperty("dynamic_theme_enabled", value)
+    }
 
-    fun setBackgroundUpdatesToggleState(enabled: Boolean)
+    fun setThemeUserProperty(mode: AppTheme) {
+        setUserProperty(
+            "app_theme", when (mode) {
+                AppTheme.LIGHT -> "light"
+                AppTheme.DARK -> "dark"
+                AppTheme.AUTO -> "auto"
+            }
+        )
+    }
 
-    fun onStartWorker()
+    fun setBackgroundUpdatesToggleState(enabled: Boolean) {
+        setUserProperty("bg_updates_toggle_state", enabled)
+    }
 
-    fun onSuccessWorker()
+    fun onStartWorker() {
+        logEvent("worker_start")
+    }
 
-    fun onFailWorker()
+    fun onSuccessWorker() {
+        logEvent("worker_success")
+    }
+
+    fun onFailWorker() {
+        logEvent("worker_fail")
+    }
+
+    private fun setUserProperty(@Size(min = 1L, max = 24L) name: String, value: Any) {
+        val valueStr = value.toString().take(36)
+        Timber.tag("Analytics").d("Set user property $name with value $valueStr")
+        firebaseAnalytics.setUserProperty(name, valueStr)
+    }
+
+    private fun logEvent(event: String, bundle: Bundle? = null) {
+        try {
+            Timber.tag("Analytics").d("On event [$event], parameters: $bundle")
+            firebaseAnalytics.logEvent(event, bundle)
+        } catch (t: Throwable) {
+            Timber.e(t)
+        }
+    }
 }
-

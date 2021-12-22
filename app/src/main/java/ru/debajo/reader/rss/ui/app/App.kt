@@ -22,7 +22,7 @@ open class App : Application(),
     private val analytics: Analytics by inject()
     private val themeProvider: AppThemeProvider by inject()
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler by inject()
-    protected val analyticsEnabledManager: AnalyticsEnabledManager by inject()
+    private val analyticsEnabledManager: AnalyticsEnabledManager by inject()
 
     open val diModules: List<Module>
         get() = nonVariantModules(this) + listOf(MetricsProdModule)
@@ -39,13 +39,9 @@ open class App : Application(),
         Timber.plant(TimberProdTree())
     }
 
-    open suspend fun initAnalytics() {
-        analyticsEnabledManager.refresh()
-    }
-
     private fun initApp() {
         launch {
-            initAnalytics()
+            analyticsEnabledManager.refresh()
 
             val themeConfig = themeProvider.loadCurrentConfig()
             analytics.setDynamicThemeUserProperty(themeConfig.dynamic)

@@ -13,8 +13,4 @@ class DebugApp : App() {
     override fun initTimber() {
         Timber.plant(Timber.DebugTree())
     }
-
-    override suspend fun initAnalytics() {
-        analyticsEnabledManager.setEnabled(false)
-    }
 }
