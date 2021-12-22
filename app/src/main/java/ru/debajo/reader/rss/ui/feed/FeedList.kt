@@ -91,24 +91,47 @@ fun FeedList(
 }
 
 @Composable
-private fun FeedTabWidget(tab: UiFeedTab, selected: Boolean, onClick: (UiFeedTab) -> Unit) {
+private fun FeedTabWidget(
+    tab: UiFeedTab,
+    selected: Boolean,
+    onClick: (UiFeedTab) -> Unit
+) {
     val bgColor = with(MaterialTheme.colorScheme) {
         if (selected) primary else secondaryContainer
     }
 
-    Row(
-        Modifier
-            .padding(top = 16.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(bgColor)
-            .padding(vertical = 6.dp, horizontal = 12.dp)
-            .clickable(onClick = { onClick(tab) })
-    ) {
-        Text(
-            text = stringResource(tab.textRes),
-            color = MaterialTheme.colorScheme.contentColorFor(bgColor),
-            fontSize = 12.sp
-        )
+    Box {
+        Row(
+            Modifier
+                .padding(top = 16.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(bgColor)
+                .clickable(onClick = { onClick(tab) })
+                .padding(vertical = 6.dp, horizontal = 12.dp)
+        ) {
+            Text(
+                text = stringResource(tab.textRes),
+                color = MaterialTheme.colorScheme.contentColorFor(bgColor),
+                fontSize = 12.sp
+            )
+        }
+
+        if (tab.badge != null) {
+            Box(
+                modifier = Modifier
+                    .offset(y = 7.dp, x = 10.dp)
+                    .align(Alignment.TopEnd)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(vertical = 1.dp, horizontal = 5.dp)
+            ) {
+                Text(
+                    text = tab.badge.toString(),
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+            }
+        }
     }
 }
 

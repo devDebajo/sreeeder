@@ -81,7 +81,7 @@ class FeedListViewModel(
         val (newArticles, oldArticles) = loadedArticles.partition { it.article.id !in viewedArticlesIds }
         return when {
             newArticles.isNotEmpty() && oldArticles.isNotEmpty() -> {
-                val tabs = listOf(NEW_ARTICLES_TAB, ALL_ARTICLES_TAB)
+                val tabs = listOf(NEW_ARTICLES_TAB.copy(badge = newArticles.size), ALL_ARTICLES_TAB)
                 currentState.copy(
                     selectedTab = fixSelectedTabIfNeed(tabs, currentState.selectedTab),
                     tabs = tabs,
