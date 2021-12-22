@@ -14,6 +14,12 @@
     <string name="settings_background_updates">Background feed updates</string>
     <string name="settings_dynamic_theme">Dynamic theme</string>
     <string name="settings_app_version">App version: %s</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_analytics_enabled">Analytics sending</string>
+    <string name="settings_analytics_alert_title">Disable analytics sending?</string>
+    <string name="settings_analytics_alert_message">This application collects analytics and errors that occur anonymously and solely for the purpose of improving its quality and stability. By disabling this option, you confirm that this application will stop sending statistics of its work and emerging errors to the developer</string>
+    <string name="settings_analytics_alert_ok">Disable</string>
+    <string name="settings_analytics_alert_cancel">Cancel</string>
 
     <string name="add_channel_title">Search channels</string>
     <string name="add_channel_load">Search</string>
@@ -31,8 +37,6 @@
     <string name="feed_all_articles">Old articles</string>
     <string name="channels_is_empty">You have no channel subscriptions. Subscribe to your first channel :-)</string>
     <string name="bookmarks_is_empty">Bookmark articles and they will be on this screen</string>
-
-    <string name="privacy_policy">Privacy policy</string>
 
     <string name="notification_text">You have %d new articles</string>
     <string name="notification_channel_name">New articles</string>

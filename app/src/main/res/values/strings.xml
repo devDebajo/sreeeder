@@ -14,6 +14,12 @@
     <string name="settings_background_updates">Фоновые обновления ленты</string>
     <string name="settings_dynamic_theme">Динамическая тема</string>
     <string name="settings_app_version">Версия приложения: %s</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_analytics_enabled">Отправка аналитики</string>
+    <string name="settings_analytics_alert_title">Отключить отправку аналитики?</string>
+    <string name="settings_analytics_alert_message">Приложение собирает аналитику и возникающие ошибки анонимно и исключительно в целях улучшения его качества и стабильности. Отключая эту опцию вы подтверждаете, что данное приложение перестанет отправлять статистику своей работы и возникающие ошибки разработчику</string>
+    <string name="settings_analytics_alert_ok">Отключить</string>
+    <string name="settings_analytics_alert_cancel">Отмена</string>
 
     <string name="add_channel_title">Поиск каналов</string>
     <string name="add_channel_load">Поиск</string>
@@ -31,8 +37,6 @@
     <string name="feed_all_articles">Старые статьи</string>
     <string name="channels_is_empty">У вас нет подписок на каналы. Подпишитесь же на свой первый канал :-)</string>
     <string name="bookmarks_is_empty">Добавьте статьи в закладки и они будут на этом экране</string>
-
-    <string name="privacy_policy">Политика конфиденциальности</string>
 
     <string name="notification_text">У вас %d новых статей</string>
     <string name="notification_channel_name">Новые статьи</string>

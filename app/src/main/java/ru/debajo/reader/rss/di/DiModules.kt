@@ -20,6 +20,7 @@ import ru.debajo.reader.rss.data.db.migrations.MIGRATION_2_3
 import ru.debajo.reader.rss.data.preferences.AppThemePreference
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
+import ru.debajo.reader.rss.data.preferences.MetricsEnabledPreference
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.load.RssLoader
@@ -38,6 +39,7 @@ import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
 import ru.debajo.reader.rss.metrics.Analytics
+import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
 import ru.debajo.reader.rss.metrics.AnalyticsProd
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -73,6 +75,7 @@ fun appModule(context: Context): Module = module {
 val MetricsModule = module {
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseAnalytics.getInstance(get()) }
+    single { AnalyticsEnabledManager(get(), get(), get()) }
 }
 
 @SuppressLint("MissingPermission")
@@ -86,6 +89,7 @@ val PreferencesModule = module {
     single { AppThemePreference(get()) }
     single { DynamicThemePreference(get()) }
     single { BackgroundUpdatesEnabledPreference(get()) }
+    single { MetricsEnabledPreference(get()) }
 }
 
 val NetworkModule = module {
@@ -143,7 +147,7 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }

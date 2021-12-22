@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
+import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
@@ -14,6 +15,7 @@ class SettingsViewModel(
     private val appThemeProvider: AppThemeProvider,
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler,
+    private val analyticsEnabledManager: AnalyticsEnabledManager,
 ) : BaseViewModel() {
 
     private val stateMutable: MutableStateFlow<SettingsState> = MutableStateFlow(
@@ -31,8 +33,22 @@ class SettingsViewModel(
                     appTheme = config.theme,
                     isDynamicColor = config.dynamic,
                     backgroundUpdates = backgroundUpdatesEnabledPreference.get(),
+                    analyticsEnabled = analyticsEnabledManager.isEnabled(),
                 )
             }
+        }
+    }
+
+    fun setAnalyticsEnabled(enabled: Boolean) {
+        updateState {
+            launch { analyticsEnabledManager.setEnabled(enabled) }
+            copy(analyticsEnabled = enabled)
+        }
+    }
+
+    fun toggleAnalyticsAlert(visible: Boolean) {
+        updateState {
+            copy(showAnalyticsAlertDialog = visible)
         }
     }
 
@@ -43,24 +59,29 @@ class SettingsViewModel(
     }
 
     fun toggleThemeDropDown() {
-        val state = stateMutable.value
-        stateMutable.value = state.copy(dropDownExpanded = !state.dropDownExpanded)
+        updateState { copy(dropDownExpanded = !dropDownExpanded) }
     }
 
     fun selectTheme(theme: AppTheme) {
-        stateMutable.value = stateMutable.value.copy(dropDownExpanded = false)
-        launch {
-            appThemeProvider.update(theme)
-        }
+        updateState { copy(dropDownExpanded = false) }
+        launch { appThemeProvider.update(theme) }
     }
 
     fun toggleBackgroundUpdates() {
-        val state = stateMutable.value
-        val newBackgroundUpdates = !state.backgroundUpdates
-        stateMutable.value = state.copy(backgroundUpdates = newBackgroundUpdates)
-        launch(IO) {
-            backgroundUpdatesEnabledPreference.set(newBackgroundUpdates)
-            backgroundUpdatesScheduler.rescheduleOrCancel()
+        updateState {
+            val newBackgroundUpdates = !backgroundUpdates
+
+            launch(IO) {
+                // TODO переделать (сокрыть backgroundUpdatesEnabledPreference в backgroundUpdatesScheduler)
+                backgroundUpdatesEnabledPreference.set(newBackgroundUpdates)
+                backgroundUpdatesScheduler.rescheduleOrCancel()
+            }
+
+            copy(backgroundUpdates = newBackgroundUpdates)
         }
+    }
+
+    private inline fun updateState(block: SettingsState.() -> SettingsState) {
+        stateMutable.value = stateMutable.value.block()
     }
 }

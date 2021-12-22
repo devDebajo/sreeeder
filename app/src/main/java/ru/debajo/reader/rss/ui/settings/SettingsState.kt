@@ -10,6 +10,8 @@ data class SettingsState(
     val isDynamicColor: Boolean = false,
     val supportDynamicTheme: Boolean = false,
     val backgroundUpdates: Boolean = true,
+    val analyticsEnabled: Boolean = true,
+    val showAnalyticsAlertDialog: Boolean = false,
 ) {
 
     val dropDownThemes: List<AppTheme>

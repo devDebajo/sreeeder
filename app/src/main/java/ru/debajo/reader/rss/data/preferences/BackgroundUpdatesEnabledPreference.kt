@@ -7,5 +7,7 @@ class BackgroundUpdatesEnabledPreference(
     override val sharedPreferences: SharedPreferences,
 ) : BooleanPreference() {
 
+    override val defaultValue: () -> Boolean = { true }
+
     override val key: String = "enable_background_updates"
 }

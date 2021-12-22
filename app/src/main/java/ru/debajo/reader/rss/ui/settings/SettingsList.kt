@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Analytics
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,15 +34,22 @@ import ru.debajo.reader.rss.ui.theme.title
 fun SettingsList(parentNavController: NavController, viewModel: SettingsViewModel) {
     val state by viewModel.state.collectAsState()
 
-    Column(
-        Modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        SettingsBackgroundUpdatesSwitch(state, viewModel)
-        SettingsThemeButton(state, viewModel)
-        SettingsDynamicThemeSwitch(state, viewModel)
-        SettingsPrivacyPolicy(parentNavController)
-        SettingsAppVersion()
+    Box {
+        Column(
+            Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SettingsBackgroundUpdatesSwitch(state, viewModel)
+            SettingsThemeButton(state, viewModel)
+            SettingsDynamicThemeSwitch(state, viewModel)
+            SettingsPrivacyPolicy(parentNavController)
+            SettingsAnalyticsSwitch(state, viewModel)
+            SettingsAppVersion()
+        }
+
+        if (state.showAnalyticsAlertDialog) {
+            SettingsAnalyticsAlertDialog(viewModel)
+        }
     }
 }
 
@@ -128,8 +136,25 @@ private fun SettingsDynamicThemeSwitch(state: SettingsState, viewModel: Settings
 @Composable
 private fun SettingsPrivacyPolicy(navController: NavController) {
     val backgroundColor = MaterialTheme.colorScheme.background.colorInt
-    SettingsText(stringResource(id = R.string.privacy_policy)) {
+    SettingsText(stringResource(id = R.string.settings_privacy_policy)) {
         NavGraph.ChromeTabs.navigate(navController, BuildConfig.PRIVACY_POLICY.toChromeTabsParams(backgroundColor))
+    }
+}
+
+@Composable
+private fun SettingsAnalyticsSwitch(
+    state: SettingsState,
+    viewModel: SettingsViewModel
+) {
+    SettingsSwitch(
+        text = stringResource(R.string.settings_analytics_enabled),
+        checked = state.analyticsEnabled
+    ) {
+        if (state.analyticsEnabled) {
+            viewModel.toggleAnalyticsAlert(visible = true)
+        } else {
+            viewModel.setAnalyticsEnabled(true)
+        }
     }
 }
 
@@ -137,6 +162,29 @@ private fun SettingsPrivacyPolicy(navController: NavController) {
 private fun SettingsAppVersion() {
     val text = stringResource(R.string.settings_app_version, BuildConfig.VERSION_NAME)
     SettingsText(text)
+}
+
+@Composable
+private fun SettingsAnalyticsAlertDialog(viewModel: SettingsViewModel) {
+    AlertDialog(
+        title = { Text(stringResource(R.string.settings_analytics_alert_title)) },
+        text = { Text(stringResource(R.string.settings_analytics_alert_message)) },
+        onDismissRequest = { viewModel.toggleAnalyticsAlert(false) },
+        icon = { Icon(Icons.Rounded.Analytics, contentDescription = null) },
+        confirmButton = {
+            TextButton(onClick = { viewModel.toggleAnalyticsAlert(false) }) {
+                Text(stringResource(R.string.settings_analytics_alert_cancel))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = {
+                viewModel.setAnalyticsEnabled(false)
+                viewModel.toggleAnalyticsAlert(false)
+            }) {
+                Text(stringResource(R.string.settings_analytics_alert_ok))
+            }
+        }
+    )
 }
 
 @Composable
