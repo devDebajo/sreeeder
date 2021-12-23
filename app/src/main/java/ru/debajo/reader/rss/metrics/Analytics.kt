@@ -52,6 +52,10 @@ class Analytics(
         setUserProperty("bg_updates_toggle_state", enabled)
     }
 
+    fun setAnalyticsEnabled(enabled: Boolean) {
+        setUserProperty("analytics_enabled", enabled)
+    }
+
     fun onStartWorker() {
         logEvent("worker_start")
     }

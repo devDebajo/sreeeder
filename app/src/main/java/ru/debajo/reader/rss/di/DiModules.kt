@@ -83,7 +83,7 @@ val MetricsModule = module {
 
 @SuppressLint("MissingPermission")
 val MetricsProdModule = module {
-    single<AnalyticsEnabledManager> { AnalyticsEnabledManagerProd(get(), get(), get()) }
+    single<AnalyticsEnabledManager> { AnalyticsEnabledManagerProd(get(), get(), get(), get()) }
 }
 
 val PreferencesModule = module {
@@ -150,7 +150,7 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }

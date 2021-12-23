@@ -6,12 +6,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
+import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 
 class SettingsViewModel(
+    private val analytics: Analytics,
     private val appThemeProvider: AppThemeProvider,
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler,
@@ -70,6 +72,7 @@ class SettingsViewModel(
     fun toggleBackgroundUpdates() {
         updateState {
             val newBackgroundUpdates = !backgroundUpdates
+            analytics.setBackgroundUpdatesToggleState(newBackgroundUpdates)
 
             launch(IO) {
                 // TODO переделать (сокрыть backgroundUpdatesEnabledPreference в backgroundUpdatesScheduler)

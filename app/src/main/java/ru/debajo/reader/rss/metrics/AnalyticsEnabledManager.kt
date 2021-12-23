@@ -3,7 +3,6 @@ package ru.debajo.reader.rss.metrics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import ru.debajo.reader.rss.data.preferences.MetricsEnabledPreference
-import timber.log.Timber
 
 interface AnalyticsEnabledManager {
     suspend fun isEnabled(): Boolean
@@ -14,6 +13,7 @@ interface AnalyticsEnabledManager {
 }
 
 open class AnalyticsEnabledManagerProd(
+    private val analytics: Analytics,
     private val firebaseAnalytics: FirebaseAnalytics,
     private val firebaseCrashlytics: FirebaseCrashlytics,
     private val metricsEnabledPreference: MetricsEnabledPreference,
@@ -31,8 +31,13 @@ open class AnalyticsEnabledManagerProd(
     }
 
     protected fun setEnabledInternal(enabled: Boolean) {
+        if (!enabled) {
+            analytics.setAnalyticsEnabled(false)
+        }
         firebaseAnalytics.setAnalyticsCollectionEnabled(enabled)
         firebaseCrashlytics.setCrashlyticsCollectionEnabled(enabled)
-        Timber.tag("AnalyticsEnabledManager").i("Analytics sending state changed: $enabled")
+        if (enabled) {
+            analytics.setAnalyticsEnabled(true)
+        }
     }
 }

@@ -8,6 +8,6 @@ import ru.debajo.reader.rss.metrics.AnalyticsEnabledManagerProd
 
 @SuppressLint("MissingPermission")
 val MetricsDebugModule = module {
-    single { AnalyticsEnabledManagerProd(get(), get(), get()) }
-    single<AnalyticsEnabledManager> { AnalyticsEnabledManagerDebug(get(), get(), get()) }
+    single { AnalyticsEnabledManagerProd(get(), get(), get(), get()) }
+    single<AnalyticsEnabledManager> { AnalyticsEnabledManagerDebug(get(), get(), get(), get()) }
 }

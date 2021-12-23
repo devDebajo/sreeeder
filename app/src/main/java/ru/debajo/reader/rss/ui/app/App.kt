@@ -6,6 +6,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.di.MetricsProdModule
 import ru.debajo.reader.rss.di.inject
@@ -21,6 +22,7 @@ open class App : Application(),
 
     private val analytics: Analytics by inject()
     private val themeProvider: AppThemeProvider by inject()
+    private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference by inject()
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler by inject()
     private val analyticsEnabledManager: AnalyticsEnabledManager by inject()
 
@@ -46,6 +48,8 @@ open class App : Application(),
             val themeConfig = themeProvider.loadCurrentConfig()
             analytics.setDynamicThemeUserProperty(themeConfig.dynamic)
             analytics.setThemeUserProperty(themeConfig.theme)
+
+            analytics.setBackgroundUpdatesToggleState(backgroundUpdatesEnabledPreference.get())
 
             backgroundUpdatesScheduler.rescheduleOrCancel()
         }
