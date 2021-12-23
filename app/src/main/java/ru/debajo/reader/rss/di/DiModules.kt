@@ -28,6 +28,8 @@ import ru.debajo.reader.rss.data.remote.service.FeedlyService
 import ru.debajo.reader.rss.data.remote.service.ServiceFactory
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
+import ru.debajo.reader.rss.data.updater.NotificationChannelCreator
+import ru.debajo.reader.rss.data.updater.NotificationFactory
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.ArticlesRepository
 import ru.debajo.reader.rss.domain.article.ViewedArticlesRepository
@@ -62,6 +64,7 @@ fun nonVariantModules(context: Context): List<Module> {
         ViewModelModule,
         MetricsModule,
         RefresherModule,
+        NotificationModule,
     )
 }
 
@@ -159,5 +162,10 @@ val ViewModelModule = module {
 val RefresherModule = module {
     single { WorkManager.getInstance(get()) }
     single { BackgroundUpdatesScheduler(get(), get()) }
-    single { BackgroundUpdatesNotificationManager(get(), get()) }
+}
+
+val NotificationModule = module {
+    single { BackgroundUpdatesNotificationManager(get(), get(), get(), get()) }
+    single { NotificationChannelCreator(get(), get()) }
+    single { NotificationFactory(get()) }
 }

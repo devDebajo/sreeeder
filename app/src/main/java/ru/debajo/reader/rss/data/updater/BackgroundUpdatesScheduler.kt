@@ -36,7 +36,7 @@ class BackgroundUpdatesScheduler(
             4,
             TimeUnit.HOURS
         )
-            .setInitialDelay(1, TimeUnit.HOURS)
+            //.setInitialDelay(1, TimeUnit.HOURS)
             .build()
     }
 

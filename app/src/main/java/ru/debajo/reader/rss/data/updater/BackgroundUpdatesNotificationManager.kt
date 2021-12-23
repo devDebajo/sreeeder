@@ -1,37 +1,36 @@
 package ru.debajo.reader.rss.data.updater
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.core.app.NotificationCompat
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.host.HostActivity
 
 class BackgroundUpdatesNotificationManager(
     private val context: Context,
+    private val notificationFactory: NotificationFactory,
+    private val notificationChannelCreator: NotificationChannelCreator,
     private val notificationManager: NotificationManager
 ) {
 
-    fun send(count: Long) {
+    fun sendNewArticlesCount(count: Long) {
         if (count == 0L) {
             cancel()
             return
         }
 
-        createChannel()
+        notificationChannelCreator.updateOrCreate(SreeederNotificationChannel.ArticlesUpdate)
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_rss_feed)
-            .setContentTitle(context.getString(R.string.app_name))
-            .setContentText(context.getString(R.string.notification_text, count))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(createPendingIntent())
-            .setAutoCancel(true)
+        val notification = notificationFactory.create(
+            channel = SreeederNotificationChannel.ArticlesUpdate,
+            text = context.getString(R.string.notification_text, count),
+            autoCancel = true,
+            pendingIntent = createPendingIntent()
+        )
 
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
     private fun createPendingIntent(): PendingIntent {
@@ -46,25 +45,12 @@ class BackgroundUpdatesNotificationManager(
         return PendingIntent.getActivity(context, NOTIFICATION_TAP_REQUEST_CODE, intent, flags)
     }
 
-    private fun createChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = context.getString(R.string.notification_channel_name)
-            val descriptionText = context.getString(R.string.notification_channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
     fun cancel() {
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
     private companion object {
-        const val CHANNEL_ID = "NewArticlesChannel"
-        const val NOTIFICATION_ID = 12332131
+        const val NOTIFICATION_ID = NotificationIds.NEW_ARTICLES
         const val NOTIFICATION_TAP_REQUEST_CODE = 12
     }
 }
