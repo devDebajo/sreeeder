@@ -10,6 +10,9 @@
     <string name="theme_dark">Темная</string>
     <string name="theme_auto">Авто</string>
 
+    <string name="settings_group_data">Данные</string>
+    <string name="settings_group_view">Отображение</string>
+    <string name="settings_group_app">Приложение</string>
     <string name="settings_app_theme">Тема приложения</string>
     <string name="settings_background_updates">Фоновые обновления ленты</string>
     <string name="settings_dynamic_theme">Динамическая тема</string>
