@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
-import ru.debajo.reader.rss.ui.channels.ChannelCardInList
+import ru.debajo.reader.rss.ui.channels.ChannelCard
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.Material3TextField
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -96,7 +96,7 @@ fun AddChannelScreen(parentNavController: NavController) {
                                 key = { stateLocal.channels[it].url.url }
                             ) {
                                 val channel = stateLocal.channels[it]
-                                ChannelCardInList(channel = channel) {
+                                ChannelCard(channel = channel) {
                                     NavGraph.ArticlesList.navigate(parentNavController, channel)
                                 }
                             }

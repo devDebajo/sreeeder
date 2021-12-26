@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bookmark
@@ -17,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
@@ -28,18 +29,18 @@ import org.joda.time.LocalDate
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.AppCard
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 @Composable
-fun LazyItemScope.ChannelArticle(
+fun ChannelArticle(
     article: UiArticle,
     onFavoriteClick: (UiArticle) -> Unit,
     onClick: (UiArticle) -> Unit,
 ) {
     AppCard(
         onClick = { onClick(article) },
-        modifier = Modifier
-            //.animateItemPlacement()
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column {
             if (article.image != null) {
@@ -87,6 +88,38 @@ fun LazyItemScope.ChannelArticle(
                 )
             }
         }
+
+        if (article.isNew) {
+            NewIndicator()
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.NewIndicator() {
+    val squareSize = 40.dp
+    val triangleWidth = sqrt(squareSize.value * squareSize.value * 2)
+    val triangleHeight = triangleWidth / 2f
+
+    val k = sqrt((triangleHeight / 2f).pow(2f) / 2f)
+    val offsetX = triangleWidth - k - triangleWidth / 2f
+    val offsetY = k - triangleHeight / 2f
+
+    Box(
+        modifier = Modifier
+            .offset(x = offsetX.dp, y = offsetY.dp)
+            .rotate(45f)
+            .size(width = triangleWidth.dp, height = triangleHeight.dp)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
+            .align(Alignment.TopEnd)
+    ) {
+        Text(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            text = "New",
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onTertiaryContainer
+        )
     }
 }
 
