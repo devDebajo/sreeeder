@@ -14,3 +14,10 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `dbviewedarticle` (`articleId` TEXT NOT NULL, PRIMARY KEY(`articleId`))")
     }
 }
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE `dbviewedarticle`")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `dbnewarticle` (`articleId` TEXT NOT NULL, `channelUrl` TEXT NOT NULL, PRIMARY KEY(`articleId`))")
+    }
+}

@@ -24,21 +24,6 @@ fun Article.toRemote(channelUrl: String): RemoteArticle {
     )
 }
 
-fun RemoteArticle.toDomain(): DomainArticle? {
-    return DomainArticle(
-        id = id ?: return null,
-        author = author,
-        title = title ?: return null,
-        url = url ?: return null,
-        contentHtml = contentHtml,
-        timestamp = timestamp,
-        image = image,
-        bookmarked = false,
-        channelUrl = channelUrl.toDomain(),
-        categories = categories,
-    )
-}
-
 fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
     return DbArticle(
         id = id ?: return null,
@@ -53,7 +38,7 @@ fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
     )
 }
 
-fun DomainArticle.toUi(channel: UiChannel?): UiArticle {
+fun DomainArticle.toUi(channel: UiChannel?, isNew: Boolean): UiArticle {
     return UiArticle(
         id = id,
         author = author,
@@ -65,6 +50,7 @@ fun DomainArticle.toUi(channel: UiChannel?): UiArticle {
         channelImage = channel?.image,
         channelName = channel?.name,
         categories = categories,
+        isNew = isNew,
     )
 }
 
@@ -85,9 +71,4 @@ fun DbArticle.toDomain(): DomainArticle {
 
 fun List<Article>.toRemoteList(channelUrl: String): List<RemoteArticle> = map { it.toRemote(channelUrl) }
 fun List<DbArticle>.toDomainList(): List<DomainArticle> = map { it.toDomain() }
-
-@JvmName("toDomainListRemoteArticle")
-fun List<RemoteArticle>.toDomainList(): List<DomainArticle> = mapNotNull { it.toDomain() }
 fun List<RemoteArticle>.toDbList(channelUrl: RemoteChannelUrl): List<DbArticle> = mapNotNull { it.toDb(channelUrl) }
-
-fun List<DomainArticle>.toUiList(channel: UiChannel?): List<UiArticle> = map { it.toUi(channel) }

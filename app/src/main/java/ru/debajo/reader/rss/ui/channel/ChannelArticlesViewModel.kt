@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ClearArticlesUseCase
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.ext.collectTo
@@ -21,19 +22,22 @@ class ChannelArticlesViewModel(
     private val subscriptionsRepository: ChannelsSubscriptionsRepository,
     private val articleBookmarksRepository: ArticleBookmarksRepository,
     private val loadArticlesUseCase: LoadArticlesUseCase,
+    private val clearArticlesUseCase: ClearArticlesUseCase,
     private val analytics: Analytics,
 ) : BaseViewModel() {
 
+    private var channel: UiChannel? = null
+
     private val articlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
     private val isSubscribedMutable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
     val articles: StateFlow<List<UiArticle>> = articlesMutable
     val isSubscribed: StateFlow<Boolean> = isSubscribedMutable
 
     fun load(channel: UiChannel) {
+        this.channel = channel
         launch {
             loadArticlesUseCase.load(channel.toDomain())
-                .map { domain -> domain.map { entry -> entry.article.toUi(null) } }
+                .map { domain -> domain.map { entry -> entry.article.toUi(null, false) } }
                 .collectTo(articlesMutable)
         }
         launch {
@@ -58,4 +62,17 @@ class ChannelArticlesViewModel(
     fun onShare() {
         analytics.onShareChannel()
     }
+
+    override fun onCleared() {
+        val channel = channel
+        if (channel != null && !isSubscribed.value) {
+            launch(IO) {
+                clearArticlesUseCase.clear(channel.url)
+            }
+        }
+
+        super.onCleared()
+    }
 }
+
+

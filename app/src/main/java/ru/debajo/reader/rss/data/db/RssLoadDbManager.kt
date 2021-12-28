@@ -17,9 +17,12 @@ import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toRemote
 import ru.debajo.reader.rss.data.db.dao.ArticlesDao
 import ru.debajo.reader.rss.data.db.dao.ChannelsDao
+import ru.debajo.reader.rss.data.db.dao.getNonExistIds
+import ru.debajo.reader.rss.data.db.model.DbArticle
 import ru.debajo.reader.rss.data.remote.load.RssLoader
 import ru.debajo.reader.rss.data.remote.model.RemoteArticle
 import ru.debajo.reader.rss.data.remote.model.RemoteChannel
+import ru.debajo.reader.rss.domain.article.NewArticlesRepository
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.model.DomainChannel
@@ -31,6 +34,7 @@ class RssLoadDbManager(
     private val articlesDao: ArticlesDao,
     private val channelsDao: ChannelsDao,
     private val channelsSubscriptionsRepository: ChannelsSubscriptionsRepository,
+    private val newArticlesRepository: NewArticlesRepository,
     private val cacheManager: CacheManager,
 ) : CoroutineScope by CoroutineScope(SupervisorJob() + IO) {
 
@@ -115,8 +119,15 @@ class RssLoadDbManager(
 
     private suspend fun persist(url: DomainChannelUrl, channel: RemoteChannel) {
         channelsDao.add(channel.toDb())
-        articlesDao.insert(channel.currentArticles.toDbList(url.toRemote()))
+        val dbArticles = channel.currentArticles.toDbList(url.toRemote())
+        persistNewArticles(dbArticles, url)
+        articlesDao.insert(dbArticles)
         cacheManager.saveMarker(createCacheKey(url))
+    }
+
+    private suspend fun persistNewArticles(articles: List<DbArticle>, channelUrl: DomainChannelUrl) {
+        val newArticlesIds = articlesDao.getNonExistIds(articles.map { it.id })
+        newArticlesRepository.saveNewArticlesIds(channelUrl, newArticlesIds)
     }
 
     private fun createCacheKey(url: DomainChannelUrl): String = CHANNEL_URL_CACHE_PREFIX + url.url

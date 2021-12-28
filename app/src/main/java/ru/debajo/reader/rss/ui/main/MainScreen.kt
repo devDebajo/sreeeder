@@ -87,6 +87,7 @@ private fun MainScaffold(
             NavigationBar {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
+                val feedBadgeCount by viewModel.feedBadgeCount.collectAsState()
                 for ((index, tab) in tabs.withIndex()) {
                     Item(
                         tab = tab,
@@ -98,7 +99,8 @@ private fun MainScaffold(
                             } else {
                                 scrollController.scrollToTop(tab.navigation.route)
                             }
-                        }
+                        },
+                        badgeCount = if (tab === feedTab) feedBadgeCount else 0
                     )
                 }
             }
@@ -123,12 +125,21 @@ private fun MainScaffold(
 private fun RowScope.Item(
     tab: ScreenTab,
     selected: Boolean = false,
+    badgeCount: Int,
     onClick: () -> Unit,
 ) {
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
-        icon = { Icon(tab.icon, contentDescription = null) },
+        icon = {
+            if (badgeCount > 0) {
+                BadgedBox(badge = { Badge { Text(badgeCount.toString()) } }) {
+                    Icon(tab.icon, contentDescription = null)
+                }
+            } else {
+                Icon(tab.icon, contentDescription = null)
+            }
+        },
         label = { Text(tab.title, fontSize = 10.sp) }
     )
 }

@@ -5,8 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class DbViewedArticle(
+class DbNewArticle(
     @PrimaryKey
     @ColumnInfo(name = "articleId")
-    val articleId: String
+    val articleId: String,
+
+    @ColumnInfo(name = "channelUrl")
+    val channelUrl: String,
 )

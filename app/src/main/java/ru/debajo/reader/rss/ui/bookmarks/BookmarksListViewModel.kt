@@ -23,7 +23,7 @@ class BookmarksListViewModel(
     fun load() {
         launch(IO) {
             loadArticlesUseCase.loadBookmarked()
-                .map { domain -> domain.map { entry -> entry.article.toUi(entry.channel?.toUi()) } }
+                .map { domain -> domain.map { entry -> entry.article.toUi(entry.channel?.toUi(), false) } }
                 .collectTo(articlesMutable)
         }
     }

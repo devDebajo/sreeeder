@@ -18,4 +18,8 @@ class ArticlesRepository(private val articlesDao: ArticlesDao) {
         return articlesDao.observeChannelArticles(channelUrl.url)
             .map { articles -> articles.toDomainList() }
     }
+
+    suspend fun removeFromDb(channelUrl: DomainChannelUrl) {
+        articlesDao.removeByChannelUrl(channelUrl.url)
+    }
 }

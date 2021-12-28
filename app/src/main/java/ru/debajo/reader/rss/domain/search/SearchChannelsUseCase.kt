@@ -36,7 +36,7 @@ class SearchChannelsUseCase(
     }
 
     private fun tryLoadAsIs(url: String): Flow<List<DomainChannel>> {
-        return rssLoadDbManager.refreshChannel(DomainChannelUrl(url.trimLastSlash()), false)
+        return loadChannelInner(url)
             .map { state ->
                 when (state) {
                     is RssLoadDbManager.ChannelLoadingState.Error -> emptyList()
@@ -52,13 +52,13 @@ class SearchChannelsUseCase(
         }
         return flow {
             val uri = Uri.parse(url)
-            val feedUrl = uri.buildUpon().path("feed").toString().trimLastSlash()
-            var channel = rssLoadDbManager.refreshChannel(DomainChannelUrl(feedUrl), false).await()
+            val feedUrl = uri.buildUpon().path("feed").toString()
+            var channel = loadChannelInner(feedUrl).await()
             if (channel != null) {
                 emit(listOf(channel))
             } else {
-                val rssUrl = uri.buildUpon().path("rss").toString().trimLastSlash()
-                channel = rssLoadDbManager.refreshChannel(DomainChannelUrl(rssUrl), false).await()
+                val rssUrl = uri.buildUpon().path("rss").toString()
+                channel = loadChannelInner(rssUrl).await()
                 emit(listOfNotNull(channel))
             }
         }
@@ -80,12 +80,16 @@ class SearchChannelsUseCase(
     }
 
     private fun loadByUrls(urls: List<RemoteChannelUrl>): Flow<List<DomainChannel>> {
-        return combine(urls.map { DomainChannelUrl(it.url.trimLastSlash()) }.map { url ->
-            rssLoadDbManager.refreshChannel(url, false)
+        return combine(urls.map { url ->
+            loadChannelInner(url.url)
                 .map { (it as? RssLoadDbManager.ChannelLoadingState.UpToDate)?.channel }
         }) { channels ->
             channels.filterNotNull()
         }
+    }
+
+    private fun loadChannelInner(url: String): Flow<RssLoadDbManager.ChannelLoadingState> {
+        return rssLoadDbManager.refreshChannel(DomainChannelUrl(url.trimLastSlash()), false)
     }
 
     private suspend fun Flow<RssLoadDbManager.ChannelLoadingState>.await(): DomainChannel? {

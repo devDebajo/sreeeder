@@ -18,9 +18,14 @@ interface ArticlesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(articles: List<DbArticle>)
 
-    @Query("SELECT COUNT(*) FROM dbarticle WHERE id NOT IN (SELECT articleId FROM dbviewedarticle)")
-    suspend fun getUnreadArticlesCount(): Long
+    @Query("DELETE FROM dbarticle WHERE channelUrl=:channelUrl AND id NOT IN (SELECT articleId FROM dbarticlebookmark)")
+    suspend fun removeByChannelUrl(channelUrl: String)
 
-    @Query("SELECT id FROM dbarticle WHERE id NOT IN (SELECT articleId FROM dbviewedarticle)")
-    suspend fun getUnreadArticlesIds(): List<String>
+    @Query("SELECT id FROM dbarticle WHERE id in (:ids)")
+    suspend fun getAllByIds(ids: List<String>): List<String>
+}
+
+suspend fun ArticlesDao.getNonExistIds(articleIds: List<String>): List<String> {
+    val idsInDb = getAllByIds(articleIds).toSet()
+    return articleIds.filter { it !in idsInDb }
 }

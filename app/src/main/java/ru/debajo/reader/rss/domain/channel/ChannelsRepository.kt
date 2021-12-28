@@ -23,4 +23,8 @@ class ChannelsRepository(
         return channelsDao.observeByUrl(url.url)
             .map { channels -> channels.firstOrNull()?.toDomain() }
     }
+
+    suspend fun removeFromDb(url: DomainChannelUrl) {
+        channelsDao.remove(url.url)
+    }
 }

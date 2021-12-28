@@ -26,7 +26,11 @@ class FeedListUseCase(
         if (channels.isEmpty()) {
             return flowOf(emptyList())
         }
-        val flows = channels.map { channel -> loadArticlesUseCase.load(channel) }
-        return combine(flows) { feeds: Array<List<LoadArticlesUseCase.EnrichedDomainArticle>> -> feeds.flatMap { it } }
+        val flows = channels.map { channel ->
+            loadArticlesUseCase.load(channel)
+        }
+        return combine(flows) { feeds: Array<List<LoadArticlesUseCase.EnrichedDomainArticle>> ->
+            feeds.flatMap { it }
+        }
     }
 }

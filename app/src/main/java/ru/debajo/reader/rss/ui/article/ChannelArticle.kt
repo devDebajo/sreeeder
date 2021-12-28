@@ -1,5 +1,8 @@
 package ru.debajo.reader.rss.ui.article
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,8 +40,10 @@ import kotlin.math.sqrt
 fun ChannelArticle(
     article: UiArticle,
     onFavoriteClick: (UiArticle) -> Unit,
+    onView: (UiArticle) -> Unit = {},
     onClick: (UiArticle) -> Unit,
 ) {
+    LaunchedEffect(key1 = article.id, block = { onView(article) })
     AppCard(
         onClick = { onClick(article) },
         modifier = Modifier.fillMaxWidth()
@@ -89,14 +95,19 @@ fun ChannelArticle(
             }
         }
 
-        if (article.isNew) {
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.TopEnd),
+            visible = article.isNew,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
             NewIndicator()
         }
     }
 }
 
 @Composable
-private fun BoxScope.NewIndicator() {
+private fun NewIndicator() {
     val squareSize = 40.dp
     val triangleWidth = sqrt(squareSize.value * squareSize.value * 2)
     val triangleHeight = triangleWidth / 2f
@@ -111,7 +122,6 @@ private fun BoxScope.NewIndicator() {
             .rotate(45f)
             .size(width = triangleWidth.dp, height = triangleHeight.dp)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
-            .align(Alignment.TopEnd)
     ) {
         Text(
             modifier = Modifier.align(Alignment.BottomCenter),

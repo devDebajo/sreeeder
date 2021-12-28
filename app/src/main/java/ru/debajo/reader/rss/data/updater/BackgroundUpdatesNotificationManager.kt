@@ -15,8 +15,8 @@ class BackgroundUpdatesNotificationManager(
     private val notificationManager: NotificationManager
 ) {
 
-    fun sendNewArticlesCount(count: Long) {
-        if (count == 0L) {
+    fun sendNewArticlesCount(count: Int) {
+        if (count == 0) {
             cancel()
             return
         }
