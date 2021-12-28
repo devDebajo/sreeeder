@@ -1,0 +1,52 @@
+<resources>
+    <string name="screen_feed">Стрічка</string>
+    <string name="screen_channels">Канали</string>
+    <string name="screen_favorites">Закладки</string>
+    <string name="screen_settings">Налаштування</string>
+
+    <string name="theme_light">Світла</string>
+    <string name="theme_dark">Темна</string>
+    <string name="theme_auto">Авто</string>
+
+    <string name="settings_group_data">Дані</string>
+    <string name="settings_group_view">Відображення</string>
+    <string name="settings_group_app">Додаток</string>
+    <string name="settings_app_theme">Тема програми</string>
+    <string name="settings_background_updates">Фонові оновлення стрічки</string>
+    <string name="settings_dynamic_theme">Динамічна тема</string>
+    <string name="settings_app_version">Версія програми: %s</string>
+    <string name="settings_privacy_policy">Політика конфіденційності</string>
+    <string name="settings_analytics_enabled">Надсилання аналітики</string>
+    <string name="settings_analytics_alert_title">Вимкнути відправку аналітики?</string>
+    <string name="settings_analytics_alert_message">Додаток збирає аналітику та помилки, що виникають, анонімно і виключно з метою поліпшення його якості та стабільності. Відключаючи цю опцію ви підтверджуєте, що цей додаток перестане відправляти статистику своєї роботи і помилки, що виникають, розробнику</string>
+    <string name="settings_analytics_alert_ok">Вимкнути</string>
+    <string name="settings_analytics_alert_cancel">Відміна</string>
+
+    <string name="add_channel_title">Пошук каналів</string>
+    <string name="add_channel_load">Пошук</string>
+    <string name="add_channel_placeholder">Url каналу або назва</string>
+    <string name="add_channel_loading">Пошук каналів</string>
+    <string name="add_channel_loading_not_found">Не знайшлося жодного каналу :-(</string>
+
+    <string name="share_title">Поделиться</string>
+    <string name="open_in">Відкрити в</string>
+    <string name="cancel">Відміна</string>
+
+    <string name="article_date_time_today">Сьогодні в %s</string>
+    <string name="article_date_time_yesterday">Вчора в %s</string>
+
+    <string name="feed_is_empty">Ваша стрічка порожня, підпишіться на цікаві вам RSS-канали</string>
+    <string name="channels_is_empty">У вас немає передплат на канали. Підпишіться на свій перший канал :-)</string>
+    <string name="bookmarks_is_empty">Додайте статті до закладок і вони будуть на цьому екрані</string>
+
+    <string name="notification_updating">Оновлення статей</string>
+    <string name="notification_text">У вас %d нових статей</string>
+    <string name="notification_channel_name">Нові статті</string>
+    <string name="notification_channel_description">Повідомлення про нові статті</string>
+
+    <string name="channel_subscribe">Підписатися</string>
+    <string name="channel_you_subscribed">Ви підписані</string>
+    <string name="channel_unsubscribe">Відписатися</string>
+    <string name="channel_unsubscribe_dialog_title">Відписатися від каналу?</string>
+    <string name="channel_unsubscribe_dialog_text">Ви впевнені, що хочете описатися від каналу %s?</string>
+</resources>
