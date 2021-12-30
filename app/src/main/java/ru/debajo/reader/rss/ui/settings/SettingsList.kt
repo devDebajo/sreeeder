@@ -1,32 +1,41 @@
 package ru.debajo.reader.rss.ui.settings
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Analytics
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 
 @Composable
-fun SettingsList(parentNavController: NavController, viewModel: SettingsViewModel) {
+fun SettingsList(
+    innerPadding: PaddingValues,
+    parentNavController: NavController,
+    viewModel: SettingsViewModel
+) {
     val state by viewModel.state.collectAsState()
     val expandedGroup = rememberSaveable { mutableStateOf(-1) }
 
     SettingsBackPress(expandedGroup)
 
-    Box {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
         Column(
             Modifier.padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -37,6 +46,7 @@ fun SettingsList(parentNavController: NavController, viewModel: SettingsViewMode
                 onHeaderClick = { expandedGroup.onGroupHeaderClick(0) }
             ) {
                 SettingsBackgroundUpdatesSwitch(state, viewModel)
+                SettingsExportOpml(viewModel)
             }
             SettingsGroup(
                 title = stringResource(R.string.settings_group_view),
@@ -59,6 +69,31 @@ fun SettingsList(parentNavController: NavController, viewModel: SettingsViewMode
 
         if (state.showAnalyticsAlertDialog) {
             SettingsAnalyticsAlertDialog(viewModel)
+        }
+
+        val snackBar by viewModel.snackBar.collectAsState()
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            visible = snackBar.visible,
+            enter = slideInHorizontally { it },
+            exit = slideOutHorizontally { it },
+        ) {
+            Box(
+                Modifier
+                    .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                Text(
+                    text = snackBar.message,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(horizontal = 16.dp)
+                )
+            }
         }
     }
 }

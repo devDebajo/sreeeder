@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.MaterialTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,10 +33,19 @@ class HostActivity : ComponentActivity() {
     private val bookmarksListViewModel: BookmarksListViewModel by diViewModels()
     private val mainViewModel: MainViewModel by diViewModels()
 
+    private val createDocumentLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
+        if (it != null) {
+            settingsViewModel.writeOpmlDump(it)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             hostViewModel.refreshFeed()
+        }
+        settingsViewModel.exportOpmlClickEvent.observe(this) { fileName ->
+            createDocumentLauncher.launch(fileName)
         }
         setContent {
             val systemUiController = rememberSystemUiController()

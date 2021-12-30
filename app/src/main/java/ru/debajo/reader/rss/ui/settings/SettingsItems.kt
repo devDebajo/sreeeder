@@ -130,3 +130,10 @@ fun SettingsAnalyticsSwitch(
 fun SettingsAppVersion() {
     SettingsText(stringResource(R.string.settings_app_version, BuildConfig.VERSION_NAME))
 }
+
+@Composable
+fun SettingsExportOpml(viewModel: SettingsViewModel) {
+    SettingsText(stringResource(R.string.settings_export_opml)) {
+        viewModel.onExportOpmlClick()
+    }
+}

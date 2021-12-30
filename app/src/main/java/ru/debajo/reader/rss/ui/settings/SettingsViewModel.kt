@@ -1,16 +1,24 @@
 package ru.debajo.reader.rss.ui.settings
 
+import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.debajo.reader.rss.data.dump.FileSaver
+import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
+import ru.debajo.reader.rss.ui.arch.SingleLiveEvent
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
+import timber.log.Timber
 
 class SettingsViewModel(
     private val analytics: Analytics,
@@ -18,6 +26,8 @@ class SettingsViewModel(
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler,
     private val analyticsEnabledManager: AnalyticsEnabledManager,
+    private val fileSaver: FileSaver,
+    private val opmlDumper: OpmlDumper,
 ) : BaseViewModel() {
 
     private val stateMutable: MutableStateFlow<SettingsState> = MutableStateFlow(
@@ -25,8 +35,12 @@ class SettingsViewModel(
             supportDynamicTheme = appThemeProvider.supportDynamicTheme(),
         )
     )
-
     val state: StateFlow<SettingsState> = stateMutable
+
+    private val exportOpmlClickEventMutable: MutableLiveData<String> = SingleLiveEvent()
+    val exportOpmlClickEvent: LiveData<String> = exportOpmlClickEventMutable
+    private val snackBarMutable: MutableStateFlow<SnackbarState> = MutableStateFlow(SnackbarState("", false))
+    val snackBar: StateFlow<SnackbarState> = snackBarMutable
 
     init {
         launch {
@@ -39,6 +53,10 @@ class SettingsViewModel(
                 )
             }
         }
+    }
+
+    fun onExportOpmlClick() {
+        exportOpmlClickEventMutable.value = fileSaver.createFileName("dump", "opml")
     }
 
     fun setAnalyticsEnabled(enabled: Boolean) {
@@ -82,6 +100,29 @@ class SettingsViewModel(
 
             copy(backgroundUpdates = newBackgroundUpdates)
         }
+    }
+
+    fun writeOpmlDump(opmlFileUri: Uri) {
+        launch(IO) {
+            runCatching {
+                val xml = opmlDumper.dump()
+                fileSaver.writeFile(opmlFileUri, xml)
+            }.onSuccess {
+                showSnackBar("Выгружено успешно")
+            }.onFailure {
+                Timber.tag("SettingsViewModel").e(it)
+                showSnackBar("Выгружено неуспешно")
+            }
+        }
+    }
+
+    data class SnackbarState(val message: String, val visible: Boolean = true)
+
+    private suspend fun showSnackBar(message: String) {
+        val snackbar = SnackbarState(message)
+        snackBarMutable.value = snackbar
+        delay(2000)
+        snackBarMutable.value = snackbar.copy(visible = false)
     }
 
     private inline fun updateState(block: SettingsState.() -> SettingsState) {

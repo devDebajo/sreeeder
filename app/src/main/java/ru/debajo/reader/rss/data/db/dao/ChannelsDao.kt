@@ -26,5 +26,8 @@ interface ChannelsDao {
 
     @Query("DELETE FROM dbchannel WHERE url=:url")
     suspend fun remove(url: String)
+
+    @Query("SELECT * FROM dbchannel WHERE url IN (SELECT url FROM dbchannelsubscription)")
+    suspend fun getAllSubscribed(): List<DbChannel>
 }
 

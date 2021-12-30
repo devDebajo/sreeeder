@@ -59,7 +59,7 @@ fun MainScreen(
             composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, scrollController, feedListViewModel) }
             composable(channelsTab.navigation.route) { ChannelsList(innerPadding, parentController, scrollController, channelsViewModel) }
             composable(favoritesTab.navigation.route) { BookmarksList(innerPadding, parentController, scrollController, bookmarksListViewModel) }
-            composable(settingsTab.navigation.route) { SettingsList(parentController, settingsViewModel) }
+            composable(settingsTab.navigation.route) { SettingsList(innerPadding, parentController, settingsViewModel) }
         }
     }
 }

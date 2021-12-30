@@ -18,6 +18,8 @@ import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_1_2
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_2_3
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_3_4
+import ru.debajo.reader.rss.data.dump.FileSaver
+import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.AppThemePreference
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
@@ -134,6 +136,8 @@ val DbModule = module {
     single { get<RssDatabase>(RssDatabase::class.java).newArticlesDao() }
     single { CacheManager(get()) }
     single { RssLoadDbManager(get(), get(), get(), get(), get(), get()) }
+    single { OpmlDumper(get()) }
+    single { FileSaver(get()) }
 }
 
 val RepositoryModule = module {
@@ -155,7 +159,7 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }
