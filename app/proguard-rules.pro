@@ -52,3 +52,8 @@
 -keepclassmembers public class * {
    public <init>(...);
 }
+
+-keep class org.kobjects.** { *; }
+-keep class org.ksoap2.** { *; }
+-keep class org.kxml2.** { *; }
+-keep class org.xmlpull.** { *; }

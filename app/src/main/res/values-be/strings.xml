@@ -26,7 +26,7 @@
     <string name="settings_export_opml_fail">Экспарт у OPML не атрымаўся</string>
     <string name="settings_import_opml">Імпарт з OPML</string>
     <string name="settings_import_opml_success">Паспяхова імпартавана з OPML</string>
-    <string name="settings_import_opml_fail">Імпартавана з OPML не атрымаўся</string>
+    <string name="settings_import_opml_fail">Імпарт з OPML не атрымаўся</string>
 
     <string name="add_channel_title">Пошук каналаў</string>
     <string name="add_channel_load">Пошук</string>
