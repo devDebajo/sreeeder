@@ -24,6 +24,11 @@
     <string name="settings_analytics_alert_ok">Отключить</string>
     <string name="settings_analytics_alert_cancel">Отмена</string>
     <string name="settings_export_opml">Экспорт в OPML</string>
+    <string name="settings_export_opml_success">Успешно экспортирано в OPML</string>
+    <string name="settings_export_opml_fail">Экспорт в OPML не удался</string>
+    <string name="settings_import_opml">Импорт из OPML</string>
+    <string name="settings_import_opml_success">Успешно импортировано из OPML</string>
+    <string name="settings_import_opml_fail">Импортировано из OPML не удался</string>
 
     <string name="add_channel_title">Поиск каналов</string>
     <string name="add_channel_load">Поиск</string>

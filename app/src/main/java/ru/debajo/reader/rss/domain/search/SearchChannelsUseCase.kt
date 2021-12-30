@@ -4,6 +4,7 @@ import android.net.Uri
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
+import ru.debajo.reader.rss.data.db.await
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.model.RemoteChannelUrl
@@ -90,12 +91,6 @@ class SearchChannelsUseCase(
 
     private fun loadChannelInner(url: String): Flow<RssLoadDbManager.ChannelLoadingState> {
         return rssLoadDbManager.refreshChannel(DomainChannelUrl(url.trimLastSlash()), false)
-    }
-
-    private suspend fun Flow<RssLoadDbManager.ChannelLoadingState>.await(): DomainChannel? {
-        return filter { it is RssLoadDbManager.ChannelLoadingState.UpToDate || it is RssLoadDbManager.ChannelLoadingState.Error }
-            .map { (it as? RssLoadDbManager.ChannelLoadingState.UpToDate)?.channel }
-            .firstOrNull()
     }
 
     private fun <T> Flow<List<T>>.ignoreError(): Flow<List<T>> {

@@ -34,6 +34,14 @@ class Analytics(
         logEvent("bookmark_remove")
     }
 
+    fun onImportOpml() {
+        logEvent("import_opml")
+    }
+
+    fun onExportOpml() {
+        logEvent("export_opml")
+    }
+
     fun setDynamicThemeUserProperty(value: Boolean) {
         setUserProperty("dynamic_theme_enabled", value)
     }

@@ -21,6 +21,12 @@
     <string name="settings_analytics_alert_message">Прыкладанне збірае аналітыку і якія ўзнікаюць памылкі ананімна і выключна ў мэтах паляпшэння яго якасці і стабільнасці. Адключаючы гэтую опцыю вы пацвярджаеце, што дадзенае прыкладанне перастане адпраўляць статыстыку сваёй працы і якія ўзнікаюць памылкі распрацоўніку</string>
     <string name="settings_analytics_alert_ok">Адключыць</string>
     <string name="settings_analytics_alert_cancel">Адмена</string>
+    <string name="settings_export_opml">Экспарт у OPML</string>
+    <string name="settings_export_opml_success">Паспяхова экспартавана ў OPML</string>
+    <string name="settings_export_opml_fail">Экспарт у OPML не атрымаўся</string>
+    <string name="settings_import_opml">Імпарт з OPML</string>
+    <string name="settings_import_opml_success">Паспяхова імпартавана з OPML</string>
+    <string name="settings_import_opml_fail">Імпартавана з OPML не атрымаўся</string>
 
     <string name="add_channel_title">Пошук каналаў</string>
     <string name="add_channel_load">Пошук</string>

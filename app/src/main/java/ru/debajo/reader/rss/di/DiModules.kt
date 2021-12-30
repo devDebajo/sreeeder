@@ -38,6 +38,7 @@ import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.ChannelsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsUseCase
+import ru.debajo.reader.rss.domain.channel.SubscribeChannelsListUseCase
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
@@ -155,11 +156,12 @@ val UseCaseModule = module {
     single { SearchChannelsUseCase(get(), get(), get()) }
     single { NewArticlesUseCase(get(), get()) }
     single { ClearArticlesUseCase(get(), get(), get()) }
+    single { SubscribeChannelsListUseCase(get(), get()) }
 }
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }

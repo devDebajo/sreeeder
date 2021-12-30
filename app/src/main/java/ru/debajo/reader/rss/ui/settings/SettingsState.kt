@@ -12,6 +12,7 @@ data class SettingsState(
     val backgroundUpdates: Boolean = true,
     val analyticsEnabled: Boolean = true,
     val showAnalyticsAlertDialog: Boolean = false,
+    val importing: Boolean = false,
 ) {
 
     val dropDownThemes: List<AppTheme>

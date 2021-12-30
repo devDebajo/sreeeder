@@ -6,10 +6,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
 import ru.debajo.reader.rss.data.converter.toDb
 import ru.debajo.reader.rss.data.converter.toDbList
@@ -146,4 +143,10 @@ class RssLoadDbManager(
     private companion object {
         const val CHANNEL_URL_CACHE_PREFIX = "channel_cache_"
     }
+}
+
+suspend fun Flow<RssLoadDbManager.ChannelLoadingState>.await(): DomainChannel? {
+    return filter { it is RssLoadDbManager.ChannelLoadingState.UpToDate || it is RssLoadDbManager.ChannelLoadingState.Error }
+        .map { (it as? RssLoadDbManager.ChannelLoadingState.UpToDate)?.channel }
+        .firstOrNull()
 }

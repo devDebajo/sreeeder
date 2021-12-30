@@ -16,8 +16,14 @@ class FileSaver(
 
     @WorkerThread
     fun writeFile(uri: Uri, data: String) {
-        context.contentResolver.openOutputStream(uri)
-            ?.bufferedWriter()
-            ?.use { it.write(data) }
+        val stream = context.contentResolver.openOutputStream(uri) ?: throw IllegalStateException()
+        stream.bufferedWriter().use { it.write(data) }
+    }
+
+    @WorkerThread
+    fun readFileRaw(uri: Uri): String? {
+        return context.contentResolver.openInputStream(uri)
+            ?.bufferedReader()
+            ?.use { it.readText() }
     }
 }

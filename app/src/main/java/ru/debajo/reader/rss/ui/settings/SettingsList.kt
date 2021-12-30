@@ -47,6 +47,7 @@ fun SettingsList(
             ) {
                 SettingsBackgroundUpdatesSwitch(state, viewModel)
                 SettingsExportOpml(viewModel)
+                SettingsImportOpml(viewModel)
             }
             SettingsGroup(
                 title = stringResource(R.string.settings_group_view),

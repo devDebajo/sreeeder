@@ -21,6 +21,12 @@
     <string name="settings_analytics_alert_message">This application collects analytics and errors that occur anonymously and solely for the purpose of improving its quality and stability. By disabling this option, you confirm that this application will stop sending statistics of its work and emerging errors to the developer</string>
     <string name="settings_analytics_alert_ok">Disable</string>
     <string name="settings_analytics_alert_cancel">Cancel</string>
+    <string name="settings_export_opml">Export to OPML</string>
+    <string name="settings_export_opml_success">Exported successfully to OPML</string>
+    <string name="settings_export_opml_fail">Export to OPML failed</string>
+    <string name="settings_import_opml">Import from OPML</string>
+    <string name="settings_import_opml_success">Successfully imported from OPML</string>
+    <string name="settings_import_opml_fail">Imported from OPML failed</string>
 
     <string name="add_channel_title">Search channels</string>
     <string name="add_channel_load">Search</string>

@@ -21,6 +21,12 @@
     <string name="settings_analytics_alert_message">Додаток збирає аналітику та помилки, що виникають, анонімно і виключно з метою поліпшення його якості та стабільності. Відключаючи цю опцію ви підтверджуєте, що цей додаток перестане відправляти статистику своєї роботи і помилки, що виникають, розробнику</string>
     <string name="settings_analytics_alert_ok">Вимкнути</string>
     <string name="settings_analytics_alert_cancel">Відміна</string>
+    <string name="settings_export_opml">Експорт у OPML</string>
+    <string name="settings_export_opml_success">Успішно експортовано до OPML</string>
+    <string name="settings_export_opml_fail">Експорт до OPML не вдалося</string>
+    <string name="settings_import_opml">Імпорт із OPML</string>
+    <string name="settings_import_opml_success">Успішно імпортовано із OPML</string>
+    <string name="settings_import_opml_fail">Імпортовано з OPML не вдалося</string>
 
     <string name="add_channel_title">Пошук каналів</string>
     <string name="add_channel_load">Пошук</string>

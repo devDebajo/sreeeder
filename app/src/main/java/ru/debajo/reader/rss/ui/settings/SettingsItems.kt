@@ -5,9 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,6 +21,7 @@ import androidx.navigation.NavController
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.ext.colorInt
+import ru.debajo.reader.rss.ui.ext.optionalClickable
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.theme.AppTheme
@@ -135,5 +139,29 @@ fun SettingsAppVersion() {
 fun SettingsExportOpml(viewModel: SettingsViewModel) {
     SettingsText(stringResource(R.string.settings_export_opml)) {
         viewModel.onExportOpmlClick()
+    }
+}
+
+@Composable
+fun SettingsImportOpml(viewModel: SettingsViewModel) {
+    val state by viewModel.state.collectAsState()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .optionalClickable { viewModel.onImportOpmlClick() }
+    ) {
+        Text(
+            modifier = Modifier.padding(vertical = 18.dp, horizontal = 16.dp),
+            text = stringResource(R.string.settings_import_opml),
+            fontSize = 14.sp
+        )
+        if (state.importing) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                strokeWidth = 1.dp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }

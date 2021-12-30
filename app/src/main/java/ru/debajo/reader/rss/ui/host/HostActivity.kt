@@ -38,15 +38,22 @@ class HostActivity : ComponentActivity() {
             settingsViewModel.writeOpmlDump(it)
         }
     }
+    private val openDocumentLauncher: ActivityResultLauncher<Array<String>> = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+        if (it != null) {
+            settingsViewModel.readOpmlDump(it)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             hostViewModel.refreshFeed()
         }
-        settingsViewModel.exportOpmlClickEvent.observe(this) { fileName ->
-            createDocumentLauncher.launch(fileName)
+        with(settingsViewModel) {
+            exportOpmlClickEvent.observe(this@HostActivity) { fileName -> createDocumentLauncher.launch(fileName) }
+            importOpmlClickEvent.observe(this@HostActivity) { openDocumentLauncher.launch(arrayOf("*/*")) }
         }
+
         setContent {
             val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()

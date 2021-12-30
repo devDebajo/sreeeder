@@ -17,6 +17,16 @@ class ChannelsSubscriptionsRepository(
     private val dao: ChannelSubscriptionsDao,
     private val analytics: Analytics,
 ) {
+    suspend fun subscribeIfNeed(url: DomainChannelUrl) {
+        withContext(IO) {
+            val isSubscribed = isSubscribed(url).first()
+            if (!isSubscribed) {
+                dao.add(DbChannelSubscription(url.url, DbDateTime.now()))
+                analytics.onSubscribeChannel()
+            }
+        }
+    }
+
     suspend fun toggle(url: DomainChannelUrl) {
         return withContext(IO) {
             val isSubscribed = isSubscribed(url).first()

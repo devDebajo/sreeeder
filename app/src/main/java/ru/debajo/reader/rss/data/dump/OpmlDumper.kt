@@ -1,10 +1,13 @@
 package ru.debajo.reader.rss.data.dump
 
+import be.ceau.opml.OpmlParser
 import be.ceau.opml.OpmlWriter
 import be.ceau.opml.entity.Body
 import be.ceau.opml.entity.Head
 import be.ceau.opml.entity.Opml
 import be.ceau.opml.entity.Outline
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.withContext
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import ru.debajo.reader.rss.data.db.dao.ChannelsDao
@@ -15,6 +18,14 @@ class OpmlDumper(
     suspend fun dump(): String {
         val opml = Opml("1.0", createHead(), Body(createOutlines()))
         return OpmlWriter().write(opml)
+    }
+
+    suspend fun parse(opmlRaw: String): List<String> {
+        return withContext(Default) {
+            val opml = OpmlParser().parse(opmlRaw)
+            opml.body.outlines
+                .mapNotNull { it.getAttribute("xmlUrl") }
+        }
     }
 
     private suspend fun createOutlines(): List<Outline> {
