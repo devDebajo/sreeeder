@@ -149,7 +149,7 @@ val UseCaseModule = module {
     single { FeedListUseCase(get(), get()) }
     single { LoadArticlesUseCase(get(), get(), get()) }
     single { SearchChannelsUseCase(get(), get(), get()) }
-    single { NewArticlesUseCase(get()) }
+    single { NewArticlesUseCase(get(), get()) }
     single { ClearArticlesUseCase(get(), get(), get()) }
 }
 

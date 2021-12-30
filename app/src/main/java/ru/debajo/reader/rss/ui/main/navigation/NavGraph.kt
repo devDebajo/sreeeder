@@ -1,9 +1,6 @@
 package ru.debajo.reader.rss.ui.main.navigation
 
 import android.content.Intent
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabColorSchemeParams
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
@@ -49,24 +46,7 @@ object NavGraph {
 
         override fun navigate(navController: NavController, data: ChromeTabsParams) {
             val context = navController.context
-            val defaultColors = CustomTabColorSchemeParams.Builder()
-                .apply {
-                    if (data.toolbarColor != null) {
-                        setToolbarColor(data.toolbarColor)
-                    }
-                }
-                .build()
-            val intent = CustomTabsIntent.Builder()
-                .setDefaultColorSchemeParams(defaultColors)
-                .setShowTitle(true)
-                .setUrlBarHidingEnabled(true)
-                .setInstantAppsEnabled(true)
-                .setStartAnimations(context, android.R.anim.fade_in, android.R.anim.fade_out)
-                .setExitAnimations(context, android.R.anim.fade_in, android.R.anim.fade_out)
-                .setShareState(CustomTabsIntent.SHARE_STATE_ON)
-                .build()
-
-            intent.launchUrl(context, Uri.parse(data.url))
+            ChromeTabsLauncher.launch(context, data)
         }
     }
 

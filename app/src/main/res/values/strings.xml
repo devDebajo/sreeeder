@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sreeeder</string>
+    <string name="app_name" translatable="false">Sreeeder</string>
 
     <string name="screen_feed">Лента</string>
     <string name="screen_channels">Каналы</string>
@@ -38,6 +38,7 @@
     <string name="article_date_time_yesterday">Вчера в %s</string>
 
     <string name="feed_is_empty">Ваша лента пуста, подпишитесь на интересные вам RSS-каналы</string>
+    <string name="feed_only_new">Только новые</string>
     <string name="channels_is_empty">У вас нет подписок на каналы. Подпишитесь же на свой первый канал :-)</string>
     <string name="bookmarks_is_empty">Добавьте статьи в закладки и они будут на этом экране</string>
 

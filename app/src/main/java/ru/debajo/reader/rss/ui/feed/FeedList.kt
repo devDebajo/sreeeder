@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
@@ -43,7 +44,15 @@ fun FeedList(
         SwipeRefresh(
             modifier = Modifier.fillMaxSize(),
             state = rememberSwipeRefreshState(isRefreshing),
-            onRefresh = { viewModel.onPullToRefresh() }
+            onRefresh = { viewModel.onPullToRefresh() },
+            indicator = { refreshState, trigger ->
+                SwipeRefreshIndicator(
+                    state = refreshState,
+                    refreshTriggerDistance = trigger,
+                    backgroundColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.primary,
+                )
+            },
         ) {
             if (state.articles.isEmpty() && !isRefreshing) {
                 Box(Modifier.fillMaxSize()) {

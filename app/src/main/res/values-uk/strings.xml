@@ -36,6 +36,7 @@
     <string name="article_date_time_yesterday">Вчора в %s</string>
 
     <string name="feed_is_empty">Ваша стрічка порожня, підпишіться на цікаві вам RSS-канали</string>
+    <string name="feed_only_new">Тільки нові</string>
     <string name="channels_is_empty">У вас немає передплат на канали. Підпишіться на свій перший канал :-)</string>
     <string name="bookmarks_is_empty">Додайте статті до закладок і вони будуть на цьому екрані</string>
 

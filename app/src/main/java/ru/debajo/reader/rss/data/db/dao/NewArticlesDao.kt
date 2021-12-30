@@ -18,9 +18,9 @@ interface NewArticlesDao {
     @Query("DELETE FROM dbnewarticle WHERE channelUrl IN (:channelUrl)")
     suspend fun removeByChannelUrl(channelUrl: String)
 
-    @Query("SELECT articleId FROM dbnewarticle")
+    @Query("SELECT articleId FROM dbnewarticle WHERE channelUrl IN (SELECT url FROM dbchannelsubscription)")
     suspend fun getAllIds(): List<String>
 
-    @Query("SELECT articleId FROM dbnewarticle WHERE channelUrl IN (SELECT articleId FROM dbchannelsubscription)")
+    @Query("SELECT articleId FROM dbnewarticle WHERE channelUrl IN (SELECT url FROM dbchannelsubscription)")
     fun observeIds(): Flow<List<String>>
 }

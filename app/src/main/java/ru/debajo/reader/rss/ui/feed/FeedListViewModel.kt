@@ -30,16 +30,16 @@ class FeedListViewModel(
 ) : BaseViewModel() {
 
     private var refreshingJob: Job? = null
-    private val stateMutable: MutableStateFlow<FeedListState> = MutableStateFlow(FeedListState(emptyList()))
+    private val stateMutable: MutableStateFlow<FeedListState> = MutableStateFlow(FeedListState(emptyList(), false))
     private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val state: MutableStateFlow<FeedListState> = stateMutable
+    val state: StateFlow<FeedListState> = stateMutable
     val isRefreshing: StateFlow<Boolean> = isRefreshingMutable
 
     init {
         launch(IO) {
             useCase()
-                .map { domain -> prepareState(domain) }
+                .map { domain -> prepareState(state.value, domain) }
                 .distinctUntilChanged()
                 .collectTo(stateMutable)
         }
@@ -74,12 +74,19 @@ class FeedListViewModel(
         }
     }
 
+    fun onOnlyNewArticlesClick(checked: Boolean) {
+        updateState {
+            copy(showOnlyNewArticles = checked)
+        }
+    }
+
     override fun onCleared() {
         launch { newArticlesUseCase.saveViewedArticles() }
         super.onCleared()
     }
 
     private suspend fun prepareState(
+        currentState: FeedListState,
         loadedArticles: List<LoadArticlesUseCase.EnrichedDomainArticle>
     ): FeedListState {
         val newArticlesIds = newArticlesUseCase.getNewIds()
@@ -90,6 +97,10 @@ class FeedListViewModel(
                 isNew = article.article.id in newArticlesIds
             )
         }.sortedByDescending { it.timestamp }
-        return FeedListState(articles)
+        return currentState.copy(allArticles = articles)
+    }
+
+    private fun updateState(block: FeedListState.() -> FeedListState) {
+        stateMutable.value = stateMutable.value.block()
     }
 }
