@@ -90,9 +90,7 @@ private fun MainScaffold(
                 )
 
                 val feedState by feedViewModel.state.collectAsState()
-                if (selectedTab == 0
-                    //&& feedState.showOnlyNewArticlesButtonVisible
-                ) {
+                if (selectedTab == 0 && feedState.showOnlyNewArticlesButtonVisible) {
                     MainScreenTopBarActions(feedState, feedViewModel)
                 }
             }
