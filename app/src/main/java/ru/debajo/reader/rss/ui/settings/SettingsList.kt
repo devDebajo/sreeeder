@@ -15,6 +15,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -79,6 +81,12 @@ fun SettingsList(
             enter = slideInHorizontally { it },
             exit = slideOutHorizontally { it },
         ) {
+            val haptic = LocalHapticFeedback.current
+            LaunchedEffect(key1 = snackBar.visible, block = {
+                if (snackBar.visible) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+            })
             Box(
                 Modifier
                     .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)

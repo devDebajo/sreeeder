@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +33,7 @@ import org.joda.time.LocalDate
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.ext.hapticClickable
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -82,13 +83,17 @@ fun ChannelArticle(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(Modifier.weight(1f)) {
                     article.categories.firstOrNull()?.let { CategoryText(it) }
                 }
                 Icon(
-                    modifier = Modifier.clickable { onFavoriteClick(article) },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .hapticClickable(HapticFeedbackType.LongPress) { onFavoriteClick(article) }
+                        .padding(10.dp),
                     imageVector = if (article.bookmarked) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
                     contentDescription = null
                 )

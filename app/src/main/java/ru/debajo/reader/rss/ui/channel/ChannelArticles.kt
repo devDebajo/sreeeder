@@ -9,6 +9,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -44,12 +46,14 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                 },
                 actions = {
                     val isSubscribed by viewModel.isSubscribed.collectAsState()
+                    val haptic = LocalHapticFeedback.current
                     TextButton(onClick = {
                         if (isSubscribed) {
                             unsubscribeDialogVisible.value = true
                         } else {
                             viewModel.onSubscribeClick(channel)
                         }
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }) {
                         val stringRes = if (isSubscribed) R.string.channel_you_subscribed else R.string.channel_subscribe
                         Text(stringResource(stringRes).uppercase())

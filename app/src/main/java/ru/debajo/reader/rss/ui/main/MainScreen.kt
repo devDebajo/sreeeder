@@ -1,6 +1,9 @@
 package ru.debajo.reader.rss.ui.main
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
@@ -9,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,12 +90,10 @@ private fun MainScaffold(
                 )
 
                 val feedState by feedViewModel.state.collectAsState()
-                if (selectedTab == 0 && feedState.showOnlyNewArticlesButtonVisible) {
-                    Text(stringResource(R.string.feed_only_new), fontSize = 10.sp)
-                    Checkbox(checked = feedState.showOnlyNewArticles, onCheckedChange = {
-                        feedViewModel.onOnlyNewArticlesClick(it)
-                    })
-                    Spacer(Modifier.width(16.dp))
+                if (selectedTab == 0
+                    //&& feedState.showOnlyNewArticlesButtonVisible
+                ) {
+                    MainScreenTopBarActions(feedState, feedViewModel)
                 }
             }
         },
@@ -106,6 +106,7 @@ private fun MainScaffold(
                     Item(
                         tab = tab,
                         selected = currentDestination?.hierarchy?.any { it.route == tab.navigation.route } == true,
+                        badgeCount = if (tab === feedTab) feedBadgeCount else 0,
                         onClick = {
                             if (selectedTab != index) {
                                 viewModel.updateSelectedTab(index)
@@ -114,7 +115,6 @@ private fun MainScaffold(
                                 scrollController.scrollToTop(tab.navigation.route)
                             }
                         },
-                        badgeCount = if (tab === feedTab) feedBadgeCount else 0
                     )
                 }
             }

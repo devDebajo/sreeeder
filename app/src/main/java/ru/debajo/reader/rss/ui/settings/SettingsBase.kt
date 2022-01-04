@@ -14,6 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -61,9 +63,13 @@ fun SettingsSwitch(text: String, checked: Boolean, onClick: () -> Unit) {
                 .weight(1f)
         )
 
+        val haptic = LocalHapticFeedback.current
         Switch(
             checked = checked,
-            onCheckedChange = { onClick() },
+            onCheckedChange = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                onClick()
+            },
             colors = SwitchDefaults.colors(
                 checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 uncheckedThumbColor = MaterialTheme.colorScheme.onSecondary,

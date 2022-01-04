@@ -80,6 +80,12 @@ class FeedListViewModel(
         }
     }
 
+    fun onMarkAllAsRead() {
+        launch(IO) {
+            newArticlesUseCase.markAllAsRead()
+        }
+    }
+
     override fun onCleared() {
         launch { newArticlesUseCase.saveViewedArticles() }
         super.onCleared()

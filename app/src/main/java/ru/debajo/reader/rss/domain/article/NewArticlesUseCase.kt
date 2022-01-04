@@ -34,7 +34,7 @@ class NewArticlesUseCase(
         }
         if (ids.isNotEmpty()) {
             newArticlesRepository.onViewed(ids)
-            localIdsChanged.emit(System.currentTimeMillis())
+            localIdsChanged.notify()
         }
     }
 
@@ -46,11 +46,21 @@ class NewArticlesUseCase(
         }
         viewedArticlesIds.add(article.id)
         mutex.unlock()
-        localIdsChanged.emit(System.currentTimeMillis())
+        localIdsChanged.notify()
     }
 
     suspend fun getNewIds(): Set<String> {
         return newArticlesRepository.getNewArticlesIds() - getViewedArticlesIdsThreadSafe()
+    }
+
+    suspend fun markAllAsRead() {
+        mutex.withLock { viewedArticlesIds.clear() }
+        newArticlesRepository.removeAll()
+        localIdsChanged.notify()
+    }
+
+    private suspend fun MutableStateFlow<Long>.notify() {
+        emit(System.currentTimeMillis())
     }
 
     private suspend fun getViewedArticlesIdsThreadSafe(): Set<String> {

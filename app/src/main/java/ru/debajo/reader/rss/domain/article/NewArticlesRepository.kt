@@ -27,5 +27,9 @@ class NewArticlesRepository(
         withContext(IO) { newArticlesDao.removeByChannelUrl(channelUrl.url) }
     }
 
+    suspend fun removeAll() {
+        withContext(IO) { newArticlesDao.removeAll() }
+    }
+
     fun observeIds(): Flow<Set<String>> = newArticlesDao.observeIds().map { it.toSet() }
 }
