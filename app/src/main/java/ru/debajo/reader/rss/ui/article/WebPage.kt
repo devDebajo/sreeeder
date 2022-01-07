@@ -3,24 +3,21 @@ package ru.debajo.reader.rss.ui.article
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -33,83 +30,98 @@ import ru.debajo.reader.rss.ui.article.parser.WebPageParser
 import ru.debajo.reader.rss.ui.article.parser.WebPageToken
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenDecoration
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenStyle
+import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WebPage(modifier: Modifier = Modifier, navController: NavController, htmlContent: String) {
+    val tokens = remember(htmlContent) { WebPageParser.parse(htmlContent) }
+    val scrollState = rememberLazyListState()
     Scaffold(modifier = modifier) {
-        val tokens = remember(htmlContent) { WebPageParser.parse(htmlContent) }
-        WebPageTokens(tokens, navController)
-    }
-}
-
-@Composable
-private fun WebPageTokens(tokens: List<WebPageToken>, navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        for (token in tokens) {
-            when (token) {
-                is WebPageToken.Image -> {
-                    Image(
-                        painter = rememberImagePainter(token.url, builder = { size(OriginalSize) }),
-                        contentScale = ContentScale.FillWidth,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(18.dp)),
-                    )
-                }
-                is WebPageToken.Text -> {
-                    if (token.decoration == null) {
-                        TextToken(token, navController)
-                    } else {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            var textHeight by remember { mutableStateOf(0) }
-                            when (token.decoration) {
-                                is WebPageTokenDecoration.Bullet -> {
-                                    Box(
-                                        Modifier
-                                            .size(7.dp)
-                                            .clip(RoundedCornerShape(10.dp))
-                                            .background(LocalContentColor.current)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                }
-                                is WebPageTokenDecoration.Quote -> {
-                                    val height = with(LocalDensity.current) { textHeight.toDp() }
-                                    Box(
-                                        Modifier
-                                            .width(2.dp)
-                                            .height(height)
-                                            .background(MaterialTheme.colorScheme.primary)
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                }
-                            }
-                            TextToken(token, navController) { textHeight = it }
-                        }
-                    }
-                }
-            }
+        Column {
+            Box(
+                Modifier
+                    .height(30.dp)
+                    //.fillMaxWidth(scrollState.firstVisibleItemIndex.toFloat() / tokens.size.toFloat())
+                    .background(Color.Red)
+            )
+            WebPageTokens(scrollState, tokens, navController)
         }
     }
 }
 
 @Composable
-private fun TextToken(token: WebPageToken.Text, navController: NavController, heightProvider: (Int) -> Unit = {}) {
+private fun WebPageTokens(state: LazyListState, tokens: List<WebPageToken>, navController: NavController) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        state = state,
+    ) {
+        items(
+            count = tokens.size,
+            key = { tokens[it].start },
+            itemContent = {
+                when (val token = tokens[it]) {
+                    is WebPageToken.Image -> {
+                        Image(
+                            painter = rememberImagePainter(token.url, builder = { size(OriginalSize) }),
+                            contentScale = ContentScale.FillWidth,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(18.dp)),
+                        )
+                    }
+                    is WebPageToken.Text -> {
+                        if (token.decoration == null) {
+                            TextToken(token, navController)
+                        } else {
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                var lineHeight by remember { mutableStateOf(0f) }
+                                var textHeight by remember { mutableStateOf(0) }
+                                when (token.decoration) {
+                                    is WebPageTokenDecoration.Bullet -> {
+                                        Box(
+                                            Modifier
+                                                .offset(y = (lineHeight.pxToDp() - 7.dp) / 2f)
+                                                .size(7.dp)
+                                                .clip(RoundedCornerShape(10.dp))
+                                                .background(LocalContentColor.current)
+                                        )
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                    }
+                                    is WebPageTokenDecoration.Quote -> {
+                                        Box(
+                                            Modifier
+                                                .width(2.dp)
+                                                .height(textHeight.pxToDp())
+                                                .background(MaterialTheme.colorScheme.primary)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                    }
+                                }
+                                TextToken(token, navController) {
+                                    lineHeight = it.getLineTop(1)
+                                    textHeight = it.size.height
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun TextToken(token: WebPageToken.Text, navController: NavController, onTextLayout: (TextLayoutResult) -> Unit = {}) {
     val text = buildStyledText(token)
     ClickableText(
         text = text,
-        onTextLayout = { heightProvider(it.size.height) },
+        onTextLayout = { onTextLayout(it) },
         style = TextStyle.Default.copy(LocalContentColor.current, fontSize = 16.sp),
         onClick = {
             text.getStringAnnotations("URL", it, it)
