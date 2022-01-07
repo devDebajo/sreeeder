@@ -9,6 +9,7 @@ sealed interface WebPageToken {
     data class Text(
         val text: String,
         val styles: List<WebPageTokenStyle> = emptyList(),
+        val decoration: WebPageTokenDecoration? = null,
         override val start: Int = 0,
         override val end: Int = start + text.length
     ) : WebPageToken

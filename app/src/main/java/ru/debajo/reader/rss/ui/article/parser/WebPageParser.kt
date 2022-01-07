@@ -3,10 +3,10 @@ package ru.debajo.reader.rss.ui.article.parser
 import android.graphics.Typeface
 import android.text.Spanned
 import android.text.style.*
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.core.text.HtmlCompat
 import androidx.core.text.getSpans
+import timber.log.Timber
 
 object WebPageParser {
     fun parse(html: String): List<WebPageToken> {
@@ -42,15 +42,17 @@ object WebPageParser {
                     }
                 }
 
-                is UnderlineSpan -> {
-                    result.insertStyle(WebPageTokenStyle.Underline(spanStart, spanEnd))
-                }
+                is UnderlineSpan -> result.insertStyle(WebPageTokenStyle.Underline(spanStart, spanEnd))
 
                 is ForegroundColorSpan -> {
                     result.insertStyle(WebPageTokenStyle.ForegroundColor(Color(span.foregroundColor), spanStart, spanEnd))
                 }
 
-                else -> Log.d("yopta", "unknown span type ${span.javaClass.simpleName}")
+                is BulletSpan -> result.insertBullet(spanStart, spanEnd)
+
+                is QuoteSpan -> result.insertQuote(spanStart, spanEnd)
+
+                else -> Timber.tag("WebPageParser").d("Unknown span type ${span.javaClass.simpleName}")
             }
         }
 
@@ -58,34 +60,7 @@ object WebPageParser {
     }
 
     private fun MutableList<WebPageToken>.insertImage(start: Int, url: String) {
-        val tokenToSplitIndex = indexOfFirst { start in it }
-        val tokenToSplit = getOrNull(tokenToSplitIndex) ?: return
-        if (tokenToSplit !is WebPageToken.Text) {
-            return
-        }
-        try {
-            val leadingTokenText = tokenToSplit.text.substring(0, start - tokenToSplit.start)
-            val leadingToken = WebPageToken.Text(
-                text = leadingTokenText,
-                start = tokenToSplit.start,
-                end = start - 1
-            ).obtainStyles(tokenToSplit.styles)
-
-            val imageToken = WebPageToken.Image(url, start)
-
-            val trailingText = tokenToSplit.text.substring(leadingTokenText.length + 1)
-            val trailingToken = WebPageToken.Text(
-                text = trailingText,
-                start = start + 1
-            ).obtainStyles(tokenToSplit.styles)
-
-            removeAt(tokenToSplitIndex)
-            add(tokenToSplitIndex, leadingToken)
-            add(tokenToSplitIndex + 1, imageToken)
-            add(tokenToSplitIndex + 2, trailingToken)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
+        splitTextToken(start, start + 1) { _, _ -> WebPageToken.Image(url, start) }
     }
 
     private fun MutableList<WebPageToken>.insertStyle(style: WebPageTokenStyle) {
@@ -102,7 +77,66 @@ object WebPageParser {
                 targetToken.copy(styles = targetToken.styles + listOf(style))
             )
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Timber.tag("WebPageParser").e(e)
+        }
+    }
+
+    private fun MutableList<WebPageToken>.insertBullet(start: Int, end: Int) {
+        splitTextToken(start, end) { tokenToSplit, text ->
+            WebPageToken.Text(
+                text = text,
+                decoration = WebPageTokenDecoration.Bullet,
+                start = start,
+                end = end,
+            ).obtainStyles(tokenToSplit.styles)
+        }
+    }
+
+    private fun MutableList<WebPageToken>.insertQuote(start: Int, end: Int) {
+        splitTextToken(start, end) { tokenToSplit, text ->
+            WebPageToken.Text(
+                text = text,
+                decoration = WebPageTokenDecoration.Quote,
+                start = start,
+                end = end,
+            ).obtainStyles(tokenToSplit.styles)
+        }
+    }
+
+    private fun MutableList<WebPageToken>.splitTextToken(
+        start: Int,
+        end: Int,
+        middleFactory: (tokenToSplit: WebPageToken.Text, text: String) -> WebPageToken
+    ) {
+        val tokenToSplitIndex = indexOfFirst { start in it }
+        val tokenToSplit = getOrNull(tokenToSplitIndex) ?: return
+        if (tokenToSplit !is WebPageToken.Text) {
+            return
+        }
+        val middleTokenSize = end - start
+        try {
+            val leadingTokenText = tokenToSplit.text.substring(0, start - tokenToSplit.start)
+            val leadingToken = WebPageToken.Text(
+                text = leadingTokenText,
+                start = tokenToSplit.start,
+                end = start - 1
+            ).obtainStyles(tokenToSplit.styles)
+
+            val middleTokenText = tokenToSplit.text.substring(start - tokenToSplit.start, leadingTokenText.length + middleTokenSize)
+            val middleToken = middleFactory(tokenToSplit, middleTokenText)
+
+            val trailingText = tokenToSplit.text.substring(leadingTokenText.length + middleTokenSize)
+            val trailingToken = WebPageToken.Text(
+                text = trailingText,
+                start = start + middleTokenSize
+            ).obtainStyles(tokenToSplit.styles)
+
+            removeAt(tokenToSplitIndex)
+            add(tokenToSplitIndex, leadingToken)
+            add(tokenToSplitIndex + 1, middleToken)
+            add(tokenToSplitIndex + 2, trailingToken)
+        } catch (e: Throwable) {
+            Timber.tag("WebPageParser").e(e)
         }
     }
 }
