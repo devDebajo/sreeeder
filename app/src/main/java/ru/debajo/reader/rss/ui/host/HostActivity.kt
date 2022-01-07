@@ -7,13 +7,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
+import ru.debajo.reader.rss.ui.article.WebPage
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
@@ -80,6 +83,14 @@ class HostActivity : ComponentActivity() {
 
                     composable(NavGraph.ArticlesList.route) {
                         ChannelArticles(NavGraph.ArticlesList.extract(it.arguments), navController)
+                    }
+
+                    composable(NavGraph.WebView.route) {
+                        WebPage(
+                            modifier = Modifier.fillMaxWidth(),
+                            navController = navController,
+                            htmlContent = NavGraph.WebView.extract(it.arguments)
+                        )
                     }
                 }
             }

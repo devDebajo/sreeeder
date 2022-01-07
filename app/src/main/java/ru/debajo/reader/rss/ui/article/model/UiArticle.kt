@@ -11,6 +11,7 @@ data class UiArticle(
     val title: String,
     val image: String?,
     val url: String,
+    val rawHtmlContent: String?,
     val bookmarked: Boolean,
     val isNew: Boolean,
     val timestamp: DateTime?,

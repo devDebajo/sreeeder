@@ -18,9 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
-import ru.debajo.reader.rss.ui.ext.colorInt
+import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.list.ScrollController
-import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
@@ -32,7 +31,7 @@ fun BookmarksList(
     viewModel: BookmarksListViewModel
 ) {
     LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
-    val backgroundColor = MaterialTheme.colorScheme.background.colorInt
+    val backgroundColor = MaterialTheme.colorScheme.background
     Scaffold(Modifier.fillMaxSize()) {
         val articles by viewModel.articles.collectAsState()
         if (articles.isEmpty()) {
@@ -66,7 +65,7 @@ fun BookmarksList(
                             article = articles[index],
                             onFavoriteClick = { viewModel.onFavoriteClick(it) },
                         ) {
-                            NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
+                            UiArticleNavigator.open(it, navController, backgroundColor)
                         }
                     }
                 }

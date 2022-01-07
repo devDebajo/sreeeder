@@ -18,8 +18,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
-import ru.debajo.reader.rss.ui.ext.colorInt
-import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
+import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
@@ -30,7 +29,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
         viewModel.load(channel)
     })
 
-    val backgroundColor = MaterialTheme.colorScheme.background.colorInt
+    val backgroundColor = MaterialTheme.colorScheme.background
     val unsubscribeDialogVisible = rememberSaveable { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -88,7 +87,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                             article = articles[index],
                             onFavoriteClick = { viewModel.onFavoriteClick(it) },
                         ) {
-                            NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor))
+                            UiArticleNavigator.open(it, navController, backgroundColor)
                         }
                     }
                 })

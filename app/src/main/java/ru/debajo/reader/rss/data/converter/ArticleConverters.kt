@@ -51,6 +51,7 @@ fun DomainArticle.toUi(channel: UiChannel?, isNew: Boolean): UiArticle {
         channelName = channel?.name,
         categories = categories,
         isNew = isNew,
+        rawHtmlContent = contentHtml,
     )
 }
 

@@ -94,7 +94,18 @@ private fun LazyListScope.articlesList(
             onFavoriteClick = { viewModel.onFavoriteClick(it) },
             onView = { viewModel.onArticleViewed(it) }
         ) {
-            NavGraph.ChromeTabs.navigate(navController, it.url.toChromeTabsParams(backgroundColor.colorInt))
+            UiArticleNavigator.open(it, navController, backgroundColor)
+        }
+    }
+}
+
+object UiArticleNavigator {
+
+    fun open(uiArticle: UiArticle, navController: NavController, backgroundColor: Color = Color.Black) {
+        if (!uiArticle.rawHtmlContent.isNullOrEmpty()) {
+            NavGraph.WebView.navigate(navController, uiArticle.rawHtmlContent)
+        } else {
+            NavGraph.ChromeTabs.navigate(navController, uiArticle.url.toChromeTabsParams(backgroundColor.colorInt))
         }
     }
 }

@@ -29,6 +29,12 @@ object NavGraph {
         }
     }
 
+    object WebView : StringNavigationNode {
+        override val route: String = "WebView"
+
+        override val parameterKey: String = "html"
+    }
+
     object AddChannel : UnitNavigationNode {
         override val route: String = "AddChannelScreen"
     }
