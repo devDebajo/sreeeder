@@ -1,11 +1,7 @@
 package ru.debajo.reader.rss.ui.article
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,13 +34,13 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 @Composable
 fun WebPage(modifier: Modifier = Modifier, navController: NavController, htmlContent: String) {
     val tokens = remember(htmlContent) { WebPageParser.parse(htmlContent) }
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberScrollState()
     Scaffold(modifier = modifier) {
         Column {
             Box(
                 Modifier
                     .height(30.dp)
-                    //.fillMaxWidth(scrollState.firstVisibleItemIndex.toFloat() / tokens.size.toFloat())
+                    .fillMaxWidth(scrollState.value.toFloat() / scrollState.maxValue.toFloat())
                     .background(Color.Red)
             )
             WebPageTokens(scrollState, tokens, navController)
@@ -53,87 +49,86 @@ fun WebPage(modifier: Modifier = Modifier, navController: NavController, htmlCon
 }
 
 @Composable
-private fun WebPageTokens(state: LazyListState, tokens: List<WebPageToken>, navController: NavController) {
-    LazyColumn(
+private fun WebPageTokens(state: ScrollState, tokens: List<WebPageToken>, navController: NavController) {
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        state = state,
+            .padding(horizontal = 16.dp)
+            .verticalScroll(state),
     ) {
-        items(
-            count = tokens.size,
-            key = { tokens[it].start },
-            itemContent = {
-                when (val token = tokens[it]) {
-                    is WebPageToken.Image -> {
-                        Image(
-                            painter = rememberImagePainter(token.url, builder = { size(OriginalSize) }),
-                            contentScale = ContentScale.FillWidth,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(18.dp)),
-                        )
-                    }
-                    is WebPageToken.Text -> {
-                        if (token.decoration == null) {
-                            TextToken(token, navController)
-                        } else {
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                var lineHeight by remember { mutableStateOf(0f) }
-                                var textHeight by remember { mutableStateOf(0) }
-                                when (token.decoration) {
-                                    is WebPageTokenDecoration.Bullet -> {
-                                        Box(
-                                            Modifier
-                                                .offset(y = (lineHeight.pxToDp() - 7.dp) / 2f)
-                                                .size(7.dp)
-                                                .clip(RoundedCornerShape(10.dp))
-                                                .background(LocalContentColor.current)
-                                        )
-                                        Spacer(modifier = Modifier.width(10.dp))
-                                    }
-                                    is WebPageTokenDecoration.Quote -> {
-                                        Box(
-                                            Modifier
-                                                .width(2.dp)
-                                                .height(textHeight.pxToDp())
-                                                .background(MaterialTheme.colorScheme.primary)
-                                        )
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                    }
+        for (token in tokens) {
+            when (token) {
+                is WebPageToken.Image -> {
+                    Image(
+                        painter = rememberImagePainter(token.url, builder = { size(OriginalSize) }),
+                        contentScale = ContentScale.FillWidth,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(18.dp)),
+                    )
+                }
+                is WebPageToken.Text -> {
+                    if (token.decoration == null) {
+                        TextToken(token, navController)
+                    } else {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            var lineHeight by remember { mutableStateOf(0f) }
+                            var textHeight by remember { mutableStateOf(0) }
+                            when (token.decoration) {
+                                is WebPageTokenDecoration.Bullet -> {
+                                    Box(
+                                        Modifier
+                                            .offset(y = (lineHeight.pxToDp() - 7.dp) / 2f)
+                                            .size(7.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .background(LocalContentColor.current)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
                                 }
-                                TextToken(token, navController) {
-                                    lineHeight = it.getLineTop(1)
-                                    textHeight = it.size.height
+                                is WebPageTokenDecoration.Quote -> {
+                                    Box(
+                                        Modifier
+                                            .width(2.dp)
+                                            .height(textHeight.pxToDp())
+                                            .background(MaterialTheme.colorScheme.primary)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
                                 }
+                            }
+                            TextToken(token, navController) {
+                                lineHeight = it.getLineTop(1)
+                                textHeight = it.size.height
                             }
                         }
                     }
                 }
             }
-        )
+        }
     }
 }
 
 @Composable
 private fun TextToken(token: WebPageToken.Text, navController: NavController, onTextLayout: (TextLayoutResult) -> Unit = {}) {
-    val text = buildStyledText(token)
-    ClickableText(
-        text = text,
-        onTextLayout = { onTextLayout(it) },
-        style = TextStyle.Default.copy(LocalContentColor.current, fontSize = 16.sp),
-        onClick = {
-            text.getStringAnnotations("URL", it, it)
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val text = remember(token, primaryColor) { buildStyledText(token, primaryColor) }
+    val onClick: (Int) -> Unit = remember(text) {
+        { index: Int ->
+            text.getStringAnnotations("URL", index, index)
                 .firstOrNull()?.let { stringAnnotation ->
                     NavGraph.ChromeTabs.navigate(navController, stringAnnotation.item.toChromeTabsParams())
                 }
         }
+    }
+    ClickableText(
+        text = text,
+        onTextLayout = { onTextLayout(it) },
+        style = TextStyle.Default.copy(LocalContentColor.current, fontSize = 16.sp),
+        onClick = onClick
     )
 }
 
-@Composable
-private fun buildStyledText(token: WebPageToken.Text): AnnotatedString {
+private fun buildStyledText(token: WebPageToken.Text, urlColor: Color): AnnotatedString {
     return buildAnnotatedString {
         append(token.text)
         for (style in token.styles) {
@@ -142,7 +137,7 @@ private fun buildStyledText(token: WebPageToken.Text): AnnotatedString {
             when (style) {
                 is WebPageTokenStyle.Url -> {
                     addStyle(
-                        style = SpanStyle(color = MaterialTheme.colorScheme.primary),
+                        style = SpanStyle(color = urlColor),
                         start = styleStart,
                         end = styleEnd
                     )

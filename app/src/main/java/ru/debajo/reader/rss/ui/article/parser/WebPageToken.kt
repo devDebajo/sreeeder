@@ -1,5 +1,8 @@
 package ru.debajo.reader.rss.ui.article.parser
 
+import androidx.compose.runtime.Stable
+
+@Stable
 sealed interface WebPageToken {
     val start: Int
     val end: Int
