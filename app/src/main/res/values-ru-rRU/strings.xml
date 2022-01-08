@@ -1,0 +1,61 @@
+<resources>
+    <string name="screen_feed">Лента</string>
+    <string name="screen_channels">Каналы</string>
+    <string name="screen_favorites">Закладки</string>
+    <string name="screen_settings">Настройки</string>
+
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Темная</string>
+    <string name="theme_auto">Авто</string>
+
+    <string name="settings_group_data">Данные</string>
+    <string name="settings_group_view">Отображение</string>
+    <string name="settings_group_app">Приложение</string>
+    <string name="settings_app_theme">Тема приложения</string>
+    <string name="settings_background_updates">Фоновые обновления ленты</string>
+    <string name="settings_dynamic_theme">Динамическая тема</string>
+    <string name="settings_use_web_render">Встроенный Web Render, если возможно (Beta)</string>
+    <string name="settings_app_version">Версия приложения: %s</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_analytics_enabled">Отправка аналитики</string>
+    <string name="settings_analytics_alert_title">Отключить отправку аналитики?</string>
+    <string name="settings_analytics_alert_message">Приложение собирает аналитику и возникающие ошибки анонимно и исключительно в целях улучшения его качества и стабильности. Отключая эту опцию вы подтверждаете, что данное приложение перестанет отправлять статистику своей работы и возникающие ошибки разработчику</string>
+    <string name="settings_analytics_alert_ok">Отключить</string>
+    <string name="settings_analytics_alert_cancel">Отмена</string>
+    <string name="settings_export_opml">Экспорт в OPML</string>
+    <string name="settings_export_opml_success">Успешно экспортирано в OPML</string>
+    <string name="settings_export_opml_fail">Экспорт в OPML не удался</string>
+    <string name="settings_import_opml">Импорт из OPML</string>
+    <string name="settings_import_opml_success">Успешно импортировано из OPML</string>
+    <string name="settings_import_opml_fail">Импорт из OPML не удался</string>
+
+    <string name="add_channel_title">Поиск каналов</string>
+    <string name="add_channel_load">Поиск</string>
+    <string name="add_channel_placeholder">Url канала или название</string>
+    <string name="add_channel_loading">Поиск каналов</string>
+    <string name="add_channel_loading_not_found">Не нашлось ни одного канала :-(</string>
+
+    <string name="share_title">Поделиться</string>
+    <string name="open_in">Открыть в</string>
+    <string name="cancel">Отмена</string>
+
+    <string name="article_date_time_today">Сегодня в %s</string>
+    <string name="article_date_time_yesterday">Вчера в %s</string>
+
+    <string name="feed_is_empty">Ваша лента пуста, подпишитесь на интересные вам RSS-каналы</string>
+    <string name="feed_only_new">Только новые</string>
+    <string name="feed_mark_all_as_read">Прочитать все</string>
+    <string name="channels_is_empty">У вас нет подписок на каналы. Подпишитесь же на свой первый канал :-)</string>
+    <string name="bookmarks_is_empty">Добавьте статьи в закладки и они будут на этом экране</string>
+
+    <string name="notification_updating">Обновление статей</string>
+    <string name="notification_text">У вас %d новых статей</string>
+    <string name="notification_channel_name">Новые статьи</string>
+    <string name="notification_channel_description">Уведомления о новых статьях</string>
+
+    <string name="channel_subscribe">Подписаться</string>
+    <string name="channel_you_subscribed">Вы подписаны</string>
+    <string name="channel_unsubscribe">Отписаться</string>
+    <string name="channel_unsubscribe_dialog_title">Отписаться от канала?</string>
+    <string name="channel_unsubscribe_dialog_text">Вы уверены что хотите описаться от канала %s?</string>
+</resources>

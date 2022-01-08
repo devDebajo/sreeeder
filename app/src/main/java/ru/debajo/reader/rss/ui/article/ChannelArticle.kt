@@ -24,6 +24,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
@@ -149,8 +150,9 @@ private fun CategoryText(text: String) {
     ) {
         Text(
             modifier = Modifier.align(Alignment.Center),
-            text = text,
+            text = text.trim(),
             maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
