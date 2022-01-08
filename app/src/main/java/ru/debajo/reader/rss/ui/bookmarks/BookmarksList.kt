@@ -28,7 +28,8 @@ fun BookmarksList(
     innerPadding: PaddingValues,
     navController: NavController,
     scrollController: ScrollController,
-    viewModel: BookmarksListViewModel
+    viewModel: BookmarksListViewModel,
+    uiArticleNavigator: UiArticleNavigator
 ) {
     LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
     val backgroundColor = MaterialTheme.colorScheme.background
@@ -65,7 +66,7 @@ fun BookmarksList(
                             article = articles[index],
                             onFavoriteClick = { viewModel.onFavoriteClick(it) },
                         ) {
-                            UiArticleNavigator.open(it, navController, backgroundColor)
+                            uiArticleNavigator.open(it, navController, backgroundColor)
                         }
                     }
                 }

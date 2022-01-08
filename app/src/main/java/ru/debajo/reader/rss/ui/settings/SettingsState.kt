@@ -11,6 +11,7 @@ data class SettingsState(
     val supportDynamicTheme: Boolean = false,
     val backgroundUpdates: Boolean = true,
     val analyticsEnabled: Boolean = true,
+    val useWebRender: Boolean = false,
     val showAnalyticsAlertDialog: Boolean = false,
     val importing: Boolean = false,
 ) {

@@ -16,6 +16,7 @@
     <string name="settings_app_theme">Тема приложения</string>
     <string name="settings_background_updates">Фоновые обновления ленты</string>
     <string name="settings_dynamic_theme">Динамическая тема</string>
+    <string name="settings_use_web_render">Встроенный Web Render, если возможно (Beta)</string>
     <string name="settings_app_version">Версия приложения: %s</string>
     <string name="settings_privacy_policy">Политика конфиденциальности</string>
     <string name="settings_analytics_enabled">Отправка аналитики</string>

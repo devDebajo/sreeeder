@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.R
-import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.ext.optionalClickable
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -106,8 +105,18 @@ fun SettingsDynamicThemeSwitch(state: SettingsState, viewModel: SettingsViewMode
 }
 
 @Composable
+fun SettingsUseWebRenderSwitch(state: SettingsState, viewModel: SettingsViewModel) {
+    SettingsSwitch(
+        text = stringResource(id = R.string.settings_use_web_render),
+        checked = state.useWebRender,
+    ) {
+        viewModel.toggleUseWebRender()
+    }
+}
+
+@Composable
 fun SettingsPrivacyPolicy(navController: NavController) {
-    val backgroundColor = MaterialTheme.colorScheme.background.colorInt
+    val backgroundColor = MaterialTheme.colorScheme.background
     SettingsText(stringResource(id = R.string.settings_privacy_policy)) {
         NavGraph.ChromeTabs.navigate(navController, BuildConfig.PRIVACY_POLICY.toChromeTabsParams(backgroundColor))
     }

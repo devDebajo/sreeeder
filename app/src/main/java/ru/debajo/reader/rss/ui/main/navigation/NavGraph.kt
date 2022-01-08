@@ -3,6 +3,7 @@ package ru.debajo.reader.rss.ui.main.navigation
 import android.content.Intent
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
+import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.main.model.ChromeTabsParams
 
@@ -29,10 +30,10 @@ object NavGraph {
         }
     }
 
-    object WebView : StringNavigationNode {
-        override val route: String = "WebView"
+    object UiArticleWebRender : ParcelableNavigationNode<UiArticle> {
+        override val route: String = "UiArticleWebRender"
 
-        override val parameterKey: String = "html"
+        override val parameterKey: String = "UiArticle"
     }
 
     object AddChannel : UnitNavigationNode {

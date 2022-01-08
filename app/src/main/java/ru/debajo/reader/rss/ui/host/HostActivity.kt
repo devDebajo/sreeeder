@@ -15,12 +15,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.debajo.reader.rss.di.diViewModels
+import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
-import ru.debajo.reader.rss.ui.article.WebPage
+import ru.debajo.reader.rss.ui.article.UiArticleWebRender
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
+import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.MainScreen
 import ru.debajo.reader.rss.ui.main.MainViewModel
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -35,6 +37,7 @@ class HostActivity : ComponentActivity() {
     private val feedListViewModel: FeedListViewModel by diViewModels()
     private val bookmarksListViewModel: BookmarksListViewModel by diViewModels()
     private val mainViewModel: MainViewModel by diViewModels()
+    private val uiArticleNavigator: UiArticleNavigator by inject()
 
     private val createDocumentLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
         if (it != null) {
@@ -74,6 +77,7 @@ class HostActivity : ComponentActivity() {
                             feedListViewModel = feedListViewModel,
                             bookmarksListViewModel = bookmarksListViewModel,
                             mainViewModel = mainViewModel,
+                            uiArticleNavigator = uiArticleNavigator,
                         )
                     }
 
@@ -82,14 +86,14 @@ class HostActivity : ComponentActivity() {
                     }
 
                     composable(NavGraph.ArticlesList.route) {
-                        ChannelArticles(NavGraph.ArticlesList.extract(it.arguments), navController)
+                        ChannelArticles(NavGraph.ArticlesList.extract(it.arguments), navController, uiArticleNavigator)
                     }
 
-                    composable(NavGraph.WebView.route) {
-                        WebPage(
+                    composable(NavGraph.UiArticleWebRender.route) {
+                        UiArticleWebRender(
                             modifier = Modifier.fillMaxWidth(),
                             navController = navController,
-                            htmlContent = NavGraph.WebView.extract(it.arguments)
+                            uiArticle = NavGraph.UiArticleWebRender.extract(it.arguments)
                         )
                     }
                 }

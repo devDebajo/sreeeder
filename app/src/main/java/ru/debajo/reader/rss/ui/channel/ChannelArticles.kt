@@ -23,7 +23,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ChannelArticles(channel: UiChannel, navController: NavController) {
+fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleNavigator: UiArticleNavigator) {
     val viewModel = diViewModel<ChannelArticlesViewModel>()
     LaunchedEffect(key1 = channel, block = {
         viewModel.load(channel)
@@ -87,7 +87,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController) {
                             article = articles[index],
                             onFavoriteClick = { viewModel.onFavoriteClick(it) },
                         ) {
-                            UiArticleNavigator.open(it, navController, backgroundColor)
+                            uiArticleNavigator.open(it, navController, backgroundColor)
                         }
                     }
                 })

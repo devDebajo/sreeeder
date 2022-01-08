@@ -28,6 +28,7 @@ import ru.debajo.reader.rss.ui.channels.ChannelsList
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedList
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
+import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.list.rememberScrollController
 import ru.debajo.reader.rss.ui.main.model.ScreenTab
@@ -49,7 +50,8 @@ fun MainScreen(
     settingsViewModel: SettingsViewModel,
     channelsViewModel: ChannelsViewModel,
     feedListViewModel: FeedListViewModel,
-    bookmarksListViewModel: BookmarksListViewModel
+    bookmarksListViewModel: BookmarksListViewModel,
+    uiArticleNavigator: UiArticleNavigator
 ) {
     val navController = rememberNavController()
     val scrollController = rememberScrollController()
@@ -58,9 +60,17 @@ fun MainScreen(
             navController = navController,
             startDestination = tabs[0].navigation.route
         ) {
-            composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, scrollController, feedListViewModel) }
+            composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, scrollController, feedListViewModel, uiArticleNavigator) }
             composable(channelsTab.navigation.route) { ChannelsList(innerPadding, parentController, scrollController, channelsViewModel) }
-            composable(favoritesTab.navigation.route) { BookmarksList(innerPadding, parentController, scrollController, bookmarksListViewModel) }
+            composable(favoritesTab.navigation.route) {
+                BookmarksList(
+                    innerPadding,
+                    parentController,
+                    scrollController,
+                    bookmarksListViewModel,
+                    uiArticleNavigator
+                )
+            }
             composable(settingsTab.navigation.route) { SettingsList(innerPadding, parentController, settingsViewModel) }
         }
     }

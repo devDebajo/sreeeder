@@ -14,6 +14,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
+import ru.debajo.reader.rss.data.preferences.UseEmbeddedWebPageRenderPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.domain.channel.SubscribeChannelsListUseCase
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
@@ -24,6 +25,7 @@ import ru.debajo.reader.rss.ui.arch.SingleLiveEvent
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("StaticFieldLeak")
 class SettingsViewModel(
@@ -31,6 +33,7 @@ class SettingsViewModel(
     private val analytics: Analytics,
     private val appThemeProvider: AppThemeProvider,
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
+    private val useEmbeddedWebPageRenderPreference: UseEmbeddedWebPageRenderPreference,
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler,
     private val analyticsEnabledManager: AnalyticsEnabledManager,
     private val fileSaver: FileSaver,
@@ -60,6 +63,7 @@ class SettingsViewModel(
                     appTheme = config.theme,
                     isDynamicColor = config.dynamic,
                     backgroundUpdates = backgroundUpdatesEnabledPreference.get(),
+                    useWebRender = useEmbeddedWebPageRenderPreference.get(),
                     analyticsEnabled = analyticsEnabledManager.isEnabled(),
                 )
             }
@@ -76,7 +80,7 @@ class SettingsViewModel(
 
     fun setAnalyticsEnabled(enabled: Boolean) {
         updateState {
-            launch { analyticsEnabledManager.setEnabled(enabled) }
+            analyticsEnabledManager.setEnabled(enabled)
             copy(analyticsEnabled = enabled)
         }
     }
@@ -98,8 +102,10 @@ class SettingsViewModel(
     }
 
     fun selectTheme(theme: AppTheme) {
-        updateState { copy(dropDownExpanded = false) }
-        launch { appThemeProvider.update(theme) }
+        updateState {
+            appThemeProvider.update(theme)
+            copy(dropDownExpanded = false)
+        }
     }
 
     fun toggleBackgroundUpdates() {
@@ -107,13 +113,18 @@ class SettingsViewModel(
             val newBackgroundUpdates = !backgroundUpdates
             analytics.setBackgroundUpdatesToggleState(newBackgroundUpdates)
 
-            launch(IO) {
-                // TODO переделать (сокрыть backgroundUpdatesEnabledPreference в backgroundUpdatesScheduler)
-                backgroundUpdatesEnabledPreference.set(newBackgroundUpdates)
-                backgroundUpdatesScheduler.rescheduleOrCancel()
-            }
+            // TODO переделать (сокрыть backgroundUpdatesEnabledPreference в backgroundUpdatesScheduler)
+            backgroundUpdatesEnabledPreference.set(newBackgroundUpdates)
+            backgroundUpdatesScheduler.rescheduleOrCancel()
 
             copy(backgroundUpdates = newBackgroundUpdates)
+        }
+    }
+
+    fun toggleUseWebRender() {
+        updateState {
+            useEmbeddedWebPageRenderPreference.set(!useWebRender)
+            copy(useWebRender = !useWebRender)
         }
     }
 
@@ -171,8 +182,10 @@ class SettingsViewModel(
         snackBarMutable.value = snackbar.copy(visible = false)
     }
 
-    private inline fun updateState(block: SettingsState.() -> SettingsState) {
-        stateMutable.value = stateMutable.value.block()
+    private fun updateState(context: CoroutineContext = IO, block: suspend SettingsState.() -> SettingsState) {
+        launch(context) {
+            stateMutable.value = stateMutable.value.block()
+        }
     }
 
     data class SnackbarState(val message: String, val visible: Boolean = true)

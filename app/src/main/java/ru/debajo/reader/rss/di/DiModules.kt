@@ -20,10 +20,7 @@ import ru.debajo.reader.rss.data.db.migrations.MIGRATION_2_3
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_3_4
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
-import ru.debajo.reader.rss.data.preferences.AppThemePreference
-import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
-import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
-import ru.debajo.reader.rss.data.preferences.MetricsEnabledPreference
+import ru.debajo.reader.rss.data.preferences.*
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.load.RssLoader
@@ -50,6 +47,7 @@ import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
+import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.host.HostViewModel
 import ru.debajo.reader.rss.ui.main.MainViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
@@ -74,6 +72,7 @@ fun appModule(context: Context): Module = module {
     single { context.applicationContext }
     single { get<Context>().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     single { AppThemeProvider(get(), get(), get()) }
+    single { UiArticleNavigator(get()) }
 }
 
 @SuppressLint("MissingPermission")
@@ -95,6 +94,7 @@ val PreferencesModule = module {
     single { DynamicThemePreference(get()) }
     single { BackgroundUpdatesEnabledPreference(get()) }
     single { MetricsEnabledPreference(get()) }
+    single { UseEmbeddedWebPageRenderPreference(get()) }
 }
 
 val NetworkModule = module {
@@ -161,7 +161,7 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }

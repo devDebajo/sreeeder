@@ -24,9 +24,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.list.ScrollController
-import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
@@ -36,6 +34,7 @@ fun FeedList(
     navController: NavController,
     scrollController: ScrollController,
     viewModel: FeedListViewModel,
+    uiArticleNavigator: UiArticleNavigator
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
     Scaffold(Modifier.fillMaxSize()) {
@@ -75,7 +74,7 @@ fun FeedList(
                         end = 16.dp
                     ),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    content = { articlesList(state.articles, backgroundColor, navController, viewModel) }
+                    content = { articlesList(state.articles, backgroundColor, navController, viewModel, uiArticleNavigator) }
                 )
             }
         }
@@ -86,7 +85,8 @@ private fun LazyListScope.articlesList(
     articles: List<UiArticle>,
     backgroundColor: Color,
     navController: NavController,
-    viewModel: FeedListViewModel
+    viewModel: FeedListViewModel,
+    uiArticleNavigator: UiArticleNavigator
 ) {
     items(items = articles, key = { it.id + it.channelName }) { article ->
         ChannelArticle(
@@ -94,18 +94,7 @@ private fun LazyListScope.articlesList(
             onFavoriteClick = { viewModel.onFavoriteClick(it) },
             onView = { viewModel.onArticleViewed(it) }
         ) {
-            UiArticleNavigator.open(it, navController, backgroundColor)
-        }
-    }
-}
-
-object UiArticleNavigator {
-
-    fun open(uiArticle: UiArticle, navController: NavController, backgroundColor: Color = Color.Black) {
-        if (!uiArticle.rawHtmlContent.isNullOrEmpty()) {
-            NavGraph.WebView.navigate(navController, uiArticle.rawHtmlContent)
-        } else {
-            NavGraph.ChromeTabs.navigate(navController, uiArticle.url.toChromeTabsParams(backgroundColor.colorInt))
+            uiArticleNavigator.open(it, navController, backgroundColor)
         }
     }
 }
