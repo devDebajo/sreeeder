@@ -24,12 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
+import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.article.parser.WebPageParser
 import ru.debajo.reader.rss.ui.article.parser.WebPageToken
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenDecoration
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenStyle
 import ru.debajo.reader.rss.ui.ext.pxToDp
+import ru.debajo.reader.rss.ui.ext.toFinite
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
@@ -38,8 +40,10 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun UiArticleWebRender(
     modifier: Modifier = Modifier,
     navController: NavController,
+    analytics: Analytics,
     uiArticle: UiArticle
 ) {
+    LaunchedEffect(key1 = uiArticle, block = { analytics.onOpenEmbeddedWebPage() })
     val backgroundColor = MaterialTheme.colorScheme.background
     val htmlContent = uiArticle.rawHtmlContent.orEmpty()
     val tokens = remember(htmlContent) { WebPageParser.parse(htmlContent) }
@@ -52,7 +56,11 @@ fun UiArticleWebRender(
                 Box(
                     Modifier
                         .height(toolbarHeight.pxToDp())
-                        .fillMaxWidth(scrollState.value.toFloat() / scrollState.maxValue.toFloat())
+                        .fillMaxWidth(
+                            (scrollState.value.toFloat() / scrollState.maxValue.toFloat())
+                                .toFinite()
+                                .coerceIn(0f, 1f)
+                        )
                         .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f))
                 )
                 CenterAlignedTopAppBar(
@@ -117,7 +125,7 @@ private fun WebPageTokens(state: ScrollState, tokens: List<WebPageToken>, title:
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(18.dp)),
+                            .clip(RoundedCornerShape(10.dp)),
                     )
                 }
                 is WebPageToken.Text -> {

@@ -14,6 +14,7 @@
     <string name="settings_app_theme">Тема програми</string>
     <string name="settings_background_updates">Фонові оновлення стрічки</string>
     <string name="settings_dynamic_theme">Динамічна тема</string>
+    <string name="settings_use_web_render">Вбудований Web Render, якщо це можливо (Beta)</string>
     <string name="settings_app_version">Версія програми: %s</string>
     <string name="settings_privacy_policy">Політика конфіденційності</string>
     <string name="settings_analytics_enabled">Надсилання аналітики</string>
@@ -43,6 +44,7 @@
 
     <string name="feed_is_empty">Ваша стрічка порожня, підпишіться на цікаві вам RSS-канали</string>
     <string name="feed_only_new">Тільки нові</string>
+    <string name="feed_mark_all_as_read">Прочитати все</string>
     <string name="channels_is_empty">У вас немає передплат на канали. Підпишіться на свій перший канал :-)</string>
     <string name="bookmarks_is_empty">Додайте статті до закладок і вони будуть на цьому екрані</string>
 

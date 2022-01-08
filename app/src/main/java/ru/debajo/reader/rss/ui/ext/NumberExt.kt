@@ -9,3 +9,5 @@ fun Int.pxToDp(): Dp = toFloat().pxToDp()
 
 @Composable
 fun Float.pxToDp(): Dp = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+fun Float.toFinite(default: Float = 0f): Float = if (isFinite()) this else default

@@ -14,6 +14,7 @@
     <string name="settings_app_theme">Тэма прыкладання</string>
     <string name="settings_background_updates">Фонавыя абнаўленні стужкі</string>
     <string name="settings_dynamic_theme">Дынамічная тэма</string>
+    <string name="settings_use_web_render">Убудаваны Web Render, калі магчыма (Beta)</string>
     <string name="settings_app_version">Версія прыкладання: %s</string>
     <string name="settings_privacy_policy">Палітыка прыватнасці</string>
     <string name="settings_analytics_enabled">Адпраўка аналітыкі</string>
@@ -43,6 +44,7 @@
 
     <string name="feed_is_empty">Ваша стужка пустая, падпішыцеся на цікавыя вам RSS-каналы</string>
     <string name="feed_only_new">Толькі новыя</string>
+    <string name="feed_mark_all_as_read">Прачытаць усё</string>
     <string name="channels_is_empty">У вас няма падпісак на каналы. Падпішыцеся ж на свой першы канал :-)</string>
     <string name="bookmarks_is_empty">Дадайце артыкулы ў закладкі і яны будуць на гэтым экране</string>
 

@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.ui.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.width
@@ -8,10 +9,7 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Visibility
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInRoot
@@ -48,7 +46,9 @@ fun MainScreenTopBarActions(state: FeedListState, viewModel: FeedListViewModel) 
     val leftOffset = with(LocalDensity.current) { iconPosition.toDp() }
     DropdownMenu(
         offset = DpOffset(x = leftOffset, y = 0.dp),
-        modifier = Modifier.requiredSizeIn(minWidth = 200.dp),
+        modifier = Modifier
+            .requiredSizeIn(minWidth = 200.dp)
+            .background(MaterialTheme.colorScheme.secondaryContainer),
         expanded = menuVisible,
         onDismissRequest = { menuVisible = false },
     ) {
@@ -63,7 +63,7 @@ fun MainScreenTopBarActions(state: FeedListState, viewModel: FeedListViewModel) 
                 contentDescription = null,
             )
             Spacer(modifier = Modifier.width(4.dp))
-            Text(stringResource(R.string.feed_mark_all_as_read))
+            Text(stringResource(R.string.feed_mark_all_as_read), color = MaterialTheme.colorScheme.onSecondaryContainer)
         }
     }
 }

@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.di.inject
+import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.article.UiArticleWebRender
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -38,6 +39,7 @@ class HostActivity : ComponentActivity() {
     private val bookmarksListViewModel: BookmarksListViewModel by diViewModels()
     private val mainViewModel: MainViewModel by diViewModels()
     private val uiArticleNavigator: UiArticleNavigator by inject()
+    private val analytics: Analytics by inject()
 
     private val createDocumentLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
         if (it != null) {
@@ -93,6 +95,7 @@ class HostActivity : ComponentActivity() {
                         UiArticleWebRender(
                             modifier = Modifier.fillMaxWidth(),
                             navController = navController,
+                            analytics = analytics,
                             uiArticle = NavGraph.UiArticleWebRender.extract(it.arguments)
                         )
                     }

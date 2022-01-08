@@ -100,7 +100,7 @@ private fun MainScaffold(
                 )
 
                 val feedState by feedViewModel.state.collectAsState()
-                if (selectedTab == 0 && feedState.showOnlyNewArticlesButtonVisible) {
+                if (selectedTab == 0) {
                     MainScreenTopBarActions(feedState, feedViewModel)
                 }
             }
@@ -130,9 +130,7 @@ private fun MainScaffold(
         floatingActionButton = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
-            val showButton = currentDestination?.hierarchy?.any {
-                it.route == channelsTab.navigation.route || it.route == feedTab.navigation.route
-            } == true
+            val showButton = currentDestination?.hierarchy?.any { it.route == channelsTab.navigation.route } == true
             if (showButton) {
                 FloatingActionButton(
                     onClick = { NavGraph.AddChannel.navigate(parentController) },

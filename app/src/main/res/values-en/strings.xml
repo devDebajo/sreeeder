@@ -14,6 +14,7 @@
     <string name="settings_app_theme">Theme</string>
     <string name="settings_background_updates">Background feed updates</string>
     <string name="settings_dynamic_theme">Dynamic theme</string>
+    <string name="settings_use_web_render">Built-in Web Render, if possible (Beta)</string>
     <string name="settings_app_version">App version: %s</string>
     <string name="settings_privacy_policy">Privacy policy</string>
     <string name="settings_analytics_enabled">Analytics sending</string>
@@ -43,6 +44,7 @@
 
     <string name="feed_is_empty">Your feed is empty, subscribe to RSS feeds that interest you</string>
     <string name="feed_only_new">Only new</string>
+    <string name="feed_mark_all_as_read">Read all</string>
     <string name="channels_is_empty">You have no channel subscriptions. Subscribe to your first channel :-)</string>
     <string name="bookmarks_is_empty">Bookmark articles and they will be on this screen</string>
 

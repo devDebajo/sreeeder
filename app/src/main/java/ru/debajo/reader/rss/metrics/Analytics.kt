@@ -42,6 +42,10 @@ class Analytics(
         logEvent("export_opml")
     }
 
+    fun onOpenEmbeddedWebPage() {
+        logEvent("open_embedded_web_page")
+    }
+
     fun setDynamicThemeUserProperty(value: Boolean) {
         setUserProperty("dynamic_theme_enabled", value)
     }
@@ -62,6 +66,10 @@ class Analytics(
 
     fun setAnalyticsEnabled(enabled: Boolean) {
         setUserProperty("analytics_enabled", enabled)
+    }
+
+    fun setUseEmbeddedWebRender(enabled: Boolean) {
+        setUserProperty("embedded_web_render", enabled)
     }
 
     fun onStartWorker() {
