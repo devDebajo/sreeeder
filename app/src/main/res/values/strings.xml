@@ -16,7 +16,7 @@
     <string name="settings_app_theme">Theme</string>
     <string name="settings_background_updates">Background feed updates</string>
     <string name="settings_dynamic_theme">Dynamic theme</string>
-    <string name="settings_use_web_render">Built-in Web Render, if possible (Beta)</string>
+    <string name="settings_use_web_render">Built-in Web Render</string>
     <string name="settings_app_version">App version: %s</string>
     <string name="settings_privacy_policy">Privacy policy</string>
     <string name="settings_analytics_enabled">Analytics sending</string>
@@ -43,6 +43,8 @@
 
     <string name="article_date_time_today">Today at %s</string>
     <string name="article_date_time_yesterday">Yesterday at %s</string>
+
+    <string name="article_web_render_load_failed">Failed to load article\nYou can go to the browser to view the article (button at the top, right)</string>
 
     <string name="feed_is_empty">Your feed is empty, subscribe to RSS feeds that interest you</string>
     <string name="feed_only_new">Only new</string>

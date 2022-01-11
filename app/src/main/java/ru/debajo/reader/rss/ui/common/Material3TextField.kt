@@ -1,6 +1,7 @@
 package ru.debajo.reader.rss.ui.common
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -14,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun Material3TextField(
@@ -25,6 +28,8 @@ fun Material3TextField(
     keyboardActions: KeyboardActions = KeyboardActions(),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    shape: Shape = RoundedCornerShape(4.dp),
+    label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
 ) {
     CompositionLocalProvider(
@@ -33,9 +38,10 @@ fun Material3TextField(
             backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
         )
     ) {
-        TextField(
+        OutlinedTextField(
             modifier = modifier.focusRequester(focusRequester),
             value = value,
+            label = label,
             singleLine = singleLine,
             keyboardActions = keyboardActions,
             keyboardOptions = keyboardOptions,
@@ -43,6 +49,7 @@ fun Material3TextField(
             interactionSource = interactionSource,
             colors = material3Colors(),
             onValueChange = onValueChange,
+            shape = shape,
         )
     }
 }

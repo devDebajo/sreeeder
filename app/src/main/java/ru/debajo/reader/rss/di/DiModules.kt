@@ -21,6 +21,7 @@ import ru.debajo.reader.rss.data.db.migrations.MIGRATION_3_4
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.*
+import ru.debajo.reader.rss.data.remote.ReadableArticleHelper
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.load.RssLoader
@@ -43,6 +44,7 @@ import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
 import ru.debajo.reader.rss.metrics.AnalyticsEnabledManagerProd
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
+import ru.debajo.reader.rss.ui.article.UiArticleWebRenderViewModel
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticlesViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
@@ -73,6 +75,7 @@ fun appModule(context: Context): Module = module {
     single { get<Context>().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     single { AppThemeProvider(get(), get(), get()) }
     single { UiArticleNavigator(get()) }
+
 }
 
 @SuppressLint("MissingPermission")
@@ -117,6 +120,7 @@ val NetworkModule = module {
     single<FeedlyService> { get<ServiceFactory>().createService("https://feedly.com") }
     single { ChannelsSearchRepository(get()) }
     single { HtmlChannelUrlExtractor(get()) }
+    single { ReadableArticleHelper(get()) }
 }
 
 val DbModule = module {
@@ -168,6 +172,7 @@ val ViewModelModule = module {
     factory { BookmarksListViewModel(get(), get()) }
     factory { MainViewModel(get()) }
     factory { HostViewModel(get()) }
+    factory { UiArticleWebRenderViewModel(get(), get(), get()) }
 }
 
 val RefresherModule = module {

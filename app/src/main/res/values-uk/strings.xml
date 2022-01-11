@@ -14,7 +14,7 @@
     <string name="settings_app_theme">Тема програми</string>
     <string name="settings_background_updates">Фонові оновлення стрічки</string>
     <string name="settings_dynamic_theme">Динамічна тема</string>
-    <string name="settings_use_web_render">Вбудований Web Render, якщо це можливо (Beta)</string>
+    <string name="settings_use_web_render">Вбудований Web Render</string>
     <string name="settings_app_version">Версія програми: %s</string>
     <string name="settings_privacy_policy">Політика конфіденційності</string>
     <string name="settings_analytics_enabled">Надсилання аналітики</string>
@@ -41,6 +41,8 @@
 
     <string name="article_date_time_today">Сьогодні в %s</string>
     <string name="article_date_time_yesterday">Вчора в %s</string>
+
+    <string name="article_web_render_load_failed">Неможливо завантажити статтю\nВи можете перейти до браузера для перегляду статті (кнопка вгорі, праворуч)</string>
 
     <string name="feed_is_empty">Ваша стрічка порожня, підпишіться на цікаві вам RSS-канали</string>
     <string name="feed_only_new">Тільки нові</string>

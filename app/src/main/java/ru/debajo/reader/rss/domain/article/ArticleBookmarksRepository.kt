@@ -14,6 +14,10 @@ class ArticleBookmarksRepository(
     private val articleBookmarksDao: ArticleBookmarksDao,
     private val analytics: Analytics,
 ) {
+    fun observeById(articleId: String): Flow<Boolean> {
+        return articleBookmarksDao.observeCountById(articleId).map { it > 0 }
+    }
+
     fun observe(): Flow<List<String>> {
         return articleBookmarksDao.getAll()
             .map { list -> list.map { it.articleId } }

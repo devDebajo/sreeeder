@@ -84,6 +84,8 @@ class FeedListViewModel(
         launch(IO) {
             newArticlesUseCase.markAllAsRead()
         }
+        backgroundUpdatesNotificationManager.cancel()
+        onPullToRefresh(force = false)
     }
 
     override fun onCleared() {

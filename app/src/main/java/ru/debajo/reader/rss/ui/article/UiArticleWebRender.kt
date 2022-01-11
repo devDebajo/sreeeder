@@ -4,29 +4,32 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.OpenInBrowser
-import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
-import ru.debajo.reader.rss.metrics.Analytics
+import ru.debajo.reader.rss.R
+import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.article.parser.WebPageParser
 import ru.debajo.reader.rss.ui.article.parser.WebPageToken
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenDecoration
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenStyle
@@ -40,13 +43,11 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun UiArticleWebRender(
     modifier: Modifier = Modifier,
     navController: NavController,
-    analytics: Analytics,
     uiArticle: UiArticle
 ) {
-    LaunchedEffect(key1 = uiArticle, block = { analytics.onOpenEmbeddedWebPage() })
+    val viewModel: UiArticleWebRenderViewModel = diViewModel()
+    LaunchedEffect(key1 = uiArticle, block = { viewModel.load(uiArticle) })
     val backgroundColor = MaterialTheme.colorScheme.background
-    val htmlContent = uiArticle.rawHtmlContent.orEmpty()
-    val tokens = remember(htmlContent) { WebPageParser.parse(htmlContent) }
     val scrollState = rememberScrollState()
     Scaffold(
         modifier = modifier,
@@ -66,9 +67,7 @@ fun UiArticleWebRender(
                 CenterAlignedTopAppBar(
                     modifier = Modifier.onGloballyPositioned { toolbarHeight = it.size.height },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                    title = {
-                        Text(uiArticle.channelName.orEmpty())
-                    },
+                    title = {},
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
@@ -78,17 +77,20 @@ fun UiArticleWebRender(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {
-                            NavGraph.ShareText.navigate(navController, uiArticle.url)
-                        }) {
+                        IconButton(onClick = { viewModel.toggleBookmarked(uiArticle) }) {
+                            val state by viewModel.state.collectAsState()
+                            Icon(
+                                imageVector = if (state.bookmarked) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(onClick = { NavGraph.ShareText.navigate(navController, uiArticle.url) }) {
                             Icon(
                                 imageVector = Icons.Rounded.Share,
                                 contentDescription = null
                             )
                         }
-                        IconButton(onClick = {
-                            NavGraph.ChromeTabs.navigate(navController, uiArticle.url.toChromeTabsParams(backgroundColor))
-                        }) {
+                        IconButton(onClick = { NavGraph.ChromeTabs.navigate(navController, uiArticle.url.toChromeTabsParams(backgroundColor)) }) {
                             Icon(
                                 imageVector = Icons.Rounded.OpenInBrowser,
                                 contentDescription = null
@@ -99,7 +101,38 @@ fun UiArticleWebRender(
             }
         }
     ) {
-        WebPageTokens(scrollState, tokens, uiArticle.title, navController)
+        val state by viewModel.state.collectAsState()
+        state.let {
+            when (it) {
+                is UiArticleWebRenderState.Error -> {
+                    Box(Modifier.fillMaxSize()) {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(horizontal = 32.dp),
+                            textAlign = TextAlign.Center,
+                            text = stringResource(R.string.article_web_render_load_failed)
+                        )
+                    }
+                }
+                is UiArticleWebRenderState.Loading -> {
+                    Box(Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .align(Alignment.Center),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                is UiArticleWebRenderState.Prepared -> {
+                    SelectionContainer {
+                        WebPageTokens(scrollState, it.tokens, uiArticle.title, navController)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -222,6 +255,9 @@ private fun buildStyledText(token: WebPageToken.Text, urlColor: Color): Annotate
                 }
                 is WebPageTokenStyle.Underline -> {
                     addStyle(SpanStyle(textDecoration = TextDecoration.Underline), styleStart, styleEnd)
+                }
+                is WebPageTokenStyle.Scale -> {
+                    addStyle(SpanStyle(fontSize = 16.sp * style.scale), styleStart, styleEnd)
                 }
             }
         }

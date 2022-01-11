@@ -29,14 +29,16 @@ class RssLoader(
             .build()
     }
 
-    private fun detectCharset(bytes: ByteArray): Charset {
-        val utf8Content = String(bytes)
-        val match = CHARSET_REGEX.find(utf8Content) ?: return Charsets.UTF_8
-        val charset = match.groupValues.getOrNull(1) ?: return Charsets.UTF_8
-        return runCatching { Charset.forName(charset) }.getOrElse { Charsets.UTF_8 }
-    }
+    private fun detectCharset(bytes: ByteArray): Charset = detectCharset(String(bytes))
 
-    private companion object {
-        val CHARSET_REGEX = ".*encoding=\"(.*?)\".*".toRegex()
+    companion object {
+        private val CHARSET_REGEX = ".*encoding=\"(.*?)\".*".toRegex()
+        private val CHARSET_REGEX2 = ".*charset=\"(.*?)\".*".toRegex()
+
+        fun detectCharset(content: String): Charset {
+            val match = CHARSET_REGEX.find(content) ?: CHARSET_REGEX2.find(content) ?: return Charsets.UTF_8
+            val charset = match.groupValues.getOrNull(1) ?: return Charsets.UTF_8
+            return runCatching { Charset.forName(charset) }.getOrElse { Charsets.UTF_8 }
+        }
     }
 }

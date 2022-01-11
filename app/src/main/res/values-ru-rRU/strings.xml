@@ -14,7 +14,7 @@
     <string name="settings_app_theme">Тема приложения</string>
     <string name="settings_background_updates">Фоновые обновления ленты</string>
     <string name="settings_dynamic_theme">Динамическая тема</string>
-    <string name="settings_use_web_render">Встроенный Web Render, если возможно (Beta)</string>
+    <string name="settings_use_web_render">Встроенный Web Render</string>
     <string name="settings_app_version">Версия приложения: %s</string>
     <string name="settings_privacy_policy">Политика конфиденциальности</string>
     <string name="settings_analytics_enabled">Отправка аналитики</string>
@@ -41,6 +41,8 @@
 
     <string name="article_date_time_today">Сегодня в %s</string>
     <string name="article_date_time_yesterday">Вчера в %s</string>
+
+    <string name="article_web_render_load_failed">Не удалось загрузить статью\nВы можете перейти в браузер для просмотра статьи (кнопка вверху, справа)</string>
 
     <string name="feed_is_empty">Ваша лента пуста, подпишитесь на интересные вам RSS-каналы</string>
     <string name="feed_only_new">Только новые</string>

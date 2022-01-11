@@ -20,4 +20,7 @@ interface ArticleBookmarksDao {
 
     @Query("SELECT * FROM dbarticlebookmark WHERE articleId=:articleId")
     suspend fun getById(articleId: String): DbArticleBookmark?
+
+    @Query("SELECT count(*) FROM dbarticlebookmark WHERE articleId=:articleId")
+    fun observeCountById(articleId: String): Flow<Int>
 }

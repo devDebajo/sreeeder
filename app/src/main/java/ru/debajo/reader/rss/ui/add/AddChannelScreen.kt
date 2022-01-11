@@ -2,6 +2,7 @@ package ru.debajo.reader.rss.ui.add
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
@@ -65,7 +66,8 @@ fun AddChannelScreen(parentNavController: NavController) {
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                 onValueChange = { viewModel.onTextChanged(it) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(stringResource(R.string.add_channel_placeholder)) }
+                label = { Text(stringResource(R.string.add_channel_placeholder)) },
+                shape = RoundedCornerShape(18.dp),
             )
 
             AppCard(

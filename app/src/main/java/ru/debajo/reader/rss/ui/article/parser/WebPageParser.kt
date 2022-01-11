@@ -48,6 +48,8 @@ object WebPageParser {
                     result.insertStyle(WebPageTokenStyle.ForegroundColor(Color(span.foregroundColor), spanStart, spanEnd))
                 }
 
+                is RelativeSizeSpan -> result.insertStyle(WebPageTokenStyle.Scale(span.sizeChange, spanStart, spanEnd))
+
                 is BulletSpan -> result.insertBullet(spanStart, spanEnd)
 
                 is QuoteSpan -> result.insertQuote(spanStart, spanEnd)

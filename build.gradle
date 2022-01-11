@@ -40,12 +40,13 @@ buildscript {
         maven { url 'https://jitpack.io' }
         maven { url 'https://androidx.dev/snapshots/builds/8003490/artifacts/repository' }
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
         classpath "com.google.gms:google-services:$google_services_plugin_version"
         classpath "com.google.firebase:firebase-crashlytics-gradle:$firebase_crashlytics_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.39.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.40.0"
     }
 }
 

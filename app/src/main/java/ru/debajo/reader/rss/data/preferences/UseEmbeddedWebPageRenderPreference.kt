@@ -7,7 +7,7 @@ class UseEmbeddedWebPageRenderPreference(
     override val sharedPreferences: SharedPreferences,
 ) : BooleanPreference() {
 
-    override val defaultValue: () -> Boolean = { false }
+    override val defaultValue: () -> Boolean = { true }
 
     override val key: String = "use_embedded_web_page_render"
 }

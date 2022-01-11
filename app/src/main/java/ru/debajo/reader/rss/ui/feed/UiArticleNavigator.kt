@@ -16,7 +16,7 @@ class UiArticleNavigator(
         launch(Dispatchers.IO) {
             val openWebView = useEmbeddedWebPageRenderPreference.get()
             withContext(Dispatchers.Main) {
-                if (!uiArticle.rawHtmlContent.isNullOrEmpty() && openWebView) {
+                if (openWebView) {
                     NavGraph.UiArticleWebRender.navigate(navController, uiArticle)
                 } else {
                     NavGraph.ChromeTabs.navigate(navController, uiArticle.url.toChromeTabsParams(backgroundColor))

@@ -13,5 +13,6 @@ sealed interface WebPageTokenStyle {
     data class BoldItalic(override val start: Int, override val end: Int) : WebPageTokenStyle
     data class Underline(override val start: Int, override val end: Int) : WebPageTokenStyle
     data class ForegroundColor(val color: Color, override val start: Int, override val end: Int) : WebPageTokenStyle
+    data class Scale(val scale: Float, override val start: Int, override val end: Int) : WebPageTokenStyle
     data class Url(val url: String, override val start: Int, override val end: Int) : WebPageTokenStyle
 }

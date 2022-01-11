@@ -70,6 +70,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "com.google.android.material:material:$appcompat_version"
     implementation "androidx.browser:browser:$androidx_browser"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     // compose
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -113,6 +114,5 @@ dependencies {
     implementation "joda-time:joda-time:$joda_time_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "org.jsoup:jsoup:$jsoup_version"
-
-    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation 'net.dankito.readability4j:readability4j:1.0.8'
 }
