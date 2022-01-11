@@ -25,10 +25,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 @OptIn(ExperimentalMaterial3Api::class)
 fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleNavigator: UiArticleNavigator) {
     val viewModel = diViewModel<ChannelArticlesViewModel>()
-    LaunchedEffect(key1 = channel, block = {
-        viewModel.load(channel)
-    })
-
+    LaunchedEffect(key1 = channel, block = { viewModel.load(channel) })
     val backgroundColor = MaterialTheme.colorScheme.background
     val unsubscribeDialogVisible = rememberSaveable { mutableStateOf(false) }
     Scaffold(

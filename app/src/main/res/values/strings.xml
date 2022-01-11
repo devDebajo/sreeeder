@@ -40,6 +40,7 @@
     <string name="share_title">Share</string>
     <string name="open_in">Open in</string>
     <string name="cancel">Cancel</string>
+    <string name="scroll_to_top">Scroll to top</string>
 
     <string name="article_date_time_today">Today at %s</string>
     <string name="article_date_time_yesterday">Yesterday at %s</string>

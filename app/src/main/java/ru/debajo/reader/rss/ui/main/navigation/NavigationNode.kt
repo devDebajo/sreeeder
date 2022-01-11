@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import ru.debajo.reader.rss.ui.ext.navigate
 
 interface NavigationNode<T> {
@@ -31,7 +32,14 @@ interface UnitNavigationNode : NavigationNode<Unit> {
     }
 
     fun navigate(navController: NavController) {
-        navController.navigate(route)
+        // TODO как-то это надо вынести отсюда
+        navController.navigate(route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
     }
 }
 

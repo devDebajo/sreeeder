@@ -29,6 +29,7 @@ import coil.transform.BlurTransformation
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
@@ -55,20 +56,26 @@ fun ChannelsList(
                 )
             }
         } else {
-            LazyColumn(
-                state = scrollController.rememberLazyListState(NavGraph.Main.Channels.route),
+            val listScrollState = scrollController.rememberLazyListState(NavGraph.Main.Channels.route)
+            ScrollTopTopButton(
+                listScrollState = listScrollState,
                 contentPadding = innerPadding,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                items(
-                    count = channels.size,
-                    key = { channels[it].url.url }
+                LazyColumn(
+                    state = listScrollState,
+                    contentPadding = innerPadding,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    ChannelCard(channel = channels[it]) { channel ->
-                        NavGraph.ArticlesList.navigate(navController, channel)
+                    items(
+                        count = channels.size,
+                        key = { channels[it].url.url }
+                    ) {
+                        ChannelCard(channel = channels[it]) { channel ->
+                            NavGraph.ArticlesList.navigate(navController, channel)
+                        }
                     }
                 }
             }

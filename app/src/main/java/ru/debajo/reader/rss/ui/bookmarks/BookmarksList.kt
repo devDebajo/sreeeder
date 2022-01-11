@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
+import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -48,29 +49,35 @@ fun BookmarksList(
                 )
             }
         } else {
-            LazyColumn(
-                state = scrollController.rememberLazyListState(NavGraph.Main.Favorites.route),
-                contentPadding = PaddingValues(
-                    top = 12.dp,
-                    bottom = innerPadding.calculateBottomPadding(),
-                    start = 16.dp,
-                    end = 16.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                content = {
-                    items(
-                        count = articles.size,
-                        key = { index -> articles[index].id + articles[index].channelName }
-                    ) { index ->
-                        ChannelArticle(
-                            article = articles[index],
-                            onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                        ) {
-                            uiArticleNavigator.open(it, navController, backgroundColor)
+            val listScrollState = scrollController.rememberLazyListState(NavGraph.Main.Favorites.route)
+            ScrollTopTopButton(
+                listScrollState = listScrollState,
+                contentPadding = innerPadding,
+            ) {
+                LazyColumn(
+                    state = listScrollState,
+                    contentPadding = PaddingValues(
+                        top = 12.dp,
+                        bottom = innerPadding.calculateBottomPadding(),
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    content = {
+                        items(
+                            count = articles.size,
+                            key = { index -> articles[index].id + articles[index].channelName }
+                        ) { index ->
+                            ChannelArticle(
+                                article = articles[index],
+                                onFavoriteClick = { viewModel.onFavoriteClick(it) },
+                            ) {
+                                uiArticleNavigator.open(it, navController, backgroundColor)
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

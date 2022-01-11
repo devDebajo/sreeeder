@@ -38,6 +38,7 @@
     <string name="share_title">Поделиться</string>
     <string name="open_in">Відкрити в</string>
     <string name="cancel">Відміна</string>
+    <string name="scroll_to_top">Прокрутіть вгору</string>
 
     <string name="article_date_time_today">Сьогодні в %s</string>
     <string name="article_date_time_yesterday">Вчора в %s</string>
