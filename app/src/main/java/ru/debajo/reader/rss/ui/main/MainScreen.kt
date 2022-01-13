@@ -1,15 +1,18 @@
 package ru.debajo.reader.rss.ui.main
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -19,11 +22,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ru.debajo.reader.rss.R
-import ru.debajo.reader.rss.ext.toInt
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksList
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsList
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
+import ru.debajo.reader.rss.ui.ext.animatedHeight
+import ru.debajo.reader.rss.ui.ext.toInt
 import ru.debajo.reader.rss.ui.feed.FeedList
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
@@ -141,20 +145,6 @@ private fun MainScaffold(
             }
         }
     ) { innerPadding -> content(innerPadding) }
-}
-
-fun Modifier.animatedHeight(height: Dp): Modifier {
-    return composed {
-        var previousValue by remember { mutableStateOf<Float?>(null) }
-        val animatable = remember { androidx.compose.animation.core.Animatable(height.value) }
-        LaunchedEffect(key1 = height, block = {
-            if (previousValue == null || previousValue != height.value) {
-                previousValue = height.value
-                animatable.animateTo(height.value)
-            }
-        })
-        height(animatable.value.dp)
-    }
 }
 
 @Composable
