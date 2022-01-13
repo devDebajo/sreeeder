@@ -14,6 +14,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
+import ru.debajo.reader.rss.data.preferences.ShowNavigationTitlesPreference
 import ru.debajo.reader.rss.data.preferences.UseEmbeddedWebPageRenderPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.domain.channel.SubscribeChannelsListUseCase
@@ -34,6 +35,7 @@ class SettingsViewModel(
     private val appThemeProvider: AppThemeProvider,
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
     private val useEmbeddedWebPageRenderPreference: UseEmbeddedWebPageRenderPreference,
+    private val showNavigationTitlesPreference: ShowNavigationTitlesPreference,
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler,
     private val analyticsEnabledManager: AnalyticsEnabledManager,
     private val fileSaver: FileSaver,
@@ -64,6 +66,7 @@ class SettingsViewModel(
                     isDynamicColor = config.dynamic,
                     backgroundUpdates = backgroundUpdatesEnabledPreference.get(),
                     useWebRender = useEmbeddedWebPageRenderPreference.get(),
+                    showNavigationTitles = showNavigationTitlesPreference.get(),
                     analyticsEnabled = analyticsEnabledManager.isEnabled(),
                 )
             }
@@ -125,6 +128,13 @@ class SettingsViewModel(
         updateState {
             useEmbeddedWebPageRenderPreference.set(!useWebRender)
             copy(useWebRender = !useWebRender)
+        }
+    }
+
+    fun toggleShowNavigationTitles() {
+        updateState {
+            showNavigationTitlesPreference.set(!showNavigationTitles)
+            copy(showNavigationTitles = !showNavigationTitles)
         }
     }
 

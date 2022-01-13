@@ -21,6 +21,7 @@ import ru.debajo.reader.rss.data.db.migrations.MIGRATION_3_4
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.*
+import ru.debajo.reader.rss.data.preferences.base.PreferenceObserver
 import ru.debajo.reader.rss.data.remote.ReadableArticleHelper
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
@@ -93,11 +94,13 @@ val MetricsProdModule = module {
 val PreferencesModule = module {
     single { get<Context>().getSharedPreferences("sreeeder_prefs", Context.MODE_PRIVATE) }
 
+    single { PreferenceObserver() }
     single { AppThemePreference(get()) }
     single { DynamicThemePreference(get()) }
     single { BackgroundUpdatesEnabledPreference(get()) }
     single { MetricsEnabledPreference(get()) }
     single { UseEmbeddedWebPageRenderPreference(get()) }
+    single { ShowNavigationTitlesPreference(get()) }
 }
 
 val NetworkModule = module {
@@ -165,12 +168,12 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get(), get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }
     factory { BookmarksListViewModel(get(), get()) }
-    factory { MainViewModel(get()) }
+    factory { MainViewModel(get(), get(), get()) }
     factory { HostViewModel(get()) }
     factory { UiArticleWebRenderViewModel(get(), get(), get()) }
 }

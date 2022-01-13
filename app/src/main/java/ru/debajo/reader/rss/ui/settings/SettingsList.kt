@@ -59,6 +59,7 @@ fun SettingsList(
                 SettingsThemeButton(state, viewModel)
                 SettingsDynamicThemeSwitch(state, viewModel)
                 SettingsUseWebRenderSwitch(state, viewModel)
+                SettingsShowNavigationTitlesSwitch(state, viewModel)
             }
             SettingsGroup(
                 title = stringResource(R.string.settings_group_app),

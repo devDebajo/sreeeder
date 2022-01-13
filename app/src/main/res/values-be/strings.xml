@@ -28,6 +28,7 @@
     <string name="settings_import_opml">Імпарт з OPML</string>
     <string name="settings_import_opml_success">Паспяхова імпартавана з OPML</string>
     <string name="settings_import_opml_fail">Імпарт з OPML не атрымаўся</string>
+    <string name="settings_show_bottom_navigation_titles">Паказваць подпісы ўкладак</string>
 
     <string name="add_channel_title">Пошук каналаў</string>
     <string name="add_channel_load">Пошук</string>

@@ -115,6 +115,16 @@ fun SettingsUseWebRenderSwitch(state: SettingsState, viewModel: SettingsViewMode
 }
 
 @Composable
+fun SettingsShowNavigationTitlesSwitch(state: SettingsState, viewModel: SettingsViewModel) {
+    SettingsSwitch(
+        text = stringResource(id = R.string.settings_show_bottom_navigation_titles),
+        checked = state.showNavigationTitles,
+    ) {
+        viewModel.toggleShowNavigationTitles()
+    }
+}
+
+@Composable
 fun SettingsPrivacyPolicy(navController: NavController) {
     val backgroundColor = MaterialTheme.colorScheme.background
     SettingsText(stringResource(id = R.string.settings_privacy_policy)) {

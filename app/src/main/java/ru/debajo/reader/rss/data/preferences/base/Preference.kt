@@ -7,9 +7,9 @@ import kotlinx.coroutines.withContext
 
 abstract class Preference<T : Any?> {
 
-    protected abstract val sharedPreferences: SharedPreferences
+    abstract val sharedPreferences: SharedPreferences
 
-    protected abstract val key: String
+    abstract val key: String
 
     protected abstract val defaultValue: () -> T
 
@@ -18,9 +18,13 @@ abstract class Preference<T : Any?> {
     protected abstract fun SharedPreferences.Editor.setUnsafe(key: String, value: T)
 
     suspend fun get(): T {
+        return withContext(IO) { getBlocking() }
+    }
+
+    fun getBlocking(): T {
         return runCatching {
             if (sharedPreferences.contains(key)) {
-                withContext(IO) { sharedPreferences.getUnsafe(key) }
+                sharedPreferences.getUnsafe(key)
             } else {
                 defaultValue()
             }
