@@ -1,6 +1,7 @@
 package ru.debajo.reader.rss.ui.article
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
@@ -133,6 +135,20 @@ fun UiArticleWebRender(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun LongPullContainer(key: Any?, content: @Composable () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .pointerInput(key) {
+                detectDragGestures { change, dragAmount ->
+
+                }
+            }) {
+        content()
     }
 }
 
