@@ -14,12 +14,12 @@ import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -28,9 +28,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.placeholder
-import com.google.accompanist.placeholder.shimmer
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import ru.debajo.reader.rss.R
@@ -54,18 +51,8 @@ fun ChannelArticle(
     ) {
         Column {
             if (article.image != null) {
-                var loading by remember { mutableStateOf(true) }
                 Image(
-                    painter = rememberImagePainter(
-                        article.image,
-                        builder = {
-                            listener(
-                                onStart = { loading = true },
-                                onError = { _, _ -> loading = false },
-                                onCancel = { loading = false },
-                                onSuccess = { _ ,_  -> loading = false },
-                            )
-                        }),
+                    painter = rememberImagePainter(article.image),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -76,13 +63,7 @@ fun ChannelArticle(
                             MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
                             RoundedCornerShape(18.dp)
                         )
-                        .clip(RoundedCornerShape(18.dp))
-                        .placeholder(
-                            visible = loading,
-                            color = Color.Gray,
-                            shape = RoundedCornerShape(18.dp),
-                            highlight = PlaceholderHighlight.shimmer(Color.White)
-                        ),
+                        .clip(RoundedCornerShape(18.dp)),
                     contentDescription = null
                 )
             }

@@ -83,7 +83,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_view_model_version"
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-placeholder:$accompanist_version"
     implementation "io.coil-kt:coil-compose:$coil_version"
     implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"

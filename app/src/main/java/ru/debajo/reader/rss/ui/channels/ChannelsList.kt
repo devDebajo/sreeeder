@@ -29,6 +29,7 @@ import coil.transform.BlurTransformation
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
@@ -63,7 +64,7 @@ fun ChannelsList(
             ) {
                 LazyColumn(
                     state = listScrollState,
-                    contentPadding = innerPadding,
+                    contentPadding = innerPadding.addPadding(bottom = 100.dp),
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .weight(1f),

@@ -1,17 +1,16 @@
 package ru.debajo.reader.rss.ui.main
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,25 +87,11 @@ private fun MainScaffold(
     feedViewModel: FeedListViewModel,
     content: @Composable (PaddingValues) -> Unit
 ) {
+    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
     val selectedTab by viewModel.selectedTab.collectAsState()
     Scaffold(
-        topBar = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = tabs[selectedTab].title,
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .weight(1f)
-                )
-
-                val feedState by feedViewModel.state.collectAsState()
-                if (selectedTab == 0 && feedState.showOnlyNewArticlesButtonVisible) {
-                    MainScreenTopBarActions(feedState, feedViewModel)
-                }
-            }
-        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = { MainTopBar(selectedTab, feedViewModel, scrollBehavior) },
         bottomBar = {
             val showTitles by viewModel.showNavigationTitles.collectAsState()
             NavigationBar(
@@ -145,6 +130,27 @@ private fun MainScaffold(
             }
         }
     ) { innerPadding -> content(innerPadding) }
+}
+
+@Composable
+private fun MainTopBar(selectedTab: Int, feedViewModel: FeedListViewModel, scrollBehavior: TopAppBarScrollBehavior) {
+    SmallTopAppBar(
+        title = {
+            Text(
+                text = tabs[selectedTab].title,
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+            )
+        },
+        actions = {
+            val feedState by feedViewModel.state.collectAsState()
+            if (selectedTab == 0 && feedState.showOnlyNewArticlesButtonVisible) {
+                MainScreenTopBarActions(feedState, feedViewModel)
+            }
+        },
+        scrollBehavior = scrollBehavior
+    )
 }
 
 @Composable

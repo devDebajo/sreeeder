@@ -73,7 +73,7 @@ fun FeedList(
                         state = listScrollState,
                         contentPadding = PaddingValues(
                             top = 12.dp,
-                            bottom = innerPadding.calculateBottomPadding(),
+                            bottom = innerPadding.calculateBottomPadding() + 80.dp,
                             start = 16.dp,
                             end = 16.dp
                         ),
