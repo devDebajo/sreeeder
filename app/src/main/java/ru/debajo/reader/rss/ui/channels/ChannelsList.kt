@@ -1,8 +1,6 @@
 package ru.debajo.reader.rss.ui.channels
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,8 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,11 +20,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
-import coil.transform.BlurTransformation
+import jp.wasabeef.glide.transformations.BlurTransformation
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.common.AppImage
 import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
 import ru.debajo.reader.rss.ui.list.ScrollController
@@ -100,36 +96,30 @@ inline fun ChannelCard(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            if (channel.image != null) {
-                val context = LocalContext.current
-                Box {
-                    Image(
-                        painter = rememberImagePainter(channel.image, builder = {
-                            transformations(BlurTransformation(context, 3f, 2f))
-                        }),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .padding(top = 4.dp, start = 4.dp, end = 4.dp)
-                            .border(
-                                1.dp,
-                                MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
-                                RoundedCornerShape(18.dp)
-                            )
-                            .clip(RoundedCornerShape(18.dp)),
-                        contentDescription = null
-                    )
+            Box {
+                AppImage(
+                    url = channel.image,
+                    builder = { transform(BlurTransformation(10, 2)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .padding(top = 4.dp, start = 4.dp, end = 4.dp)
+                        .clip(RoundedCornerShape(18.dp)),
+                    onFailure = {
+                        Box(Modifier.fillMaxSize()) {
+                            Text("Не удалось загрузить изображение")
+                        }
+                    }
+                )
 
-                    Image(
-                        painter = rememberImagePainter(channel.image),
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .align(Alignment.Center),
-                        contentDescription = null
-                    )
-                }
+                AppImage(
+                    url = channel.image,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .align(Alignment.Center),
+                    shimmer = false
+                )
             }
             val textColor = MaterialTheme.colorScheme.onSurface
             Spacer(modifier = Modifier.height(16.dp))

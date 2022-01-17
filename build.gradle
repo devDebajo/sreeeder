@@ -2,13 +2,13 @@ apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
     ext {
-        compose_version = '1.1.0-rc01'
+        compose_version = '1.2.0-alpha01'
         compose_meterial3_version = '1.0.0-alpha03'
         compose_navigation_version = '2.4.0-rc01'
         compose_activity_version = '1.4.0'
         compose_view_model_version = '2.4.0'
         accompanist_version = '0.22.0-rc'
-        kotlin_version = '1.6.0'
+        kotlin_version = '1.6.10'
         coroutines_version = '1.6.0'
         core_ktx_version = '1.7.0'
         work_version = "2.7.1"
@@ -17,9 +17,8 @@ buildscript {
         appcompat_version = '1.4.0'
         androidx_browser = '1.4.0'
 
-        room_version = '2.4.0'
+        room_version = '2.4.1'
         koin_version = '2.1.5'
-        coil_version = '1.4.0'
         joda_time_version = '2.10.13'
         rss_parser_version = '4.0.2'
         jsoup_version = '1.14.3'

@@ -18,6 +18,7 @@ import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_1_2
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_2_3
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_3_4
+import ru.debajo.reader.rss.data.db.migrations.MIGRATION_4_5
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.*
@@ -133,6 +134,7 @@ val DbModule = module {
                 MIGRATION_1_2,
                 MIGRATION_2_3,
                 MIGRATION_3_4,
+                MIGRATION_4_5,
             )
             .build()
     }
@@ -143,7 +145,7 @@ val DbModule = module {
     single { get<RssDatabase>(RssDatabase::class.java).channelSubscriptionsDao() }
     single { get<RssDatabase>(RssDatabase::class.java).newArticlesDao() }
     single { CacheManager(get()) }
-    single { RssLoadDbManager(get(), get(), get(), get(), get(), get()) }
+    single { RssLoadDbManager(get(), get(), get(), get(), get(), get(), get()) }
     single { OpmlDumper(get()) }
     single { FileSaver(get()) }
 }

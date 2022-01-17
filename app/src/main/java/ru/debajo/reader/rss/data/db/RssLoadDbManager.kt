@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.data.db
 
+import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -27,6 +28,7 @@ import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import java.util.concurrent.TimeUnit
 
 class RssLoadDbManager(
+    private val context: Context,
     private val rssLoader: RssLoader,
     private val articlesDao: ArticlesDao,
     private val channelsDao: ChannelsDao,
@@ -51,7 +53,7 @@ class RssLoadDbManager(
                     .mapCatching { it.tryExtractIcon().tryExtractImages() }
                     .onSuccess {
                         persist(channelUrl, it)
-                        emit(ChannelLoadingState.UpToDate(it.toDomain()))
+                        emit(ChannelLoadingState.UpToDate(it.toDomain(context)))
                     }
                     .onFailure { emit(ChannelLoadingState.Error(it)) }
             }
@@ -115,7 +117,7 @@ class RssLoadDbManager(
     }
 
     private suspend fun persist(url: DomainChannelUrl, channel: RemoteChannel) {
-        channelsDao.add(channel.toDb())
+        channelsDao.add(channel.toDb(context))
         val dbArticles = channel.currentArticles.toDbList(url.toRemote())
         persistNewArticles(dbArticles, url)
         articlesDao.insert(dbArticles)

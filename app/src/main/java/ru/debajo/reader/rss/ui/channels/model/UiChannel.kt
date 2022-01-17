@@ -3,12 +3,15 @@ package ru.debajo.reader.rss.ui.channels.model
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.graphics.Color
+import ru.debajo.reader.rss.ui.ext.colorInt
 
 @Stable
 data class UiChannel(
     val url: UiChannelUrl,
     val name: String,
     val image: String?,
+    val imageDominantColor: Color?,
     val description: String?,
 ) : Parcelable {
 
@@ -16,6 +19,7 @@ data class UiChannel(
         UiChannelUrl(parcel.readString()!!),
         parcel.readString()!!,
         parcel.readString(),
+        parcel.readInt().takeIf { it != -1 }?.let { Color(it) },
         parcel.readString(),
     )
 
@@ -23,6 +27,7 @@ data class UiChannel(
         parcel.writeString(url.url)
         parcel.writeString(name)
         parcel.writeString(image)
+        parcel.writeInt(imageDominantColor?.colorInt ?: -1)
         parcel.writeString(description)
     }
 

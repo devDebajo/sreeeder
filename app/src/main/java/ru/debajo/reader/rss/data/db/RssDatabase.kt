@@ -16,7 +16,7 @@ import ru.debajo.reader.rss.data.db.model.*
         DbCacheMarker::class,
         DbNewArticle::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 @TypeConverters(DbDateTimeConverter::class)

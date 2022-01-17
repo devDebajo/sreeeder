@@ -1,10 +1,13 @@
 package ru.debajo.reader.rss.ui.article
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
@@ -14,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
@@ -25,14 +27,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
-import coil.size.OriginalSize
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.article.parser.WebPageToken
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenDecoration
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenStyle
+import ru.debajo.reader.rss.ui.common.AppImage
 import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.ext.toFinite
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
@@ -152,10 +153,8 @@ private fun WebPageTokens(state: ScrollState, tokens: List<WebPageToken>, title:
         for (token in tokens) {
             when (token) {
                 is WebPageToken.Image -> {
-                    Image(
-                        painter = rememberImagePainter(token.url, builder = { size(OriginalSize) }),
-                        contentScale = ContentScale.FillWidth,
-                        contentDescription = null,
+                    AppImage(
+                        url = token.url,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp)),

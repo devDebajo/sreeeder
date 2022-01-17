@@ -3,9 +3,7 @@ package ru.debajo.reader.rss.ui.article
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,18 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.common.AppImage
 import ru.debajo.reader.rss.ui.ext.hapticClickable
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -51,20 +48,13 @@ fun ChannelArticle(
     ) {
         Column {
             if (article.image != null) {
-                Image(
-                    painter = rememberImagePainter(article.image),
-                    contentScale = ContentScale.Crop,
+                AppImage(
+                    url = article.image,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
                         .padding(top = 4.dp, start = 4.dp, end = 4.dp)
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
-                            RoundedCornerShape(18.dp)
-                        )
                         .clip(RoundedCornerShape(18.dp)),
-                    contentDescription = null
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -166,12 +156,12 @@ private fun ChannelBar(name: String, image: String?) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (image != null) {
-            Image(
-                painter = rememberImagePainter(image),
+            AppImage(
+                url = image,
                 modifier = Modifier
                     .size(14.dp)
                     .clip(RoundedCornerShape(4.dp)),
-                contentDescription = null
+                appearAnimation = false,
             )
             Spacer(modifier = Modifier.width(8.dp))
         }

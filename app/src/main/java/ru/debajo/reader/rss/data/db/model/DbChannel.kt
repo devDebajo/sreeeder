@@ -16,6 +16,9 @@ data class DbChannel(
     @ColumnInfo(name = "image")
     val image: String?,
 
+    @ColumnInfo(name = "imageDominantColor")
+    val imageDominantColor: Int?,
+
     @ColumnInfo(name = "description")
     val description: String?,
 )
