@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Analytics
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
+import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
 
 @Composable
 fun SettingsList(
@@ -29,7 +29,7 @@ fun SettingsList(
     viewModel: SettingsViewModel
 ) {
     val state by viewModel.state.collectAsState()
-    val expandedGroup = rememberSaveable { mutableStateOf(-1) }
+    val expandedGroup = rememberSaveableMutableState(-1)
 
     SettingsBackPress(expandedGroup)
 

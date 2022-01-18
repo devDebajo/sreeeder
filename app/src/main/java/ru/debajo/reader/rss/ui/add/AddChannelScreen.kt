@@ -8,6 +8,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,25 +37,36 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 fun AddChannelScreen(parentNavController: NavController) {
     val viewModel: AddChannelScreenViewModel = diViewModel()
+    val focusRequester = remember { FocusRequester() }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(key1 = viewModel, block = {
+        viewModel.requestFocus.observe(lifecycleOwner) { focusRequester.requestFocus() }
+        viewModel.requestFocus()
+    })
     Scaffold(
         topBar = {
-            Text(
-                text = stringResource(R.string.add_channel_title),
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { parentNavController.popBackStack() }) {
+                    Icon(Icons.Rounded.ArrowBack, contentDescription = null)
+                }
+                Text(
+                    text = stringResource(R.string.add_channel_title),
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
+                        .weight(1f)
+                )
+            }
         }
     ) {
         val softwareKeyboardController = LocalSoftwareKeyboardController.current
-        val focusRequester = remember { FocusRequester() }
         val keyboardActions = remember(softwareKeyboardController) {
             KeyboardActions(onSearch = {
                 viewModel.onLoadClick()
                 softwareKeyboardController?.hide()
             })
         }
-        LaunchedEffect(key1 = "AddChannelScreen", block = { focusRequester.requestFocus() })
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -70,6 +84,13 @@ fun AddChannelScreen(parentNavController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.add_channel_placeholder)) },
                 shape = RoundedCornerShape(18.dp),
+                trailingIcon = {
+                    if (text.isNotEmpty()) {
+                        IconButton(onClick = { viewModel.clearQuery() }) {
+                            Icon(Icons.Rounded.Clear, contentDescription = null)
+                        }
+                    }
+                }
             )
 
             AppCard(

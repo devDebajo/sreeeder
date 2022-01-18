@@ -10,7 +10,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.debajo.reader.rss.R
+import ru.debajo.reader.rss.ui.common.rememberMutableState
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
 
@@ -30,8 +33,8 @@ fun MainScreenTopBarActions(state: FeedListState, viewModel: FeedListViewModel) 
         viewModel.onOnlyNewArticlesClick(it)
     })
 
-    var menuVisible by remember { mutableStateOf(false) }
-    var iconPosition by remember { mutableStateOf(0f) }
+    var menuVisible by rememberMutableState(false)
+    var iconPosition by rememberMutableState(0f)
     IconButton(
         modifier = Modifier.onGloballyPositioned { coordinates ->
             iconPosition = coordinates.boundsInRoot().left

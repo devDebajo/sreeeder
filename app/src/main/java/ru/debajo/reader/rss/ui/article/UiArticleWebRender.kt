@@ -34,6 +34,7 @@ import ru.debajo.reader.rss.ui.article.parser.WebPageToken
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenDecoration
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenStyle
 import ru.debajo.reader.rss.ui.common.AppImage
+import ru.debajo.reader.rss.ui.common.rememberMutableState
 import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.ext.toFinite
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
@@ -54,7 +55,7 @@ fun UiArticleWebRender(
         modifier = modifier,
         topBar = {
             Box {
-                var toolbarHeight by remember { mutableStateOf(0) }
+                var toolbarHeight by rememberMutableState(0)
                 Box(
                     Modifier
                         .height(toolbarHeight.pxToDp())
@@ -165,8 +166,8 @@ private fun WebPageTokens(state: ScrollState, tokens: List<WebPageToken>, title:
                         TextToken(token, navController)
                     } else {
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            var lineHeight by remember { mutableStateOf(0f) }
-                            var textHeight by remember { mutableStateOf(0) }
+                            var lineHeight by rememberMutableState(0f)
+                            var textHeight by rememberMutableState(0)
                             when (token.decoration) {
                                 is WebPageTokenDecoration.Bullet -> {
                                     Box(

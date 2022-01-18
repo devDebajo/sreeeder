@@ -7,7 +7,6 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -18,6 +17,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
+import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
@@ -27,7 +27,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleN
     val viewModel = diViewModel<ChannelArticlesViewModel>()
     LaunchedEffect(key1 = channel, block = { viewModel.load(channel) })
     val backgroundColor = MaterialTheme.colorScheme.background
-    val unsubscribeDialogVisible = rememberSaveable { mutableStateOf(false) }
+    val unsubscribeDialogVisible = rememberSaveableMutableState(false)
     Scaffold(
         topBar = {
             MediumTopAppBar(

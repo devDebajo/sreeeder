@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.ui.add
 
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -9,6 +10,7 @@ import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
 import ru.debajo.reader.rss.ext.collectTo
 import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
+import ru.debajo.reader.rss.ui.arch.SingleLiveEvent
 
 class AddChannelScreenViewModel(
     private val searchChannelsUseCase: SearchChannelsUseCase,
@@ -18,9 +20,18 @@ class AddChannelScreenViewModel(
     private val textMutable: MutableStateFlow<String> = MutableStateFlow("")
     private val currentChannelMutable: MutableStateFlow<AddChannelScreenState> = MutableStateFlow(AddChannelScreenState.Idle)
     private var currentJob: Job? = null
-
+    private val requestFocusMutable: SingleLiveEvent<Unit> = SingleLiveEvent()
+    private var focusRequested: Boolean = false
     val text: StateFlow<String> = textMutable
     val state: StateFlow<AddChannelScreenState> = currentChannelMutable
+    val requestFocus: LiveData<Unit> = requestFocusMutable
+
+    fun requestFocus() {
+        if (!focusRequested) {
+            requestFocusMutable.value = Unit
+            focusRequested = true
+        }
+    }
 
     fun onTextChanged(text: String) {
         textMutable.value = text
@@ -47,5 +58,10 @@ class AddChannelScreenViewModel(
                 }
                 .collectTo(currentChannelMutable)
         }
+    }
+
+    fun clearQuery() {
+        textMutable.value = ""
+        currentChannelMutable.value = AddChannelScreenState.Idle
     }
 }

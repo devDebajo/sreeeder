@@ -1,8 +1,11 @@
 package ru.debajo.reader.rss.ui.ext
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
+import com.google.android.material.color.ColorRoles
+import com.google.android.material.color.MaterialColors
 
 val Color.colorInt: Int
     @ColorInt
@@ -16,3 +19,12 @@ val Color.colorInt: Int
                     (blue * 255.0f + 0.5f).toInt()
         }
     }
+
+val Int.composeColor: Color
+    get() = Color(this)
+
+fun Int.getColorRoles(context: Context): ColorRoles {
+    return MaterialColors.getColorRoles(context, this)
+}
+
+fun Color.getColorRoles(context: Context): ColorRoles = colorInt.getColorRoles(context)

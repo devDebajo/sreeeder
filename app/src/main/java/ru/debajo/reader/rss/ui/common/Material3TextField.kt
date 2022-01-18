@@ -25,6 +25,7 @@ fun Material3TextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     singleLine: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
     keyboardActions: KeyboardActions = KeyboardActions(),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -50,6 +51,7 @@ fun Material3TextField(
             colors = material3Colors(),
             onValueChange = onValueChange,
             shape = shape,
+            trailingIcon = trailingIcon,
         )
     }
 }
