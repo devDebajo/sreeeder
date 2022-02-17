@@ -39,7 +39,7 @@ class HostActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by diViewModels()
     private val uiArticleNavigator: UiArticleNavigator by inject()
 
-    private val createDocumentLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
+    private val createDocumentLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.CreateDocument("*/*")) {
         if (it != null) {
             settingsViewModel.writeOpmlDump(it)
         }

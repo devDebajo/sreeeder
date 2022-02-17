@@ -34,6 +34,7 @@ import ru.debajo.reader.rss.ui.article.parser.WebPageToken
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenDecoration
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenStyle
 import ru.debajo.reader.rss.ui.common.AppImage
+import ru.debajo.reader.rss.ui.common.FontFamilies
 import ru.debajo.reader.rss.ui.common.rememberMutableState
 import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.ext.toFinite
@@ -216,7 +217,12 @@ private fun TextToken(token: WebPageToken.Text, navController: NavController, on
     ClickableText(
         text = text,
         onTextLayout = { onTextLayout(it) },
-        style = TextStyle.Default.copy(LocalContentColor.current, fontSize = 16.sp),
+        style = TextStyle.Default.copy(
+            color = LocalContentColor.current,
+            fontSize = 16.sp,
+            fontFamily = FontFamilies.robotoSerif,
+            lineHeight = 22.sp
+        ),
         onClick = onClick
     )
 }

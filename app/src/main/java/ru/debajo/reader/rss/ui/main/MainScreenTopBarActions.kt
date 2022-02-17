@@ -27,6 +27,7 @@ import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun MainScreenTopBarActions(state: FeedListState, viewModel: FeedListViewModel) {
     Text(stringResource(R.string.feed_only_new), fontSize = 10.sp)
     Checkbox(checked = state.showOnlyNewArticles, onCheckedChange = {
