@@ -1,11 +1,7 @@
 package ru.debajo.reader.rss.ui.main
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.requiredSizeIn
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Visibility
@@ -57,17 +53,19 @@ fun MainScreenTopBarActions(state: FeedListState, viewModel: FeedListViewModel) 
         onDismissRequest = { menuVisible = false },
     ) {
         DropdownMenuItem(
+            text = {
+                Text(stringResource(R.string.feed_mark_all_as_read), color = MaterialTheme.colorScheme.onSecondaryContainer)
+            },
+            leadingIcon = {
+                Icon(
+                    Icons.Rounded.Visibility,
+                    contentDescription = null,
+                )
+            },
             onClick = {
                 menuVisible = false
                 viewModel.onMarkAllAsRead()
             },
-        ) {
-            Icon(
-                Icons.Rounded.Visibility,
-                contentDescription = null,
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(stringResource(R.string.feed_mark_all_as_read), color = MaterialTheme.colorScheme.onSecondaryContainer)
-        }
+        )
     }
 }
