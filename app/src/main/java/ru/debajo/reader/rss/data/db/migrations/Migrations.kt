@@ -25,5 +25,6 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
 val MIGRATION_4_5 = object : Migration(4, 5) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE `dbchannel` ADD COLUMN imageDominantColor INTEGER DEFAULT null")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `DbError` (`id` TEXT NOT NULL, `stackTrace` TEXT NOT NULL, `message` TEXT, `customMessage` TEXT, `tag` TEXT, `date` INTEGER NOT NULL, `appVersion` TEXT NOT NULL, `sdkVersion` INTEGER NOT NULL, `fatal` INTEGER NOT NULL, PRIMARY KEY(`id`))");
     }
 }

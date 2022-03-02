@@ -1,46 +1,23 @@
 package ru.debajo.reader.rss.data.updater
 
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
+import androidx.work.ListenableWorker
 import androidx.work.WorkManager
+import ru.debajo.reader.rss.data.error.WorkerScheduler
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import java.util.concurrent.TimeUnit
 
 class BackgroundUpdatesScheduler(
-    private val workManager: WorkManager,
+    workManager: WorkManager,
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
-) {
-    suspend fun rescheduleOrCancel() {
-        if (backgroundUpdatesEnabledPreference.get()) {
-            reschedule()
-        } else {
-            removeWorks()
-        }
-    }
+) : WorkerScheduler(workManager) {
 
-    fun reschedule() {
-        workManager.enqueueUniquePeriodicWork(
-            WORK_TAG,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            createRequest()
-        )
-    }
+    override val tag: String = "BG_UPDATER_WORK_TAG"
 
-    fun removeWorks() {
-        workManager.cancelUniqueWork(WORK_TAG)
-    }
+    override val workerClass: Class<out ListenableWorker> = BackgroundUpdatesWorker::class.java
 
-    private fun createRequest(): PeriodicWorkRequest {
-        return PeriodicWorkRequest.Builder(
-            BackgroundUpdatesWorker::class.java,
-            4,
-            TimeUnit.HOURS
-        )
-            .setInitialDelay(1, TimeUnit.HOURS)
-            .build()
-    }
+    override val repeatMs: Long = TimeUnit.HOURS.toMillis(4)
 
-    private companion object {
-        const val WORK_TAG = "WORK_TAG"
-    }
+    override val initialDelayMs: Long = TimeUnit.HOURS.toMillis(1)
+
+    override suspend fun isEnabled(): Boolean = backgroundUpdatesEnabledPreference.get()
 }

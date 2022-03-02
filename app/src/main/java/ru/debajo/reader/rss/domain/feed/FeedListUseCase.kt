@@ -15,7 +15,10 @@ class FeedListUseCase(
     operator fun invoke(): Flow<List<LoadArticlesUseCase.EnrichedDomainArticle>> {
         return subscriptionsUseCase.observe()
             .flatMapLatest { subscribedChannels -> loadArticles(subscribedChannels) }
-            .map { articles -> articles.sortedByDescending { it.article.timestamp?.millis } }
+            .map { articles ->
+                throw IllegalStateException()
+                articles.sortedByDescending { it.article.timestamp?.millis }
+            }
             .catch {
                 Timber.e(it)
                 emit(emptyList())

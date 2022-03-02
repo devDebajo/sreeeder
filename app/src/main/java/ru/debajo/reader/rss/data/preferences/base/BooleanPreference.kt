@@ -12,3 +12,13 @@ abstract class BooleanPreference : Preference<Boolean>() {
         putBoolean(key, value)
     }
 }
+
+suspend fun BooleanPreference.runIfTrue(block: suspend () -> Unit) {
+    runIf(true, block)
+}
+
+suspend fun BooleanPreference.runIf(expectedValue: Boolean, block: suspend () -> Unit) {
+    if (get() == expectedValue) {
+        block()
+    }
+}

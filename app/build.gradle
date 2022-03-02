@@ -27,11 +27,17 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
+
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file("local.properties").newDataInputStream())
+            def endpoint = properties.getProperty('debug.backend.endpoint', "")
+            buildConfigField "String", "BACKEND_ENDPOINT", "\"$endpoint\""
         }
         release {
             minifyEnabled true
             buildConfigField "boolean", "CACHE_ENABLED", 'true'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BACKEND_ENDPOINT", '"http://debajoapps.ru/sreeeder/"'
         }
     }
     compileOptions {
