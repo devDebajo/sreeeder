@@ -13,7 +13,6 @@ import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.domain.article.NewArticlesUseCase
 import ru.debajo.reader.rss.ext.ignoreElements
-import ru.debajo.reader.rss.metrics.Analytics
 import timber.log.Timber
 
 class BackgroundUpdatesWorker(
@@ -23,14 +22,12 @@ class BackgroundUpdatesWorker(
 
     private val workManager: WorkManager by inject()
     private val rssLoadDbManager: RssLoadDbManager by inject()
-    private val analytics: Analytics by inject()
     private val notificationManager: BackgroundUpdatesNotificationManager by inject()
     private val notificationChannelCreator: NotificationChannelCreator by inject()
     private val notificationFactory: NotificationFactory by inject()
     private val newArticlesUseCase: NewArticlesUseCase by inject()
 
     override suspend fun doWork(): Result {
-        analytics.onStartWorker()
         setForeground(createForegroundInfo())
         return withContext(IO) {
             runCatching {
@@ -38,13 +35,9 @@ class BackgroundUpdatesWorker(
                 newArticlesUseCase.getNewIds().size
             }
                 .onSuccess { count ->
-                    analytics.onSuccessWorker()
                     notificationManager.sendNewArticlesCount(count)
                 }
-                .onFailure { error ->
-                    analytics.onFailWorker()
-                    Timber.e(error)
-                }
+                .onFailure { error -> Timber.e(error) }
                 .map { Result.success() }
                 .getOrElse { Result.failure() }
         }

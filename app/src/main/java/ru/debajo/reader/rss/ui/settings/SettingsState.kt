@@ -10,10 +10,9 @@ data class SettingsState(
     val isDynamicColor: Boolean = false,
     val supportDynamicTheme: Boolean = false,
     val backgroundUpdates: Boolean = true,
-    val analyticsEnabled: Boolean = true,
+    val crashlyticsEnabled: Boolean = true,
     val useWebRender: Boolean = false,
     val showNavigationTitles: Boolean = true,
-    val showAnalyticsAlertDialog: Boolean = false,
     val importing: Boolean = false,
 ) {
 

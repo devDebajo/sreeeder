@@ -13,7 +13,6 @@ import ru.debajo.reader.rss.domain.article.ClearArticlesUseCase
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.ext.collectTo
-import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
@@ -23,7 +22,6 @@ class ChannelArticlesViewModel(
     private val articleBookmarksRepository: ArticleBookmarksRepository,
     private val loadArticlesUseCase: LoadArticlesUseCase,
     private val clearArticlesUseCase: ClearArticlesUseCase,
-    private val analytics: Analytics,
 ) : BaseViewModel() {
 
     private var channel: UiChannel? = null
@@ -57,10 +55,6 @@ class ChannelArticlesViewModel(
         launch {
             articleBookmarksRepository.toggle(article.id)
         }
-    }
-
-    fun onShare() {
-        analytics.onShareChannel()
     }
 
     override fun onCleared() {

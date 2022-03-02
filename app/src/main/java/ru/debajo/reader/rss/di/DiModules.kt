@@ -1,12 +1,9 @@
 package ru.debajo.reader.rss.di
 
-import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import androidx.room.Room
 import androidx.work.WorkManager
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.prof.rssparser.BuildConfig
 import okhttp3.OkHttpClient
@@ -42,9 +39,6 @@ import ru.debajo.reader.rss.domain.channel.SubscribeChannelsListUseCase
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
-import ru.debajo.reader.rss.metrics.Analytics
-import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
-import ru.debajo.reader.rss.metrics.AnalyticsEnabledManagerProd
 import ru.debajo.reader.rss.ui.add.AddChannelScreenViewModel
 import ru.debajo.reader.rss.ui.article.UiArticleWebRenderViewModel
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -66,7 +60,6 @@ fun nonVariantModules(context: Context): List<Module> {
         RepositoryModule,
         UseCaseModule,
         ViewModelModule,
-        MetricsModule,
         RefresherModule,
         NotificationModule,
     )
@@ -75,21 +68,8 @@ fun nonVariantModules(context: Context): List<Module> {
 fun appModule(context: Context): Module = module {
     single { context.applicationContext }
     single { get<Context>().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
-    single { AppThemeProvider(get(), get(), get()) }
+    single { AppThemeProvider(get(), get()) }
     single { UiArticleNavigator(get()) }
-
-}
-
-@SuppressLint("MissingPermission")
-val MetricsModule = module {
-    single { FirebaseCrashlytics.getInstance() }
-    single { FirebaseAnalytics.getInstance(get()) }
-    single { Analytics(get()) }
-}
-
-@SuppressLint("MissingPermission")
-val MetricsProdModule = module {
-    single<AnalyticsEnabledManager> { AnalyticsEnabledManagerProd(get(), get(), get(), get()) }
 }
 
 val PreferencesModule = module {
@@ -102,6 +82,7 @@ val PreferencesModule = module {
     single { MetricsEnabledPreference(get()) }
     single { UseEmbeddedWebPageRenderPreference(get()) }
     single { ShowNavigationTitlesPreference(get()) }
+    single { CrashlyticsPreference(get()) }
 }
 
 val NetworkModule = module {
@@ -151,10 +132,10 @@ val DbModule = module {
 }
 
 val RepositoryModule = module {
-    single { ArticleBookmarksRepository(get(), get()) }
+    single { ArticleBookmarksRepository(get()) }
     single { ArticlesRepository(get()) }
     single { ChannelsRepository(get()) }
-    single { ChannelsSubscriptionsRepository(get(), get()) }
+    single { ChannelsSubscriptionsRepository(get()) }
     single { NewArticlesRepository(get()) }
 }
 
@@ -170,14 +151,14 @@ val UseCaseModule = module {
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    factory { AddChannelScreenViewModel(get(), get()) }
-    factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { AddChannelScreenViewModel(get()) }
+    factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }
     factory { BookmarksListViewModel(get(), get()) }
     factory { MainViewModel(get(), get(), get()) }
     factory { HostViewModel(get()) }
-    factory { UiArticleWebRenderViewModel(get(), get(), get()) }
+    factory { UiArticleWebRenderViewModel(get(), get()) }
 }
 
 val RefresherModule = module {

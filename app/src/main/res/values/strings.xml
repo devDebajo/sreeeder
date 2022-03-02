@@ -19,11 +19,7 @@
     <string name="settings_use_web_render">Built-in Web Render</string>
     <string name="settings_app_version">App version: %s</string>
     <string name="settings_privacy_policy">Privacy policy</string>
-    <string name="settings_analytics_enabled">Analytics sending</string>
-    <string name="settings_analytics_alert_title">Disable analytics sending?</string>
-    <string name="settings_analytics_alert_message">This application collects analytics and errors that occur anonymously and solely for the purpose of improving its quality and stability. By disabling this option, you confirm that this application will stop sending statistics of its work and emerging errors to the developer</string>
-    <string name="settings_analytics_alert_ok">Disable</string>
-    <string name="settings_analytics_alert_cancel">Cancel</string>
+    <string name="settings_crashlytics_enabled">Send application errors</string>
     <string name="settings_export_opml">Export to OPML</string>
     <string name="settings_export_opml_success">Exported successfully to OPML</string>
     <string name="settings_export_opml_fail">Export to OPML failed</string>

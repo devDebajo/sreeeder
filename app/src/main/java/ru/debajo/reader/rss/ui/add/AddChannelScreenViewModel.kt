@@ -8,13 +8,11 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.converter.toUiList
 import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
 import ru.debajo.reader.rss.ext.collectTo
-import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.arch.SingleLiveEvent
 
 class AddChannelScreenViewModel(
     private val searchChannelsUseCase: SearchChannelsUseCase,
-    private val analytics: Analytics,
 ) : BaseViewModel() {
 
     private val textMutable: MutableStateFlow<String> = MutableStateFlow("")
@@ -38,7 +36,6 @@ class AddChannelScreenViewModel(
     }
 
     fun onLoadClick() {
-        analytics.onLoadChannel()
         currentJob?.cancel()
         currentJob = launch(IO) {
             searchChannelsUseCase.search(text.value)

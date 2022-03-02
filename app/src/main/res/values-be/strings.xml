@@ -17,11 +17,7 @@
     <string name="settings_use_web_render">Убудаваны Web Render</string>
     <string name="settings_app_version">Версія прыкладання: %s</string>
     <string name="settings_privacy_policy">Палітыка прыватнасці</string>
-    <string name="settings_analytics_enabled">Адпраўка аналітыкі</string>
-    <string name="settings_analytics_alert_title">Адключыць адпраўку аналітыкі?</string>
-    <string name="settings_analytics_alert_message">Прыкладанне збірае аналітыку і якія ўзнікаюць памылкі ананімна і выключна ў мэтах паляпшэння яго якасці і стабільнасці. Адключаючы гэтую опцыю вы пацвярджаеце, што дадзенае прыкладанне перастане адпраўляць статыстыку сваёй працы і якія ўзнікаюць памылкі распрацоўніку</string>
-    <string name="settings_analytics_alert_ok">Адключыць</string>
-    <string name="settings_analytics_alert_cancel">Адмена</string>
+    <string name="settings_crashlytics_enabled">Памылкі адпраўкі прыкладання</string>
     <string name="settings_export_opml">Экспарт у OPML</string>
     <string name="settings_export_opml_success">Паспяхова экспартавана ў OPML</string>
     <string name="settings_export_opml_fail">Экспарт у OPML не атрымаўся</string>

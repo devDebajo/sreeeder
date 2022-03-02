@@ -55,7 +55,6 @@ fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleN
                         Text(stringResource(stringRes).uppercase())
                     }
                     IconButton(onClick = {
-                        viewModel.onShare()
                         NavGraph.ShareText.navigate(navController, channel.url.url)
                     }) {
                         Icon(

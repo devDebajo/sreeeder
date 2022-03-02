@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.debajo.reader.rss.data.remote.ReadableArticleHelper
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
-import ru.debajo.reader.rss.metrics.Analytics
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.article.parser.WebPageParser
@@ -17,7 +16,6 @@ import timber.log.Timber
 
 class UiArticleWebRenderViewModel(
     private val readableArticleHelper: ReadableArticleHelper,
-    private val analytics: Analytics,
     private val articleBookmarksRepository: ArticleBookmarksRepository
 ) : BaseViewModel() {
 
@@ -27,7 +25,6 @@ class UiArticleWebRenderViewModel(
 
     fun load(uiArticle: UiArticle) {
         loadJob?.cancel()
-        analytics.onOpenEmbeddedWebPage()
         stateMutable.value = UiArticleWebRenderState.Loading(false)
         loadJob = launch {
             launch(IO) {

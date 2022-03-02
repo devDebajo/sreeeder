@@ -7,12 +7,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import ru.debajo.reader.rss.data.preferences.AppThemePreference
 import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
-import ru.debajo.reader.rss.metrics.Analytics
 
 class AppThemeProvider(
     private val appThemePreference: AppThemePreference,
     private val dynamicThemePreference: DynamicThemePreference,
-    private val analytics: Analytics,
 ) {
 
     private val currentAppThemeConfigMutable: MutableStateFlow<AppThemeConfig> = MutableStateFlow(AppThemeConfig(AppTheme.LIGHT, false))
@@ -31,13 +29,11 @@ class AppThemeProvider(
     }
 
     suspend fun update(mode: AppTheme) {
-        analytics.setThemeUserProperty(mode)
         appThemePreference.set(mode)
         updateConfig(mode = mode)
     }
 
     suspend fun update(dynamicTheme: Boolean) {
-        analytics.setDynamicThemeUserProperty(dynamicTheme)
         dynamicThemePreference.set(dynamicTheme)
         updateConfig(dynamicTheme = dynamicTheme)
     }

@@ -14,13 +14,12 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
+import ru.debajo.reader.rss.data.preferences.CrashlyticsPreference
 import ru.debajo.reader.rss.data.preferences.ShowNavigationTitlesPreference
 import ru.debajo.reader.rss.data.preferences.UseEmbeddedWebPageRenderPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.domain.channel.SubscribeChannelsListUseCase
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
-import ru.debajo.reader.rss.metrics.Analytics
-import ru.debajo.reader.rss.metrics.AnalyticsEnabledManager
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.arch.SingleLiveEvent
 import ru.debajo.reader.rss.ui.theme.AppTheme
@@ -31,13 +30,12 @@ import kotlin.coroutines.CoroutineContext
 @SuppressLint("StaticFieldLeak")
 class SettingsViewModel(
     private val context: Context,
-    private val analytics: Analytics,
     private val appThemeProvider: AppThemeProvider,
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
     private val useEmbeddedWebPageRenderPreference: UseEmbeddedWebPageRenderPreference,
     private val showNavigationTitlesPreference: ShowNavigationTitlesPreference,
+    private val crashlyticsPreference: CrashlyticsPreference,
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler,
-    private val analyticsEnabledManager: AnalyticsEnabledManager,
     private val fileSaver: FileSaver,
     private val opmlDumper: OpmlDumper,
     private val subscribeChannelsListUseCase: SubscribeChannelsListUseCase,
@@ -67,7 +65,7 @@ class SettingsViewModel(
                     backgroundUpdates = backgroundUpdatesEnabledPreference.get(),
                     useWebRender = useEmbeddedWebPageRenderPreference.get(),
                     showNavigationTitles = showNavigationTitlesPreference.get(),
-                    analyticsEnabled = analyticsEnabledManager.isEnabled(),
+                    crashlyticsEnabled = crashlyticsPreference.get(),
                 )
             }
         }
@@ -81,16 +79,10 @@ class SettingsViewModel(
         importOpmlClickEventMutable.value = Unit
     }
 
-    fun setAnalyticsEnabled(enabled: Boolean) {
+    fun toggleCrashlyticsEnabled() {
         updateState {
-            analyticsEnabledManager.setEnabled(enabled)
-            copy(analyticsEnabled = enabled)
-        }
-    }
-
-    fun toggleAnalyticsAlert(visible: Boolean) {
-        updateState {
-            copy(showAnalyticsAlertDialog = visible)
+            crashlyticsPreference.set(!crashlyticsEnabled)
+            copy(crashlyticsEnabled = !crashlyticsEnabled)
         }
     }
 
@@ -114,7 +106,6 @@ class SettingsViewModel(
     fun toggleBackgroundUpdates() {
         updateState {
             val newBackgroundUpdates = !backgroundUpdates
-            analytics.setBackgroundUpdatesToggleState(newBackgroundUpdates)
 
             // TODO переделать (сокрыть backgroundUpdatesEnabledPreference в backgroundUpdatesScheduler)
             backgroundUpdatesEnabledPreference.set(newBackgroundUpdates)
@@ -139,7 +130,6 @@ class SettingsViewModel(
     }
 
     fun writeOpmlDump(uri: Uri) {
-        analytics.onExportOpml()
         launch(IO) {
             runCatching {
                 val xml = opmlDumper.dump()
@@ -157,7 +147,6 @@ class SettingsViewModel(
         if (state.value.importing) {
             return
         }
-        analytics.onImportOpml()
         updateState { copy(importing = true) }
         launch(IO) {
             runCatching { importOpmlInternal(uri) }

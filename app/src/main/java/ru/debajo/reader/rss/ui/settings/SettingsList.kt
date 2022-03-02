@@ -7,9 +7,8 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Analytics
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,12 +67,8 @@ fun SettingsList(
             ) {
                 SettingsPrivacyPolicy(parentNavController)
                 SettingsAppVersion()
-                SettingsAnalyticsSwitch(state, viewModel)
+                SettingsCrashlyticsSwitch(state, viewModel)
             }
-        }
-
-        if (state.showAnalyticsAlertDialog) {
-            SettingsAnalyticsAlertDialog(viewModel)
         }
 
         val snackBar by viewModel.snackBar.collectAsState()
@@ -126,27 +121,4 @@ private fun SettingsBackPress(expandedGroup: MutableState<Int>) {
     BackHandler(enabled = expandedGroup.value != -1) {
         expandedGroup.value = -1
     }
-}
-
-@Composable
-private fun SettingsAnalyticsAlertDialog(viewModel: SettingsViewModel) {
-    AlertDialog(
-        title = { Text(stringResource(R.string.settings_analytics_alert_title)) },
-        text = { Text(stringResource(R.string.settings_analytics_alert_message)) },
-        onDismissRequest = { viewModel.toggleAnalyticsAlert(false) },
-        icon = { Icon(Icons.Rounded.Analytics, contentDescription = null) },
-        confirmButton = {
-            TextButton(onClick = { viewModel.toggleAnalyticsAlert(false) }) {
-                Text(stringResource(R.string.settings_analytics_alert_cancel))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = {
-                viewModel.setAnalyticsEnabled(false)
-                viewModel.toggleAnalyticsAlert(false)
-            }) {
-                Text(stringResource(R.string.settings_analytics_alert_ok))
-            }
-        }
-    )
 }

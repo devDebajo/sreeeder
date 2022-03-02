@@ -133,19 +133,15 @@ fun SettingsPrivacyPolicy(navController: NavController) {
 }
 
 @Composable
-fun SettingsAnalyticsSwitch(
+fun SettingsCrashlyticsSwitch(
     state: SettingsState,
     viewModel: SettingsViewModel
 ) {
     SettingsSwitch(
-        text = stringResource(R.string.settings_analytics_enabled),
-        checked = state.analyticsEnabled,
+        text = stringResource(R.string.settings_crashlytics_enabled),
+        checked = state.crashlyticsEnabled,
     ) {
-        if (state.analyticsEnabled) {
-            viewModel.toggleAnalyticsAlert(visible = true)
-        } else {
-            viewModel.setAnalyticsEnabled(true)
-        }
+        viewModel.toggleCrashlyticsEnabled()
     }
 }
 
