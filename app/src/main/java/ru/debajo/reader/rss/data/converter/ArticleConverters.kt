@@ -25,8 +25,9 @@ fun Article.toRemote(channelUrl: String): RemoteArticle {
 }
 
 fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
+    val url = url
     return DbArticle(
-        id = id ?: return null,
+        id = id ?: url ?: return null,
         channelUrl = channelUrl.url,
         author = author,
         title = title ?: return null,

@@ -20,7 +20,7 @@ android {
             useSupportLibrary true
         }
 
-        buildConfigField "boolean", "CACHE_ENABLED", 'true'
+        buildConfigField "boolean", "CACHE_ENABLED", 'false'
         buildConfigField "String", "PRIVACY_POLICY", '"https://debajoapps.ru/static/sreeeder/privacy_policy.html"'
     }
 

@@ -12,8 +12,6 @@ import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.di.nonVariantModules
 import ru.debajo.reader.rss.domain.error.SendErrorsUseCase
-import ru.debajo.reader.rss.domain.error.TimberProdTree
-import timber.log.Timber
 
 open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()) {
 
@@ -29,12 +27,12 @@ open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()
 
         initDi()
         initTimber(sendErrorsUseCase)
-        initErrors()
+        //initErrors()
         initApp()
     }
 
     open fun initTimber(sendErrorsUseCase: SendErrorsUseCase) {
-        Timber.plant(TimberProdTree(this, sendErrorsUseCase))
+        //Timber.plant(TimberProdTree(this, sendErrorsUseCase))
     }
 
     private fun initErrors() {
@@ -48,7 +46,7 @@ open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()
 
     private fun initApp() {
         launch {
-            backgroundUpdatesScheduler.rescheduleOrCancel()
+            //backgroundUpdatesScheduler.rescheduleOrCancel()
             sendErrorsScheduler.rescheduleOrCancel()
         }
     }
