@@ -43,6 +43,7 @@ fun Material3TextField(
             modifier = modifier.focusRequester(focusRequester),
             value = value,
             label = label,
+            trailingIcon = trailingIcon,
             singleLine = singleLine,
             keyboardActions = keyboardActions,
             keyboardOptions = keyboardOptions,

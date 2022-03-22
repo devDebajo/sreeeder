@@ -85,8 +85,8 @@ fun AddChannelScreen(parentNavController: NavController) {
                 shape = RoundedCornerShape(18.dp),
                 trailingIcon = {
                     if (text.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.clearQuery() }) {
-                            Icon(Icons.Rounded.Clear, contentDescription = null)
+                        IconButton(onClick = { viewModel.onTextChanged("") }) {
+                            Icon(Icons.Rounded.Clear, null)
                         }
                     }
                 }

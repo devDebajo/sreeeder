@@ -72,11 +72,6 @@ private val DarkThemeColors = darkColorScheme(
 @Composable
 fun SreeeederTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val themeProvider = remember { getFromDi<AppThemeProvider>() }
-
-    LaunchedEffect(key1 = "SreeeederTheme", block = {
-        themeProvider.loadTheme()
-    })
-
     val themeConfig by themeProvider.currentAppThemeConfig.collectAsState()
     CompositionLocalProvider(LocalIndication provides rememberRipple()) {
         MaterialTheme(colorScheme = themeConfig.buildScheme(darkTheme), content = content)

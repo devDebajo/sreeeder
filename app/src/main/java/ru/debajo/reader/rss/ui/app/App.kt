@@ -12,12 +12,14 @@ import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.di.nonVariantModules
 import ru.debajo.reader.rss.domain.error.SendErrorsUseCase
+import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 
 open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()) {
 
     private val sendErrorsUseCase: SendErrorsUseCase by inject()
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler by inject()
     private val sendErrorsScheduler: SendErrorsScheduler by inject()
+    private val themeProvider: AppThemeProvider by inject()
 
     open val diModules: List<Module>
         get() = nonVariantModules(this)
@@ -46,6 +48,7 @@ open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()
 
     private fun initApp() {
         launch {
+            themeProvider.loadTheme()
             //backgroundUpdatesScheduler.rescheduleOrCancel()
             sendErrorsScheduler.rescheduleOrCancel()
         }

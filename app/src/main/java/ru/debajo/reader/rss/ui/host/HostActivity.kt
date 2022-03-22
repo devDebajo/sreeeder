@@ -2,18 +2,22 @@ package ru.debajo.reader.rss.ui.host
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
@@ -60,12 +64,19 @@ class HostActivity : ComponentActivity() {
             importOpmlClickEvent.observe(this@HostActivity) { openDocumentLauncher.launch(arrayOf("*/*")) }
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+        @Suppress("DEPRECATION")
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
         setContent {
-            val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()
             SreeeederTheme {
-                systemUiController.setSystemBarsColor(color = MaterialTheme.colorScheme.background)
                 NavHost(
+                    modifier = Modifier.systemBarsPadding(),
                     navController = navController,
                     startDestination = NavGraph.Main.route
                 ) {
