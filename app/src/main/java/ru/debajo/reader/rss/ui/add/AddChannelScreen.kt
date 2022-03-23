@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -28,7 +29,6 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelCard
 import ru.debajo.reader.rss.ui.common.AppCard
-import ru.debajo.reader.rss.ui.common.Material3TextField
 import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
@@ -73,14 +73,13 @@ fun AddChannelScreen(parentNavController: NavController) {
                 .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
             val text by viewModel.text.collectAsState()
-            Material3TextField(
-                focusRequester = focusRequester,
+            OutlinedTextField(
                 value = text,
+                onValueChange = { viewModel.onTextChanged(it) },
                 singleLine = true,
                 keyboardActions = keyboardActions,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                onValueChange = { viewModel.onTextChanged(it) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                 label = { Text(stringResource(R.string.add_channel_placeholder)) },
                 shape = RoundedCornerShape(18.dp),
                 trailingIcon = {
