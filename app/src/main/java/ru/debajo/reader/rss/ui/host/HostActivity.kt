@@ -2,7 +2,9 @@ package ru.debajo.reader.rss.ui.host
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -12,26 +14,40 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.di.diViewModels
+import ru.debajo.reader.rss.di.getFromDi
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.article.UiArticleWebRender
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
+import ru.debajo.reader.rss.ui.ext.colorInt
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.MainScreen
 import ru.debajo.reader.rss.ui.main.MainViewModel
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
+import ru.debajo.reader.rss.ui.theme.AppTheme
+import ru.debajo.reader.rss.ui.theme.AppThemeConfig
+import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
+import kotlin.math.ln
 
 class HostActivity : ComponentActivity() {
 
@@ -70,11 +86,11 @@ class HostActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
-        @Suppress("DEPRECATION")
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
+
         setContent {
             val navController = rememberNavController()
             SreeeederTheme {
+                ConfigureSystemColors()
                 NavHost(
                     modifier = Modifier.systemBarsPadding(),
                     navController = navController,
@@ -110,6 +126,46 @@ class HostActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    @Composable
+    @Suppress("DEPRECATION")
+    private fun ConfigureSystemColors() {
+        val themeProvider = remember { getFromDi<AppThemeProvider>() }
+        val colors = MaterialTheme.colorScheme
+        val insetsControllerCompat = remember { WindowInsetsControllerCompat(window, window.decorView) }
+        LaunchedEffect(key1 = colors, block = {
+            launch {
+                snapshotFlow { colors.surface }
+                    .collect {
+                        window.setBackgroundDrawable(ColorDrawable(it.colorInt))
+                        insetsControllerCompat.isAppearanceLightStatusBars = !themeProvider.currentAppThemeConfig.value.isActuallyDark()
+                    }
+            }
+
+            launch {
+                snapshotFlow {
+                    val alpha = ((4.5f * ln(3.dp.value + 1)) + 2f) / 100f
+                    colors.surfaceTint.copy(alpha = alpha).compositeOver(colors.surface)
+                }
+                    .collect {
+                        window.navigationBarColor = it.colorInt
+                        insetsControllerCompat.isAppearanceLightNavigationBars = !themeProvider.currentAppThemeConfig.value.isActuallyDark()
+                    }
+            }
+        })
+    }
+
+    private fun AppThemeConfig.isActuallyDark(): Boolean {
+        return when (theme) {
+            AppTheme.LIGHT -> false
+            AppTheme.DARK -> true
+            AppTheme.AUTO -> isSystemInDarkTheme()
+        }
+    }
+
+    private fun isSystemInDarkTheme(): Boolean {
+        return (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
     }
 
     companion object {
