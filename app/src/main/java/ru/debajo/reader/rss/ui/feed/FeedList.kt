@@ -1,5 +1,8 @@
 package ru.debajo.reader.rss.ui.feed
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -98,13 +101,18 @@ fun ScrollTopTopButton(
     val canScrollToTop = listScrollState.firstVisibleItemScrollOffset > 0
     Box(Modifier.fillMaxSize()) {
         content()
-        if (canScrollToTop) {
+        AnimatedVisibility(
+            enter = slideInVertically { it },
+            exit = slideOutVertically { it },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = contentPadding.calculateBottomPadding() + 16.dp)
+                .then(modifier),
+            visible = canScrollToTop
+        ) {
             Button(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = contentPadding.calculateBottomPadding() + 16.dp)
-                    .then(modifier),
-                onClick = { coroutineScope.launch { listScrollState.animateScrollToItem(0) } }) {
+                onClick = { coroutineScope.launch { listScrollState.animateScrollToItem(0) } }
+            ) {
                 Text(text)
             }
         }
