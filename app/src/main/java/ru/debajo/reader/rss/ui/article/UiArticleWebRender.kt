@@ -1,7 +1,12 @@
 package ru.debajo.reader.rss.ui.article
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.forEachGesture
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +20,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
@@ -25,7 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
@@ -39,6 +50,7 @@ import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.ext.toFinite
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +63,7 @@ fun UiArticleWebRender(
     LaunchedEffect(key1 = uiArticle, block = { viewModel.load(uiArticle) })
     val backgroundColor = MaterialTheme.colorScheme.background
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -130,7 +143,7 @@ fun UiArticleWebRender(
                 }
                 is UiArticleWebRenderState.Prepared -> {
                     SelectionContainer {
-                        WebPageTokens(scrollState, it.tokens, uiArticle.title, navController)
+                        WebPageTokens(scrollState, it.tokens, uiArticle.title, navController, coroutineScope)
                     }
                 }
             }
@@ -139,7 +152,13 @@ fun UiArticleWebRender(
 }
 
 @Composable
-private fun WebPageTokens(state: ScrollState, tokens: List<WebPageToken>, title: String, navController: NavController) {
+private fun WebPageTokens(
+    state: ScrollState,
+    tokens: List<WebPageToken>,
+    title: String,
+    navController: NavController,
+    coroutineScope: CoroutineScope,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -154,11 +173,53 @@ private fun WebPageTokens(state: ScrollState, tokens: List<WebPageToken>, title:
         for (token in tokens) {
             when (token) {
                 is WebPageToken.Image -> {
+                    var scale by remember { mutableStateOf(1f) }
+                    var offset by remember { mutableStateOf(Offset.Zero) }
+                    val transformableState = rememberTransformableState { zoomChange, offsetChange, _ ->
+                        scale *= zoomChange
+                        scale = max(scale, 1f)
+                        offset += offsetChange
+                    }
                     AppImage(
                         url = token.url,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp)),
+                            .graphicsLayer(
+                                scaleX = scale,
+                                scaleY = scale,
+                                translationX = offset.x,
+                                translationY = offset.y
+                            )
+                            .transformable(state = transformableState)
+                            .pointerInput(Unit) {
+                                forEachGesture {
+                                    awaitPointerEventScope {
+                                        awaitFirstDown(requireUnconsumed = false)
+                                        do {
+                                            val event = awaitPointerEvent()
+                                            val canceled = event.changes.any { it.consumed.positionChange }
+                                        } while (!canceled && event.changes.any { it.pressed })
+
+                                        animateFromTo(
+                                            coroutineScope = coroutineScope,
+                                            typeConverter = Float.VectorConverter,
+                                            start = scale,
+                                            end = 1f,
+                                            onUpdate = { scale = it }
+                                        )
+
+                                        animateFromTo(
+                                            coroutineScope = coroutineScope,
+                                            typeConverter = Offset.VectorConverter,
+                                            start = offset,
+                                            end = Offset.Zero,
+                                            onUpdate = { offset = it }
+                                        )
+                                    }
+                                }
+                            }
+                            .clip(RoundedCornerShape(10.dp))
+                            .zIndex(2f),
                     )
                 }
                 is WebPageToken.Text -> {
@@ -266,5 +327,30 @@ private fun buildStyledText(token: WebPageToken.Text, urlColor: Color): Annotate
                 }
             }
         }
+    }
+}
+
+private fun <T, V : AnimationVector> animateFromTo(
+    coroutineScope: CoroutineScope,
+    typeConverter: TwoWayConverter<T, V>,
+    start: T,
+    end: T,
+    onUpdate: (T) -> Unit,
+) {
+    val targetBasedAnimation = TargetBasedAnimation(
+        animationSpec = tween(300),
+        typeConverter = typeConverter,
+        initialValue = start,
+        targetValue = end
+    )
+
+    var playTime: Long
+    coroutineScope.launch {
+        val startTime = withFrameNanos { it }
+
+        do {
+            playTime = withFrameNanos { it } - startTime
+            onUpdate(targetBasedAnimation.getValueFromNanos(playTime))
+        } while (!targetBasedAnimation.isFinishedFromNanos(playTime))
     }
 }
