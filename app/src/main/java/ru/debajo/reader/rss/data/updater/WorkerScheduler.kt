@@ -1,4 +1,4 @@
-package ru.debajo.reader.rss.data.error
+package ru.debajo.reader.rss.data.updater
 
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ListenableWorker

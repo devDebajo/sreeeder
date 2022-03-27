@@ -19,7 +19,6 @@
     <string name="settings_use_web_render">Built-in Web Render</string>
     <string name="settings_app_version">App version: %s</string>
     <string name="settings_privacy_policy">Privacy policy</string>
-    <string name="settings_crashlytics_enabled">Send application errors</string>
     <string name="settings_export_opml">Export to OPML</string>
     <string name="settings_export_opml_success">Exported successfully to OPML</string>
     <string name="settings_export_opml_fail">Export to OPML failed</string>

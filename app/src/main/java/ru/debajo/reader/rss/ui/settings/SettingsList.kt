@@ -67,7 +67,6 @@ fun SettingsList(
             ) {
                 SettingsPrivacyPolicy(parentNavController)
                 SettingsAppVersion()
-                // SettingsCrashlyticsSwitch(state, viewModel)
             }
         }
 

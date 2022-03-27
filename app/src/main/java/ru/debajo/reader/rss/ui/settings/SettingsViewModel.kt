@@ -13,9 +13,7 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
-import ru.debajo.reader.rss.data.error.SendErrorsScheduler
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
-import ru.debajo.reader.rss.data.preferences.CrashlyticsPreference
 import ru.debajo.reader.rss.data.preferences.ShowNavigationTitlesPreference
 import ru.debajo.reader.rss.data.preferences.UseEmbeddedWebPageRenderPreference
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
@@ -35,9 +33,7 @@ class SettingsViewModel(
     private val backgroundUpdatesEnabledPreference: BackgroundUpdatesEnabledPreference,
     private val useEmbeddedWebPageRenderPreference: UseEmbeddedWebPageRenderPreference,
     private val showNavigationTitlesPreference: ShowNavigationTitlesPreference,
-    private val crashlyticsPreference: CrashlyticsPreference,
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler,
-    private val sendErrorsScheduler: SendErrorsScheduler,
     private val fileSaver: FileSaver,
     private val opmlDumper: OpmlDumper,
     private val subscribeChannelsListUseCase: SubscribeChannelsListUseCase,
@@ -67,7 +63,6 @@ class SettingsViewModel(
                     backgroundUpdates = backgroundUpdatesEnabledPreference.get(),
                     useWebRender = useEmbeddedWebPageRenderPreference.get(),
                     showNavigationTitles = showNavigationTitlesPreference.get(),
-                    crashlyticsEnabled = crashlyticsPreference.get(),
                 )
             }
         }
@@ -79,14 +74,6 @@ class SettingsViewModel(
 
     fun onImportOpmlClick() {
         importOpmlClickEventMutable.value = Unit
-    }
-
-    fun toggleCrashlyticsEnabled() {
-        updateState {
-            crashlyticsPreference.set(!crashlyticsEnabled)
-            sendErrorsScheduler.rescheduleOrCancel()
-            copy(crashlyticsEnabled = !crashlyticsEnabled)
-        }
     }
 
     fun toggleDynamicColor() {

@@ -133,19 +133,6 @@ fun SettingsPrivacyPolicy(navController: NavController) {
 }
 
 @Composable
-fun SettingsCrashlyticsSwitch(
-    state: SettingsState,
-    viewModel: SettingsViewModel
-) {
-    SettingsSwitch(
-        text = stringResource(R.string.settings_crashlytics_enabled),
-        checked = state.crashlyticsEnabled,
-    ) {
-        viewModel.toggleCrashlyticsEnabled()
-    }
-}
-
-@Composable
 fun SettingsAppVersion() {
     SettingsText(stringResource(R.string.settings_app_version, BuildConfig.VERSION_NAME))
 }

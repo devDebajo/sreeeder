@@ -18,15 +18,12 @@ import ru.debajo.reader.rss.data.db.migrations.MIGRATION_3_4
 import ru.debajo.reader.rss.data.db.migrations.MIGRATION_4_5
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
-import ru.debajo.reader.rss.data.error.ErrorRepository
-import ru.debajo.reader.rss.data.error.SendErrorsScheduler
 import ru.debajo.reader.rss.data.preferences.*
 import ru.debajo.reader.rss.data.preferences.base.PreferenceObserver
 import ru.debajo.reader.rss.data.remote.ReadableArticleHelper
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
 import ru.debajo.reader.rss.data.remote.load.HtmlChannelUrlExtractor
 import ru.debajo.reader.rss.data.remote.load.RssLoader
-import ru.debajo.reader.rss.data.remote.service.ErrorService
 import ru.debajo.reader.rss.data.remote.service.FeedlyService
 import ru.debajo.reader.rss.data.remote.service.ServiceFactory
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
@@ -39,7 +36,6 @@ import ru.debajo.reader.rss.domain.channel.ChannelsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsUseCase
 import ru.debajo.reader.rss.domain.channel.SubscribeChannelsListUseCase
-import ru.debajo.reader.rss.domain.error.SendErrorsUseCase
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.domain.search.SearchChannelsUseCase
@@ -86,7 +82,6 @@ val PreferencesModule = module {
     single { MetricsEnabledPreference(get()) }
     single { UseEmbeddedWebPageRenderPreference(get()) }
     single { ShowNavigationTitlesPreference(get()) }
-    single { CrashlyticsPreference(get()) }
 }
 
 val NetworkModule = module {
@@ -107,7 +102,6 @@ val NetworkModule = module {
     single { Gson() }
     single { ServiceFactory(get(), get()) }
     single<FeedlyService> { get<ServiceFactory>().createService("https://feedly.com") }
-    single<ErrorService> { get<ServiceFactory>().createService(BuildConfig.BACKEND_ENDPOINT) }
     single { ChannelsSearchRepository(get()) }
     single { HtmlChannelUrlExtractor(get()) }
     single { ReadableArticleHelper(get()) }
@@ -135,7 +129,6 @@ val DbModule = module {
     single { RssLoadDbManager(get(), get(), get(), get(), get(), get(), get()) }
     single { OpmlDumper(get()) }
     single { FileSaver(get()) }
-    single { ErrorRepository(get()) }
 }
 
 val RepositoryModule = module {
@@ -154,12 +147,11 @@ val UseCaseModule = module {
     single { NewArticlesUseCase(get(), get()) }
     single { ClearArticlesUseCase(get(), get(), get()) }
     single { SubscribeChannelsListUseCase(get(), get()) }
-    single { SendErrorsUseCase(get(), get(), get()) }
 }
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
-    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }
@@ -172,7 +164,6 @@ val ViewModelModule = module {
 val WorkerModule = module {
     single { WorkManager.getInstance(get()) }
     single { BackgroundUpdatesScheduler(get(), get()) }
-    single { SendErrorsScheduler(get(), get()) }
 }
 
 val NotificationModule = module {

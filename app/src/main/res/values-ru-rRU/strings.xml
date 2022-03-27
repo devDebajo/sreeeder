@@ -17,7 +17,6 @@
     <string name="settings_use_web_render">Встроенный Web Render</string>
     <string name="settings_app_version">Версия приложения: %s</string>
     <string name="settings_privacy_policy">Политика конфиденциальности</string>
-    <string name="settings_crashlytics_enabled">Отправлять ошибки</string>
     <string name="settings_export_opml">Экспорт в OPML</string>
     <string name="settings_export_opml_success">Успешно экспортирано в OPML</string>
     <string name="settings_export_opml_fail">Экспорт в OPML не удался</string>

@@ -2,7 +2,6 @@ package ru.debajo.reader.rss.data.updater
 
 import androidx.work.ListenableWorker
 import androidx.work.WorkManager
-import ru.debajo.reader.rss.data.error.WorkerScheduler
 import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
 import java.util.concurrent.TimeUnit
 

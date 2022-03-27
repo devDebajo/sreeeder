@@ -17,7 +17,6 @@
     <string name="settings_use_web_render">Вбудований Web Render</string>
     <string name="settings_app_version">Версія програми: %s</string>
     <string name="settings_privacy_policy">Політика конфіденційності</string>
-    <string name="settings_crashlytics_enabled">Надіслати помилки програми</string>
     <string name="settings_export_opml">Експорт у OPML</string>
     <string name="settings_export_opml_success">Успішно експортовано до OPML</string>
     <string name="settings_export_opml_fail">Експорт до OPML не вдалося</string>

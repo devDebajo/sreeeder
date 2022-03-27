@@ -17,7 +17,6 @@
     <string name="settings_use_web_render">Убудаваны Web Render</string>
     <string name="settings_app_version">Версія прыкладання: %s</string>
     <string name="settings_privacy_policy">Палітыка прыватнасці</string>
-    <string name="settings_crashlytics_enabled">Памылкі адпраўкі прыкладання</string>
     <string name="settings_export_opml">Экспарт у OPML</string>
     <string name="settings_export_opml_success">Паспяхова экспартавана ў OPML</string>
     <string name="settings_export_opml_fail">Экспарт у OPML не атрымаўся</string>
