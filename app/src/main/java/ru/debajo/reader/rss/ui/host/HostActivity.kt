@@ -29,8 +29,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.di.diViewModels
-import ru.debajo.reader.rss.di.getFromDi
 import ru.debajo.reader.rss.di.inject
+import ru.debajo.reader.rss.di.rememberFromDi
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.article.UiArticleWebRender
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -131,7 +131,7 @@ class HostActivity : ComponentActivity() {
     @Composable
     @Suppress("DEPRECATION")
     private fun ConfigureSystemColors() {
-        val themeProvider = remember { getFromDi<AppThemeProvider>() }
+        val themeProvider = rememberFromDi<AppThemeProvider>()
         val colors = MaterialTheme.colorScheme
         val insetsControllerCompat = remember { WindowInsetsControllerCompat(window, window.decorView) }
         LaunchedEffect(key1 = colors, block = {
