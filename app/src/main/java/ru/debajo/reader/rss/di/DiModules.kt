@@ -124,7 +124,6 @@ val DbModule = module {
     single { get<RssDatabase>(RssDatabase::class.java).articleBookmarksDao() }
     single { get<RssDatabase>(RssDatabase::class.java).channelSubscriptionsDao() }
     single { get<RssDatabase>(RssDatabase::class.java).newArticlesDao() }
-    single { get<RssDatabase>(RssDatabase::class.java).errorsDao() }
     single { CacheManager(get()) }
     single { RssLoadDbManager(get(), get(), get(), get(), get(), get(), get()) }
     single { OpmlDumper(get()) }

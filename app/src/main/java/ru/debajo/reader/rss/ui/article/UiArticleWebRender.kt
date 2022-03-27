@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
@@ -175,7 +176,9 @@ private fun WebPageTokens(
                 is WebPageToken.Image -> {
                     var scale by remember { mutableStateOf(1f) }
                     var offset by remember { mutableStateOf(Offset.Zero) }
+                    var zIndex by remember { mutableStateOf(0f) }
                     val transformableState = rememberTransformableState { zoomChange, offsetChange, _ ->
+                        zIndex = 100f
                         scale *= zoomChange
                         scale = max(scale, 1f)
                         offset += offsetChange
@@ -215,11 +218,16 @@ private fun WebPageTokens(
                                             end = Offset.Zero,
                                             onUpdate = { offset = it }
                                         )
+
+                                        coroutineScope.launch {
+                                            delay(500)
+                                            zIndex = 0f
+                                        }
                                     }
                                 }
                             }
                             .clip(RoundedCornerShape(10.dp))
-                            .zIndex(2f),
+                            .zIndex(zIndex),
                     )
                 }
                 is WebPageToken.Text -> {

@@ -15,7 +15,6 @@ import ru.debajo.reader.rss.data.db.model.*
         DbChannelSubscription::class,
         DbCacheMarker::class,
         DbNewArticle::class,
-        DbError::class,
     ],
     version = 5,
     exportSchema = false,
@@ -33,6 +32,4 @@ abstract class RssDatabase : RoomDatabase() {
     abstract fun channelSubscriptionsDao(): ChannelSubscriptionsDao
 
     abstract fun newArticlesDao(): NewArticlesDao
-
-    abstract fun errorsDao(): ErrorsDao
 }
