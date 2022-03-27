@@ -8,9 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,12 +35,12 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsList
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 
-private val feedTab = ScreenTab(R.string.screen_feed, Icons.Rounded.RssFeed, NavGraph.Main.Feed)
-private val channelsTab = ScreenTab(R.string.screen_channels, Icons.Rounded.Favorite, NavGraph.Main.Channels)
-private val favoritesTab = ScreenTab(R.string.screen_favorites, Icons.Rounded.Bookmark, NavGraph.Main.Favorites)
-private val settingsTab = ScreenTab(R.string.screen_settings, Icons.Rounded.Settings, NavGraph.Main.Settings)
+val feedTab = ScreenTab(R.string.screen_feed, Icons.Rounded.RssFeed, NavGraph.Main.Feed)
+val channelsTab = ScreenTab(R.string.screen_channels, Icons.Rounded.Favorite, NavGraph.Main.Channels)
+val bookmarksTab = ScreenTab(R.string.screen_favorites, Icons.Rounded.Bookmark, NavGraph.Main.Favorites)
+val settingsTab = ScreenTab(R.string.screen_settings, Icons.Rounded.Settings, NavGraph.Main.Settings)
 
-private val tabs = listOf(feedTab, channelsTab, favoritesTab, settingsTab)
+private val tabs = listOf(feedTab, channelsTab, bookmarksTab, settingsTab)
 
 @Composable
 fun MainScreen(
@@ -56,14 +54,14 @@ fun MainScreen(
 ) {
     val navController = rememberNavController()
     val scrollController = rememberScrollController()
-    MainScaffold(parentController, navController, scrollController, mainViewModel, feedListViewModel) { innerPadding ->
+    MainScaffold(parentController, navController, scrollController, mainViewModel) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = tabs[0].navigation.route
         ) {
             composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, scrollController, feedListViewModel, uiArticleNavigator) }
             composable(channelsTab.navigation.route) { ChannelsList(innerPadding, parentController, scrollController, channelsViewModel) }
-            composable(favoritesTab.navigation.route) {
+            composable(bookmarksTab.navigation.route) {
                 BookmarksList(
                     innerPadding,
                     parentController,
@@ -84,14 +82,10 @@ private fun MainScaffold(
     navController: NavController,
     scrollController: ScrollController,
     viewModel: MainViewModel,
-    feedViewModel: FeedListViewModel,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
     val selectedTab by viewModel.selectedTab.collectAsState()
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = { MainTopBar(selectedTab, feedViewModel, scrollBehavior) },
         bottomBar = {
             val showTitles by viewModel.showNavigationTitles.collectAsState()
             NavigationBar(
@@ -133,22 +127,21 @@ private fun MainScaffold(
 }
 
 @Composable
-private fun MainTopBar(selectedTab: Int, feedViewModel: FeedListViewModel, scrollBehavior: TopAppBarScrollBehavior) {
+fun MainTopBar(
+    tab: ScreenTab,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
     SmallTopAppBar(
         title = {
             Text(
-                text = tabs[selectedTab].title,
+                text = tab.title,
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
             )
         },
-        actions = {
-            val feedState by feedViewModel.state.collectAsState()
-            if (selectedTab == 0 && feedState.showOnlyNewArticlesButtonVisible) {
-                MainScreenTopBarActions(feedState, feedViewModel)
-            }
-        },
+        actions = actions,
         scrollBehavior = scrollBehavior
     )
 }

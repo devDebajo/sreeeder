@@ -4,11 +4,11 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,8 +25,11 @@ import ru.debajo.reader.rss.ui.ext.composeColor
 import ru.debajo.reader.rss.ui.ext.getColorRoles
 import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
 import ru.debajo.reader.rss.ui.list.ScrollController
+import ru.debajo.reader.rss.ui.main.MainTopBar
+import ru.debajo.reader.rss.ui.main.channelsTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelsList(
     innerPadding: PaddingValues,
@@ -35,7 +38,18 @@ fun ChannelsList(
     viewModel: ChannelsViewModel
 ) {
     LaunchedEffect("ChannelsList", block = { viewModel.load() })
-    Column(modifier = Modifier.fillMaxSize()) {
+    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MainTopBar(
+                tab = channelsTab,
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) {
         val channels by viewModel.channels.collectAsState()
         if (channels.isEmpty()) {
             Box(
@@ -58,9 +72,7 @@ fun ChannelsList(
                 LazyColumn(
                     state = listScrollState,
                     contentPadding = innerPadding.addPadding(bottom = 100.dp),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .weight(1f),
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     items(

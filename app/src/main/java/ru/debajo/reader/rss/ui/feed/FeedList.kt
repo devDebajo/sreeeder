@@ -9,13 +9,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,6 +26,9 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.list.ScrollController
+import ru.debajo.reader.rss.ui.main.MainScreenTopBarActions
+import ru.debajo.reader.rss.ui.main.MainTopBar
+import ru.debajo.reader.rss.ui.main.feedTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
@@ -40,7 +41,23 @@ fun FeedList(
     uiArticleNavigator: UiArticleNavigator
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
-    Scaffold(Modifier.fillMaxSize()) {
+    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MainTopBar(
+                tab = feedTab,
+                scrollBehavior = scrollBehavior
+            ) {
+                val feedState by viewModel.state.collectAsState()
+                if (feedState.showOnlyNewArticlesButtonVisible) {
+                    MainScreenTopBarActions(feedState, viewModel)
+                }
+            }
+        }
+    ) {
         val state by viewModel.state.collectAsState()
         val isRefreshing by viewModel.isRefreshing.collectAsState()
         val listScrollState = scrollController.rememberLazyListState(NavGraph.Main.Feed.route)
