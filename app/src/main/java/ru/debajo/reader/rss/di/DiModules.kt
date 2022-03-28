@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.work.WorkManager
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.Module
@@ -12,10 +13,7 @@ import org.koin.dsl.module
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.data.db.RssDatabase
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
-import ru.debajo.reader.rss.data.db.migrations.MIGRATION_1_2
-import ru.debajo.reader.rss.data.db.migrations.MIGRATION_2_3
-import ru.debajo.reader.rss.data.db.migrations.MIGRATION_3_4
-import ru.debajo.reader.rss.data.db.migrations.MIGRATION_4_5
+import ru.debajo.reader.rss.data.db.migrations.*
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.*
@@ -51,9 +49,9 @@ import ru.debajo.reader.rss.ui.main.MainViewModel
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 
-fun nonVariantModules(context: Context): List<Module> {
+fun nonVariantModules(context: Context, appScope: CoroutineScope): List<Module> {
     return listOf(
-        appModule(context),
+        appModule(context, appScope),
         PreferencesModule,
         NetworkModule,
         DbModule,
@@ -65,8 +63,9 @@ fun nonVariantModules(context: Context): List<Module> {
     )
 }
 
-fun appModule(context: Context): Module = module {
+fun appModule(context: Context, appScope: CoroutineScope): Module = module {
     single { context.applicationContext }
+    single { appScope }
     single { get<Context>().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     single { AppThemeProvider(get(), get()) }
     single { UiArticleNavigator(get()) }
@@ -115,6 +114,7 @@ val DbModule = module {
                 MIGRATION_2_3,
                 MIGRATION_3_4,
                 MIGRATION_4_5,
+                MIGRATION_5_6,
             )
             .build()
     }
@@ -124,6 +124,7 @@ val DbModule = module {
     single { get<RssDatabase>(RssDatabase::class.java).articleBookmarksDao() }
     single { get<RssDatabase>(RssDatabase::class.java).channelSubscriptionsDao() }
     single { get<RssDatabase>(RssDatabase::class.java).newArticlesDao() }
+    single { get<RssDatabase>(RssDatabase::class.java).articleScrollPositionDao() }
     single { CacheManager(get()) }
     single { RssLoadDbManager(get(), get(), get(), get(), get(), get(), get()) }
     single { OpmlDumper(get()) }
@@ -146,6 +147,7 @@ val UseCaseModule = module {
     single { NewArticlesUseCase(get(), get()) }
     single { ClearArticlesUseCase(get(), get(), get()) }
     single { SubscribeChannelsListUseCase(get(), get()) }
+    single { ArticleScrollPositionUseCase(get()) }
 }
 
 val ViewModelModule = module {
@@ -157,7 +159,7 @@ val ViewModelModule = module {
     factory { BookmarksListViewModel(get(), get()) }
     factory { MainViewModel(get(), get(), get()) }
     factory { HostViewModel(get()) }
-    factory { UiArticleWebRenderViewModel(get(), get()) }
+    factory { UiArticleWebRenderViewModel(get(), get(), get(), get()) }
 }
 
 val WorkerModule = module {

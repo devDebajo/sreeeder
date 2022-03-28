@@ -7,7 +7,7 @@ import timber.log.Timber
 class DebugApp : App() {
 
     override val diModules: List<Module>
-        get() = nonVariantModules(this)
+        get() = nonVariantModules(this, this)
 
     override fun initTimber() {
         Timber.plant(Timber.DebugTree())

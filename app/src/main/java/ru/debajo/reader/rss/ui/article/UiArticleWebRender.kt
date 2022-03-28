@@ -61,10 +61,19 @@ fun UiArticleWebRender(
     uiArticle: UiArticle
 ) {
     val viewModel: UiArticleWebRenderViewModel = diViewModel()
-    LaunchedEffect(key1 = uiArticle, block = { viewModel.load(uiArticle) })
-    val backgroundColor = MaterialTheme.colorScheme.background
     val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = uiArticle, block = {
+        viewModel.load(uiArticle)
+        viewModel.scrollPosition.collect { scrollState.animateScrollTo(it) }
+    })
+    val backgroundColor = MaterialTheme.colorScheme.background
     val coroutineScope = rememberCoroutineScope()
+    DisposableEffect(key1 = uiArticle, effect = {
+        onDispose {
+            viewModel.saveScroll(uiArticle.id, scrollState.value)
+        }
+    })
+
     Scaffold(
         modifier = modifier,
         topBar = {

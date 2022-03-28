@@ -34,3 +34,4 @@ data class DbArticle(
     @ColumnInfo(name = "categories")
     val categories: List<String>,
 )
+

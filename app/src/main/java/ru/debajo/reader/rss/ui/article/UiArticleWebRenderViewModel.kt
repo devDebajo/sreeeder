@@ -1,14 +1,12 @@
 package ru.debajo.reader.rss.ui.article
 
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.debajo.reader.rss.data.remote.ReadableArticleHelper
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ArticleScrollPositionUseCase
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.article.parser.WebPageParser
@@ -16,17 +14,22 @@ import timber.log.Timber
 
 class UiArticleWebRenderViewModel(
     private val readableArticleHelper: ReadableArticleHelper,
-    private val articleBookmarksRepository: ArticleBookmarksRepository
+    private val articleBookmarksRepository: ArticleBookmarksRepository,
+    private val articleScrollPositionUseCase: ArticleScrollPositionUseCase,
+    private val appScope: CoroutineScope,
 ) : BaseViewModel() {
 
-    private var loadJob: Job? = null
+    private var loadJobs: MutableList<Job> = mutableListOf()
     private val stateMutable: MutableStateFlow<UiArticleWebRenderState> = MutableStateFlow(UiArticleWebRenderState.Loading(false))
+    private val scrollPositionMutable: MutableStateFlow<Int> = MutableStateFlow(0)
     val state: StateFlow<UiArticleWebRenderState> = stateMutable
+    val scrollPosition: StateFlow<Int> = scrollPositionMutable
 
     fun load(uiArticle: UiArticle) {
-        loadJob?.cancel()
+        loadJobs.forEach { it.cancel() }
+        loadJobs.clear()
         stateMutable.value = UiArticleWebRenderState.Loading(false)
-        loadJob = launch {
+        loadJobs += launch {
             launch(IO) {
                 subscribeBookmarked(uiArticle.id)
             }
@@ -40,11 +43,28 @@ class UiArticleWebRenderViewModel(
                 }
             }
         }
+
+        loadJobs += launch {
+            val scroll = articleScrollPositionUseCase.getScroll(uiArticle.id)
+            if (scroll != null) {
+                scrollPositionMutable.value = scroll
+            }
+        }
     }
 
     fun toggleBookmarked(uiArticle: UiArticle) {
         launch {
             articleBookmarksRepository.toggle(uiArticle.id)
+        }
+    }
+
+    fun saveScroll(articleId: String, scroll: Int) {
+        if (scrollPositionMutable.value == scroll) {
+            return
+        }
+
+        appScope.launch {
+            articleScrollPositionUseCase.insert(articleId, scroll)
         }
     }
 

@@ -17,7 +17,7 @@ open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()
     private val themeProvider: AppThemeProvider by inject()
 
     open val diModules: List<Module>
-        get() = nonVariantModules(this)
+        get() = nonVariantModules(this, this)
 
     final override fun onCreate() {
         super.onCreate()
