@@ -71,6 +71,7 @@ dependencies {
     implementation "androidx.browser:browser:$androidx_browser"
     implementation "androidx.work:work-runtime-ktx:$work_version"
     implementation 'androidx.palette:palette:1.0.0'
+
     // compose
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"

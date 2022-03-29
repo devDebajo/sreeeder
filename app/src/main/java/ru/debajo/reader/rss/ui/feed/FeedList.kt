@@ -17,7 +17,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -25,6 +24,8 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
+import ru.debajo.reader.rss.ui.common.StaggeredRecycler
+import ru.debajo.reader.rss.ui.feed.model.FeedListState
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainScreenTopBarActions
 import ru.debajo.reader.rss.ui.main.MainTopBar
@@ -34,13 +35,12 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun FeedList(
-    innerPadding: PaddingValues,
-    navController: NavController,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     scrollController: ScrollController,
     viewModel: FeedListViewModel,
-    uiArticleNavigator: UiArticleNavigator
+    forLandscape: Boolean = false,
+    onArticleClick: (UiArticle) -> Unit,
 ) {
-    val backgroundColor = MaterialTheme.colorScheme.background
     val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
     Scaffold(
         modifier = Modifier
@@ -85,21 +85,25 @@ fun FeedList(
                     )
                 }
             } else {
-                ScrollTopTopButton(
-                    listScrollState = listScrollState,
-                    contentPadding = innerPadding,
-                ) {
-                    LazyColumn(
-                        state = listScrollState,
-                        contentPadding = PaddingValues(
-                            top = 12.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 80.dp,
-                            start = 16.dp,
-                            end = 16.dp
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        content = { articlesList(state.articles, backgroundColor, navController, viewModel, uiArticleNavigator) }
+                if (forLandscape) {
+                    LandscapeList(
+                        state = state,
+                        viewModel = viewModel,
+                        onArticleClick = onArticleClick,
                     )
+                } else {
+                    ScrollToTopButton(
+                        listScrollState = listScrollState,
+                        contentPadding = innerPadding,
+                    ) {
+                        PortraitList(
+                            innerPadding = innerPadding,
+                            lazyListState = listScrollState,
+                            state = state,
+                            viewModel = viewModel,
+                            onArticleClick = onArticleClick,
+                        )
+                    }
                 }
             }
         }
@@ -107,7 +111,52 @@ fun FeedList(
 }
 
 @Composable
-fun ScrollTopTopButton(
+private fun LandscapeList(
+    state: FeedListState,
+    viewModel: FeedListViewModel,
+    onArticleClick: (UiArticle) -> Unit
+) {
+    StaggeredRecycler(
+        modifier = Modifier.fillMaxSize(),
+        spanCount = 2,
+        data = state.articles,
+        keyEquality = { a, b -> a.id == b.id },
+        content = { article ->
+            Box(Modifier.padding(8.dp)) {
+                ChannelArticle(
+                    article = article,
+                    onFavoriteClick = { },
+                    onView = { },
+                    onClick = { }
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun PortraitList(
+    innerPadding: PaddingValues,
+    lazyListState: LazyListState,
+    state: FeedListState,
+    viewModel: FeedListViewModel,
+    onArticleClick: (UiArticle) -> Unit,
+) {
+    LazyColumn(
+        state = lazyListState,
+        contentPadding = PaddingValues(
+            top = 12.dp,
+            bottom = innerPadding.calculateBottomPadding() + 80.dp,
+            start = 16.dp,
+            end = 16.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        content = { articlesList(state.articles, viewModel, onArticleClick) }
+    )
+}
+
+@Composable
+fun ScrollToTopButton(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.scroll_to_top),
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -138,18 +187,16 @@ fun ScrollTopTopButton(
 
 private fun LazyListScope.articlesList(
     articles: List<UiArticle>,
-    backgroundColor: Color,
-    navController: NavController,
     viewModel: FeedListViewModel,
-    uiArticleNavigator: UiArticleNavigator
+    onArticleClick: (UiArticle) -> Unit,
 ) {
     items(items = articles, key = { it.id + it.channelName }) { article ->
         ChannelArticle(
             article = article,
             onFavoriteClick = { viewModel.onFavoriteClick(it) },
-            onView = { viewModel.onArticleViewed(it) }
-        ) {
-            uiArticleNavigator.open(it, navController, backgroundColor)
-        }
+            onView = { viewModel.onArticleViewed(it) },
+            onClick = onArticleClick
+        )
     }
 }
+

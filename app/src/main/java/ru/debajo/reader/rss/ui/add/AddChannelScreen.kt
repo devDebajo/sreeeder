@@ -29,7 +29,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelCard
 import ru.debajo.reader.rss.ui.common.AppCard
-import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
+import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
@@ -112,7 +112,7 @@ fun AddChannelScreen(parentNavController: NavController) {
                 is AddChannelScreenState.Idle -> Unit
                 is AddChannelScreenState.Loaded -> {
                     val listScrollState = rememberLazyListState()
-                    ScrollTopTopButton(listScrollState = listScrollState) {
+                    ScrollToTopButton(listScrollState = listScrollState) {
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                             state = listScrollState,

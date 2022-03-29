@@ -16,14 +16,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.ext.composeColor
 import ru.debajo.reader.rss.ui.ext.getColorRoles
-import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
+import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.channelsTab
@@ -32,10 +31,12 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelsList(
-    innerPadding: PaddingValues,
-    navController: NavController,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     scrollController: ScrollController,
-    viewModel: ChannelsViewModel
+    viewModel: ChannelsViewModel,
+    forLandscape: Boolean = false,
+    onChannelClick: (UiChannel) -> Unit,
+    onFeedClick: () -> Unit = {},
 ) {
     LaunchedEffect("ChannelsList", block = { viewModel.load() })
     val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
@@ -44,14 +45,16 @@ fun ChannelsList(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            MainTopBar(
-                tab = channelsTab,
-                scrollBehavior = scrollBehavior
-            )
+            if (!forLandscape) {
+                MainTopBar(
+                    tab = channelsTab,
+                    scrollBehavior = scrollBehavior
+                )
+            }
         }
     ) {
         val channels by viewModel.channels.collectAsState()
-        if (channels.isEmpty()) {
+        if (channels.isEmpty() && !forLandscape) {
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -65,7 +68,7 @@ fun ChannelsList(
             }
         } else {
             val listScrollState = scrollController.rememberLazyListState(NavGraph.Main.Channels.route)
-            ScrollTopTopButton(
+            ScrollToTopButton(
                 listScrollState = listScrollState,
                 contentPadding = innerPadding,
             ) {
@@ -75,16 +78,52 @@ fun ChannelsList(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
+                    if (forLandscape) {
+                        item {
+                            FeedCard(onClick = onFeedClick)
+                        }
+                    }
                     items(
                         count = channels.size,
                         key = { channels[it].url.url }
                     ) {
                         ChannelCard(channel = channels[it]) { channel ->
-                            NavGraph.ArticlesList.navigate(navController, channel)
+                            onChannelClick(channel)
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun FeedCard(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    AppCard(
+        modifier = modifier.fillMaxWidth(),
+        onClick = onClick,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.screen_feed),
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Лента всех каналов",
+                fontSize = 14.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
     }
 }

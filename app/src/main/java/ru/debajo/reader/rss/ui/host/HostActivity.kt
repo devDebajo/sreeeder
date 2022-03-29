@@ -3,7 +3,6 @@ package ru.debajo.reader.rss.ui.host
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -12,42 +11,31 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.di.rememberFromDi
-import ru.debajo.reader.rss.ui.add.AddChannelScreen
-import ru.debajo.reader.rss.ui.article.UiArticleWebRender
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
-import ru.debajo.reader.rss.ui.channel.ChannelArticles
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
+import ru.debajo.reader.rss.ui.ext.AndroidColor
 import ru.debajo.reader.rss.ui.ext.colorInt
+import ru.debajo.reader.rss.ui.ext.getNavigationColor
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
-import ru.debajo.reader.rss.ui.main.MainScreen
 import ru.debajo.reader.rss.ui.main.MainViewModel
-import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.AppThemeConfig
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
-import kotlin.math.ln
 
 class HostActivity : ComponentActivity() {
 
@@ -84,45 +72,27 @@ class HostActivity : ComponentActivity() {
             window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT
-        window.navigationBarColor = Color.TRANSPARENT
+        window.statusBarColor = AndroidColor.TRANSPARENT
+        window.navigationBarColor = AndroidColor.TRANSPARENT
 
         setContent {
-            val navController = rememberNavController()
             SreeeederTheme {
                 ConfigureSystemColors()
-                NavHost(
-                    modifier = Modifier.systemBarsPadding(),
-                    navController = navController,
-                    startDestination = NavGraph.Main.route
-                ) {
-                    composable(NavGraph.Main.route) {
-                        MainScreen(
-                            parentController = navController,
-                            settingsViewModel = settingsViewModel,
-                            channelsViewModel = channelsViewModel,
-                            feedListViewModel = feedListViewModel,
-                            bookmarksListViewModel = bookmarksListViewModel,
-                            mainViewModel = mainViewModel,
-                            uiArticleNavigator = uiArticleNavigator,
-                        )
-                    }
-
-                    composable(NavGraph.AddChannel.route) {
-                        AddChannelScreen(navController)
-                    }
-
-                    composable(NavGraph.ArticlesList.route) {
-                        ChannelArticles(NavGraph.ArticlesList.extract(it.arguments), navController, uiArticleNavigator)
-                    }
-
-                    composable(NavGraph.UiArticleWebRender.route) {
-                        UiArticleWebRender(
-                            modifier = Modifier.fillMaxWidth(),
-                            navController = navController,
-                            uiArticle = NavGraph.UiArticleWebRender.extract(it.arguments)
-                        )
-                    }
+                if (isLandscape()) {
+                    LandscapeLayout(
+                        channelsViewModel = channelsViewModel,
+                        feedListViewModel = feedListViewModel,
+                        mainViewModel = mainViewModel,
+                    )
+                } else {
+                    PortraitLayout(
+                        settingsViewModel = settingsViewModel,
+                        mainViewModel = mainViewModel,
+                        channelsViewModel = channelsViewModel,
+                        feedListViewModel = feedListViewModel,
+                        bookmarksListViewModel = bookmarksListViewModel,
+                        uiArticleNavigator = uiArticleNavigator,
+                    )
                 }
             }
         }
@@ -144,10 +114,7 @@ class HostActivity : ComponentActivity() {
             }
 
             launch {
-                snapshotFlow {
-                    val alpha = ((4.5f * ln(3.dp.value + 1)) + 2f) / 100f
-                    colors.surfaceTint.copy(alpha = alpha).compositeOver(colors.surface)
-                }
+                snapshotFlow { getNavigationColor(colors) }
                     .collect {
                         window.navigationBarColor = it.colorInt
                         insetsControllerCompat.isAppearanceLightNavigationBars = !themeProvider.currentAppThemeConfig.value.isActuallyDark()
@@ -166,6 +133,11 @@ class HostActivity : ComponentActivity() {
 
     private fun isSystemInDarkTheme(): Boolean {
         return (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    @Composable
+    private fun isLandscape(): Boolean {
+        return LocalContext.current.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
     companion object {

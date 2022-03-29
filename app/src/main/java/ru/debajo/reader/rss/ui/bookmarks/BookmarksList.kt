@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
-import ru.debajo.reader.rss.ui.feed.ScrollTopTopButton
+import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
@@ -56,7 +56,7 @@ fun BookmarksList(
             }
         } else {
             val listScrollState = scrollController.rememberLazyListState(NavGraph.Main.Favorites.route)
-            ScrollTopTopButton(
+            ScrollToTopButton(
                 listScrollState = listScrollState,
                 contentPadding = innerPadding,
             ) {

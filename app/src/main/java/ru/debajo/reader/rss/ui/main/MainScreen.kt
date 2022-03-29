@@ -59,8 +59,25 @@ fun MainScreen(
             navController = navController,
             startDestination = tabs[0].navigation.route
         ) {
-            composable(feedTab.navigation.route) { FeedList(innerPadding, parentController, scrollController, feedListViewModel, uiArticleNavigator) }
-            composable(channelsTab.navigation.route) { ChannelsList(innerPadding, parentController, scrollController, channelsViewModel) }
+            composable(feedTab.navigation.route) {
+                val backgroundColor = MaterialTheme.colorScheme.background
+                FeedList(
+                    innerPadding = innerPadding,
+                    scrollController = scrollController,
+                    viewModel = feedListViewModel,
+                    onArticleClick = {
+                        uiArticleNavigator.open(it, navController, backgroundColor)
+                    }
+                )
+            }
+            composable(channelsTab.navigation.route) {
+                ChannelsList(
+                    innerPadding = innerPadding,
+                    scrollController = scrollController,
+                    viewModel = channelsViewModel,
+                    onChannelClick = { NavGraph.ArticlesList.navigate(parentController, it) }
+                )
+            }
             composable(bookmarksTab.navigation.route) {
                 BookmarksList(
                     innerPadding,
@@ -142,7 +159,10 @@ fun MainTopBar(
             )
         },
         actions = actions,
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            scrolledContainerColor = MaterialTheme.colorScheme.surface,
+        ),
     )
 }
 
