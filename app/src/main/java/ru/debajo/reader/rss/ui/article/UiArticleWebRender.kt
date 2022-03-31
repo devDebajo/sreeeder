@@ -55,6 +55,7 @@ import ru.debajo.reader.rss.ui.ext.toFinite
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +70,7 @@ fun UiArticleWebRender(
         viewModel.load(uiArticle)
         snapshotFlow { scrollState.maxValue }
             .filter { it < Int.MAX_VALUE }
-            .combine(viewModel.scrollPosition) { maxScroll, relativeScroll -> (relativeScroll * maxScroll).toInt() }
+            .combine(viewModel.scrollPosition) { maxScroll, relativeScroll -> (relativeScroll * maxScroll).roundToInt() }
             .take(1)
             .collect { scroll -> scrollState.animateScrollTo(scroll) }
     })

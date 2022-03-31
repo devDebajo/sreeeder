@@ -11,6 +11,7 @@ import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.article.parser.WebPageParser
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 class UiArticleWebRenderViewModel(
     private val readableArticleHelper: ReadableArticleHelper,
@@ -59,7 +60,7 @@ class UiArticleWebRenderViewModel(
     }
 
     fun saveScroll(articleId: String, scroll: Int, maxScroll: Int) {
-        val relativeScroll = ((scroll.toFloat() / maxScroll.toFloat()) * 100).toInt().coerceIn(0, 100)
+        val relativeScroll = ((scroll.toFloat() / maxScroll.toFloat()) * 100).roundToInt().coerceIn(0, 100)
         appScope.launch {
             if (relativeScroll == 0 || relativeScroll > 95) {
                 articleScrollPositionUseCase.remove(articleId)

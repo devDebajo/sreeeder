@@ -37,8 +37,8 @@ val MIGRATIONS = arrayOf(
 
     object : Migration(6, 7) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("ALTER TABLE `dbchannel` ADD COLUMN `channelName` TEXT NOT NULL DEFAULT ''")
-            database.execSQL("ALTER TABLE `dbchannel` ADD COLUMN `channelImage` TEXT DEFAULT null")
+            database.execSQL("ALTER TABLE `dbarticle` ADD COLUMN `channelName` TEXT NOT NULL DEFAULT ''")
+            database.execSQL("ALTER TABLE `dbarticle` ADD COLUMN `channelImage` TEXT DEFAULT null")
         }
     }
 )
