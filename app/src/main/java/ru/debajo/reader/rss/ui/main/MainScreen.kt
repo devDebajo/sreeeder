@@ -65,9 +65,7 @@ fun MainScreen(
                     innerPadding = innerPadding,
                     scrollController = scrollController,
                     viewModel = feedListViewModel,
-                    onArticleClick = {
-                        uiArticleNavigator.open(it, navController, backgroundColor)
-                    }
+                    onArticleClick = { uiArticleNavigator.open(it, parentController, backgroundColor) }
                 )
             }
             composable(channelsTab.navigation.route) {

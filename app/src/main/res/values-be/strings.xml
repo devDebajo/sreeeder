@@ -46,6 +46,7 @@
     <string name="feed_mark_all_as_read">Прачытаць усё</string>
     <string name="channels_is_empty">У вас няма падпісак на каналы. Падпішыцеся ж на свой першы канал :-)</string>
     <string name="bookmarks_is_empty">Дадайце артыкулы ў закладкі і яны будуць на гэтым экране</string>
+    <string name="bookmarks_not_fully_read">Не дачыталі</string>
 
     <string name="notification_updating">Абнаўленне артыкулаў</string>
     <string name="notification_text">У вас %d новых артыкулаў</string>

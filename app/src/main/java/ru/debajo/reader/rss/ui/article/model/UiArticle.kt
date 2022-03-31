@@ -1,6 +1,7 @@
 package ru.debajo.reader.rss.ui.article.model
 
 import android.os.Parcelable
+import androidx.annotation.IntRange
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
@@ -18,4 +19,6 @@ data class UiArticle(
     val channelImage: String?,
     val channelName: String?,
     val categories: List<String>,
+    @IntRange(from = 0, to = 100)
+    val readPercents: Int,
 ) : Parcelable

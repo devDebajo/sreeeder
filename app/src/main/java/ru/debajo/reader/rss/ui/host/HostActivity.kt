@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import kotlinx.coroutines.launch
+import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.di.rememberFromDi
@@ -78,7 +79,7 @@ class HostActivity : ComponentActivity() {
         setContent {
             SreeeederTheme {
                 ConfigureSystemColors()
-                if (isLandscape()) {
+                if (isLandscape() && BuildConfig.TABLET_SUPPORT) {
                     LandscapeLayout(
                         channelsViewModel = channelsViewModel,
                         feedListViewModel = feedListViewModel,

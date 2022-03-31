@@ -2,54 +2,34 @@ package ru.debajo.reader.rss.domain.feed
 
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import ru.debajo.reader.rss.data.converter.toDomainList
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.ArticlesRepository
-import ru.debajo.reader.rss.domain.channel.ChannelsRepository
 import ru.debajo.reader.rss.domain.model.DomainArticle
 import ru.debajo.reader.rss.domain.model.DomainChannel
 
 class LoadArticlesUseCase(
-    private val channelsRepository: ChannelsRepository,
     private val articlesRepository: ArticlesRepository,
     private val articleBookmarksRepository: ArticleBookmarksRepository,
 ) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadBookmarked(): Flow<List<EnrichedDomainArticle>> {
-        return articleBookmarksRepository.observe()
-            .flatMapLatest { ids -> articlesRepository.getArticles(ids) }
-            .flatMapLatest { articles ->
-                channelsRepository.getChannelsByUrls(articles.map { it.channelUrl }.toSet().toList())
-                    .map { channels ->
-                        val channelsMap = channels.associateBy { channel -> channel.url }
-                        articles.map { article ->
-                            EnrichedDomainArticle(
-                                article = article.copy(bookmarked = true),
-                                channel = channelsMap[article.channelUrl],
-                            )
-                        }
-                    }
-            }
+    fun loadBookmarked(): Flow<List<DomainArticle>> {
+        return articleBookmarksRepository.observeArticles()
+            .map { articles -> articles.toDomainList() }
             .flowOn(IO)
     }
 
-    fun load(channel: DomainChannel): Flow<List<EnrichedDomainArticle>> {
+    fun load(channel: DomainChannel): Flow<List<DomainArticle>> {
         return combine(
-            articleBookmarksRepository.observe().map { it.toSet() },
+            articleBookmarksRepository.observeIds().map { it.toSet() },
             articlesRepository.getArticles(channel.url)
         ) { bookmarks, articles ->
-            articles.map { article ->
-                EnrichedDomainArticle(
-                    article = article.copy(bookmarked = article.id in bookmarks),
-                    channel = channel,
-                )
-            }
+            articles.map { article -> article.copy(bookmarked = article.id in bookmarks) }
         }
     }
-
-    class EnrichedDomainArticle(
-        val article: DomainArticle,
-        val channel: DomainChannel?,
-    )
 }

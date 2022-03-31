@@ -4,11 +4,11 @@ import com.prof.rssparser.Article
 import ru.debajo.reader.rss.data.db.model.DbArticle
 import ru.debajo.reader.rss.data.db.model.toDb
 import ru.debajo.reader.rss.data.remote.model.RemoteArticle
+import ru.debajo.reader.rss.data.remote.model.RemoteChannel
 import ru.debajo.reader.rss.data.remote.model.RemoteChannelUrl
 import ru.debajo.reader.rss.domain.model.DomainArticle
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.channels.model.UiChannel
 
 fun Article.toRemote(channelUrl: String): RemoteArticle {
     return RemoteArticle(
@@ -24,11 +24,13 @@ fun Article.toRemote(channelUrl: String): RemoteArticle {
     )
 }
 
-fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
+fun RemoteArticle.toDb(channel: RemoteChannel): DbArticle? {
     val url = url
     return DbArticle(
         id = id ?: url ?: return null,
-        channelUrl = channelUrl.url,
+        channelUrl = channel.url.url,
+        channelName = channel.name,
+        channelImage = channel.image,
         author = author,
         title = title ?: return null,
         image = image,
@@ -39,7 +41,7 @@ fun RemoteArticle.toDb(channelUrl: RemoteChannelUrl): DbArticle? {
     )
 }
 
-fun DomainArticle.toUi(channel: UiChannel?, isNew: Boolean): UiArticle {
+fun DomainArticle.toUi(isNew: Boolean, bookmarked: Boolean = this.bookmarked): UiArticle {
     return UiArticle(
         id = id,
         author = author,
@@ -48,11 +50,12 @@ fun DomainArticle.toUi(channel: UiChannel?, isNew: Boolean): UiArticle {
         url = url,
         bookmarked = bookmarked,
         timestamp = timestamp,
-        channelImage = channel?.image,
-        channelName = channel?.name,
+        channelImage = channelImage,
+        channelName = channelName,
         categories = categories,
         isNew = isNew,
         rawHtmlContent = contentHtml,
+        readPercents = readPercents,
     )
 }
 
@@ -66,11 +69,14 @@ fun DbArticle.toDomain(): DomainArticle {
         contentHtml = contentHtml,
         timestamp = timestamp?.dateTime,
         channelUrl = DomainChannelUrl(channelUrl),
+        channelImage = channelImage,
+        channelName = channelName,
         bookmarked = false,
         categories = categories,
+        readPercents = 0,
     )
 }
 
 fun List<Article>.toRemoteList(channelUrl: String): List<RemoteArticle> = map { it.toRemote(channelUrl) }
 fun List<DbArticle>.toDomainList(): List<DomainArticle> = map { it.toDomain() }
-fun List<RemoteArticle>.toDbList(channelUrl: RemoteChannelUrl): List<DbArticle> = mapNotNull { it.toDb(channelUrl) }
+fun List<RemoteArticle>.toDbList(channel: RemoteChannel): List<DbArticle> = mapNotNull { it.toDb(channel) }

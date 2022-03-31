@@ -35,7 +35,7 @@ class ChannelArticlesViewModel(
         this.channel = channel
         launch {
             loadArticlesUseCase.load(channel.toDomain())
-                .map { domain -> domain.map { entry -> entry.article.toUi(null, false) } }
+                .map { domain -> domain.map { it.toUi(false) } }
                 .collectTo(articlesMutable)
         }
         launch {

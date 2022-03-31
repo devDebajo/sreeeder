@@ -15,7 +15,7 @@ import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.NewArticlesUseCase
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
-import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
+import ru.debajo.reader.rss.domain.model.DomainArticle
 import ru.debajo.reader.rss.ext.collectTo
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
@@ -93,15 +93,12 @@ class FeedListViewModel(
 
     private suspend fun prepareState(
         currentState: FeedListState,
-        loadedArticles: List<LoadArticlesUseCase.EnrichedDomainArticle>
+        loadedArticles: List<DomainArticle>
     ): FeedListState {
         val newArticlesIds = newArticlesUseCase.getNewIds()
 
         val articles = loadedArticles.map { article ->
-            article.article.toUi(
-                channel = article.channel?.toUi(),
-                isNew = article.article.id in newArticlesIds
-            )
+            article.toUi(isNew = article.id in newArticlesIds)
         }.sortedByDescending { it.timestamp }
         return currentState.copy(allArticles = articles)
     }

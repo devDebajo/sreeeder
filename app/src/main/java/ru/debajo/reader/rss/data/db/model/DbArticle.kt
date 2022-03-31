@@ -13,6 +13,12 @@ data class DbArticle(
     @ColumnInfo(name = "channelUrl")
     val channelUrl: String,
 
+    @ColumnInfo(name = "channelName")
+    val channelName: String,
+
+    @ColumnInfo(name = "channelImage")
+    val channelImage: String?,
+
     @ColumnInfo(name = "author")
     val author: String?,
 

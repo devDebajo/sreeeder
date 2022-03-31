@@ -37,6 +37,9 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
@@ -64,13 +67,17 @@ fun UiArticleWebRender(
     val scrollState = rememberScrollState()
     LaunchedEffect(key1 = uiArticle, block = {
         viewModel.load(uiArticle)
-        viewModel.scrollPosition.collect { scrollState.animateScrollTo(it) }
+        snapshotFlow { scrollState.maxValue }
+            .filter { it < Int.MAX_VALUE }
+            .combine(viewModel.scrollPosition) { maxScroll, relativeScroll -> (relativeScroll * maxScroll).toInt() }
+            .take(1)
+            .collect { scroll -> scrollState.animateScrollTo(scroll) }
     })
     val backgroundColor = MaterialTheme.colorScheme.background
     val coroutineScope = rememberCoroutineScope()
     DisposableEffect(key1 = uiArticle, effect = {
         onDispose {
-            viewModel.saveScroll(uiArticle.id, scrollState.value)
+            viewModel.saveScroll(uiArticle.id, scrollState.value, scrollState.maxValue)
         }
     })
 

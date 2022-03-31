@@ -12,7 +12,6 @@ import org.jsoup.Jsoup
 import ru.debajo.reader.rss.data.converter.toDb
 import ru.debajo.reader.rss.data.converter.toDbList
 import ru.debajo.reader.rss.data.converter.toDomain
-import ru.debajo.reader.rss.data.converter.toRemote
 import ru.debajo.reader.rss.data.db.dao.ArticlesDao
 import ru.debajo.reader.rss.data.db.dao.ChannelsDao
 import ru.debajo.reader.rss.data.db.dao.getNonExistIds
@@ -118,7 +117,7 @@ class RssLoadDbManager(
 
     private suspend fun persist(url: DomainChannelUrl, channel: RemoteChannel) {
         channelsDao.add(channel.toDb(context))
-        val dbArticles = channel.currentArticles.toDbList(url.toRemote())
+        val dbArticles = channel.currentArticles.toDbList(channel)
         persistNewArticles(dbArticles, url)
         articlesDao.insert(dbArticles)
         cacheManager.saveMarker(createCacheKey(url))

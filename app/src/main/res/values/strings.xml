@@ -48,6 +48,7 @@
     <string name="feed_mark_all_as_read">Read all</string>
     <string name="channels_is_empty">You have no channel subscriptions. Subscribe to your first channel :-)</string>
     <string name="bookmarks_is_empty">Bookmark articles and they will be on this screen</string>
+    <string name="bookmarks_not_fully_read">Didn\'t finish reading</string>
 
     <string name="notification_updating">Channels updating</string>
     <string name="notification_text">You have %d new articles</string>

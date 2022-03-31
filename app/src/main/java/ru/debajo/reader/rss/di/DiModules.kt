@@ -13,7 +13,7 @@ import org.koin.dsl.module
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.data.db.RssDatabase
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
-import ru.debajo.reader.rss.data.db.migrations.*
+import ru.debajo.reader.rss.data.db.migrations.MIGRATIONS
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
 import ru.debajo.reader.rss.data.preferences.*
@@ -109,13 +109,7 @@ val NetworkModule = module {
 val DbModule = module {
     single {
         Room.databaseBuilder(get(), RssDatabase::class.java, "sreeeder_db")
-            .addMigrations(
-                MIGRATION_1_2,
-                MIGRATION_2_3,
-                MIGRATION_3_4,
-                MIGRATION_4_5,
-                MIGRATION_5_6,
-            )
+            .addMigrations(*MIGRATIONS)
             .build()
     }
     single { get<RssDatabase>(RssDatabase::class.java).favoriteChannelsDao() }
@@ -142,7 +136,7 @@ val RepositoryModule = module {
 val UseCaseModule = module {
     single { ChannelsSubscriptionsUseCase(get(), get()) }
     single { FeedListUseCase(get(), get()) }
-    single { LoadArticlesUseCase(get(), get(), get()) }
+    single { LoadArticlesUseCase(get(), get()) }
     single { SearchChannelsUseCase(get(), get(), get()) }
     single { NewArticlesUseCase(get(), get()) }
     single { ClearArticlesUseCase(get(), get(), get()) }
@@ -156,7 +150,7 @@ val ViewModelModule = module {
     factory { AddChannelScreenViewModel(get()) }
     factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
     factory { FeedListViewModel(get(), get(), get(), get(), get()) }
-    factory { BookmarksListViewModel(get(), get()) }
+    factory { BookmarksListViewModel(get(), get(), get(), get()) }
     factory { MainViewModel(get(), get(), get()) }
     factory { HostViewModel(get()) }
     factory { UiArticleWebRenderViewModel(get(), get(), get(), get()) }

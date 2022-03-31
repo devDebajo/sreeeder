@@ -17,7 +17,7 @@ import ru.debajo.reader.rss.data.db.model.*
         DbNewArticle::class,
         DbArticleScrollPosition::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = false,
 )
 @TypeConverters(DbDateTimeConverter::class)

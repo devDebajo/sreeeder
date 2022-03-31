@@ -21,9 +21,9 @@ class UiArticleWebRenderViewModel(
 
     private var loadJobs: MutableList<Job> = mutableListOf()
     private val stateMutable: MutableStateFlow<UiArticleWebRenderState> = MutableStateFlow(UiArticleWebRenderState.Loading(false))
-    private val scrollPositionMutable: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val scrollPositionMutable: MutableStateFlow<Float> = MutableStateFlow(0f)
     val state: StateFlow<UiArticleWebRenderState> = stateMutable
-    val scrollPosition: StateFlow<Int> = scrollPositionMutable
+    val scrollPosition: StateFlow<Float> = scrollPositionMutable
 
     fun load(uiArticle: UiArticle) {
         loadJobs.forEach { it.cancel() }
@@ -58,13 +58,14 @@ class UiArticleWebRenderViewModel(
         }
     }
 
-    fun saveScroll(articleId: String, scroll: Int) {
-        if (scrollPositionMutable.value == scroll) {
-            return
-        }
-
+    fun saveScroll(articleId: String, scroll: Int, maxScroll: Int) {
+        val relativeScroll = ((scroll.toFloat() / maxScroll.toFloat()) * 100).toInt().coerceIn(0, 100)
         appScope.launch {
-            articleScrollPositionUseCase.insert(articleId, scroll)
+            if (relativeScroll == 0 || relativeScroll > 95) {
+                articleScrollPositionUseCase.remove(articleId)
+            } else {
+                articleScrollPositionUseCase.insert(articleId, relativeScroll)
+            }
         }
     }
 
