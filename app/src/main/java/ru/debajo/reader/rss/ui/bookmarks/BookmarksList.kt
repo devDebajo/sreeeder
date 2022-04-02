@@ -55,15 +55,23 @@ fun BookmarksList(
                     .padding(horizontal = 16.dp)
                     .horizontalScroll(rememberScrollState())
             ) {
+                val contentPadding = PaddingValues(
+                    horizontal = 12.dp,
+                    vertical = 10.dp
+                )
                 for (tab in tabs) {
                     if (tab.selected) {
-                        Button(onClick = { viewModel.onTabClick(tab) }) {
-                            Text(tab.title)
-                        }
+                        Button(
+                            contentPadding = contentPadding,
+                            onClick = { viewModel.onTabClick(tab) },
+                            content = { Text(tab.title) }
+                        )
                     } else {
-                        OutlinedButton(onClick = { viewModel.onTabClick(tab) }) {
-                            Text(tab.title)
-                        }
+                        OutlinedButton(
+                            contentPadding = contentPadding,
+                            onClick = { viewModel.onTabClick(tab) },
+                            content = { Text(tab.title) }
+                        )
                     }
                 }
             }

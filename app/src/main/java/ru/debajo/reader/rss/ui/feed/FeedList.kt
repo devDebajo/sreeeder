@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
@@ -164,7 +165,8 @@ fun ScrollToTopButton(
     content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val canScrollToTop = listScrollState.firstVisibleItemScrollOffset > 0
+    val direction by detectScrollDirection(listScrollState)
+    val canScrollToTop = direction == 1
     Box(Modifier.fillMaxSize()) {
         content()
         AnimatedVisibility(
@@ -172,17 +174,52 @@ fun ScrollToTopButton(
             exit = slideOutVertically { it },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = contentPadding.calculateBottomPadding() + 16.dp)
                 .then(modifier),
             visible = canScrollToTop
         ) {
             Button(
+                modifier = Modifier
+                    .padding(bottom = contentPadding.calculateBottomPadding() + 16.dp),
                 onClick = { coroutineScope.launch { listScrollState.animateScrollToItem(0) } }
             ) {
                 Text(text)
             }
         }
     }
+}
+
+@Composable
+private fun detectScrollDirection(state: LazyListState): State<Int> {
+    val result = remember { mutableStateOf(0) }
+    LaunchedEffect(key1 = state, block = {
+        val heights = HashMap<Int, Int>()
+        var previousScroll = 0
+        combine(
+            snapshotFlow { state.firstVisibleItemIndex },
+            snapshotFlow { state.firstVisibleItemScrollOffset },
+        ) { firstVisibleItemIndex, firstVisibleItemScrollOffset ->
+            firstVisibleItemIndex to firstVisibleItemScrollOffset
+        }.collect { (firstVisibleItemIndex, firstVisibleItemScrollOffset) ->
+            state.layoutInfo.visibleItemsInfo.forEach { info ->
+                heights[info.index] = info.size
+            }
+
+            var height = 0
+            for (i in heights.keys) {
+                if (i < firstVisibleItemIndex) {
+                    height += heights.getValue(i)
+                }
+            }
+            height += firstVisibleItemScrollOffset
+            result.value = when {
+                firstVisibleItemIndex + firstVisibleItemScrollOffset == 0 -> 0
+                previousScroll - height < 0 -> -1
+                else -> 1
+            }
+            previousScroll = height
+        }
+    })
+    return result
 }
 
 private fun LazyListScope.articlesList(
