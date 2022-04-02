@@ -153,7 +153,7 @@ val ViewModelModule = module {
     factory { BookmarksListViewModel(get(), get(), get(), get()) }
     factory { MainViewModel(get(), get(), get()) }
     factory { HostViewModel(get()) }
-    factory { UiArticleWebRenderViewModel(get(), get(), get(), get()) }
+    factory { UiArticleWebRenderViewModel(get(), get(), get(), get(), get(), get()) }
 }
 
 val WorkerModule = module {

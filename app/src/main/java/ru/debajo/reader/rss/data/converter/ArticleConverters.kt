@@ -41,6 +41,23 @@ fun RemoteArticle.toDb(channel: RemoteChannel): DbArticle? {
     )
 }
 
+fun UiArticle.toDb(): DbArticle {
+    val url = url
+    return DbArticle(
+        id = id,
+        channelUrl = "",
+        channelName = channelName.orEmpty(),
+        channelImage = channelImage,
+        author = author,
+        title = title,
+        image = image,
+        url = url,
+        contentHtml = rawHtmlContent,
+        timestamp = timestamp?.toDb(),
+        categories = categories.filter { it.isNotEmpty() },
+    )
+}
+
 fun DomainArticle.toUi(isNew: Boolean, bookmarked: Boolean = this.bookmarked): UiArticle {
     return UiArticle(
         id = id,

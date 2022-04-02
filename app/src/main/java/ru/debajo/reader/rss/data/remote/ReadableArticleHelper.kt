@@ -11,7 +11,7 @@ import java.nio.charset.Charset
 
 class ReadableArticleHelper(private val httpClient: OkHttpClient) {
 
-    suspend fun loadReadableArticleHtml(url: String): String? {
+    suspend fun loadReadableArticleHtml(url: String): ReadableArticle? {
         return runCatching {
             val htmlBytes = httpClient.getBytes(url)
             val charset = detectCharset(String(htmlBytes))
@@ -22,7 +22,7 @@ class ReadableArticleHelper(private val httpClient: OkHttpClient) {
             if (foreignAgentElement != null) {
                 article.articleContent?.prependChild(foreignAgentElement)
             }
-            article.content
+            article.content?.let { ReadableArticle(article.title, it) }
         }
             .onFailure { Timber.tag("ReadableArticleHelper").e(it) }
             .getOrNull()
@@ -41,4 +41,9 @@ class ReadableArticleHelper(private val httpClient: OkHttpClient) {
     private fun Document.findForeignAgentHtmlElement(): Element? {
         return body().allElements.firstOrNull { it.ownText().contains("иностранного агента", true) }
     }
+
+    class ReadableArticle(
+        val title: String?,
+        val html: String
+    )
 }

@@ -74,6 +74,16 @@ class RssLoadDbManager(
         }
     }
 
+    fun tryExtractImage(contentHtml: String): String? {
+        val document = Jsoup.parse(contentHtml)
+        return document.allElements
+            .asSequence()
+            .filter { it.tagName() == "img" }
+            .map { it.attr("src") }
+            .filter { it.isNotEmpty() }
+            .firstOrNull()
+    }
+
     private suspend fun refreshChannelIgnoreError(channelUrl: DomainChannelUrl, force: Boolean) {
         refreshChannel(channelUrl, force)
             .filter { it is ChannelLoadingState.Error || it is ChannelLoadingState.UpToDate }
@@ -105,13 +115,7 @@ class RssLoadDbManager(
 
     private fun RemoteArticle.tryExtractImage(): RemoteArticle {
         val contentHtml = contentHtml ?: return this
-        val document = Jsoup.parse(contentHtml)
-        val url = document.allElements
-            .asSequence()
-            .filter { it.tagName() == "img" }
-            .map { it.attr("src") }
-            .filter { it.isNotEmpty() }
-            .firstOrNull() ?: return this
+        val url = tryExtractImage(contentHtml)
         return copy(image = url)
     }
 

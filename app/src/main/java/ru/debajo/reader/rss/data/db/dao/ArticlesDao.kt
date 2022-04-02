@@ -18,6 +18,9 @@ interface ArticlesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(articles: List<DbArticle>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(article: DbArticle)
+
     @Query("DELETE FROM dbarticle WHERE channelUrl=:channelUrl AND id NOT IN (SELECT articleId FROM dbarticlebookmark)")
     suspend fun removeByChannelUrl(channelUrl: String)
 
