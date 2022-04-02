@@ -19,11 +19,14 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.di.diViewModels
 import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.di.rememberFromDi
+import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.ext.AndroidColor
@@ -32,6 +35,7 @@ import ru.debajo.reader.rss.ui.ext.getNavigationColor
 import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.MainViewModel
+import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.AppThemeConfig
@@ -39,6 +43,8 @@ import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 import ru.debajo.reader.rss.ui.theme.SreeeederTheme
 
 class HostActivity : ComponentActivity() {
+
+    private var navHostController: NavHostController? = null
 
     private val hostViewModel: HostViewModel by diViewModels()
     private val channelsViewModel: ChannelsViewModel by diViewModels()
@@ -61,6 +67,7 @@ class HostActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (savedInstanceState == null) {
             hostViewModel.refreshFeed()
         }
@@ -79,6 +86,11 @@ class HostActivity : ComponentActivity() {
         setContent {
             SreeeederTheme {
                 ConfigureSystemColors()
+                val navController = rememberNavController()
+                navHostController = navController
+
+                LaunchedEffect(key1 = navController, block = { openUrlArticle(intent) })
+
                 if (isLandscape() && BuildConfig.TABLET_SUPPORT) {
                     LandscapeLayout(
                         channelsViewModel = channelsViewModel,
@@ -93,10 +105,24 @@ class HostActivity : ComponentActivity() {
                         feedListViewModel = feedListViewModel,
                         bookmarksListViewModel = bookmarksListViewModel,
                         uiArticleNavigator = uiArticleNavigator,
+                        navController = navController
                     )
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let { openUrlArticle(it) }
+    }
+
+    private fun openUrlArticle(intent: Intent) {
+        val url = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return
+        intent.removeExtra(Intent.EXTRA_TEXT)
+        val navController = navHostController ?: return
+
+        NavGraph.UiArticleWebRender.navigate(navController, UiArticle.fromUrl(url))
     }
 
     @Composable

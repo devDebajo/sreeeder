@@ -21,4 +21,25 @@ data class UiArticle(
     val categories: List<String>,
     @IntRange(from = 0, to = 100)
     val readPercents: Int,
-) : Parcelable
+) : Parcelable {
+    companion object {
+        fun fromUrl(url: String): UiArticle {
+            return UiArticle(
+                id = url,
+                author = null,
+                title = "",
+                image = null,
+                url = url,
+                rawHtmlContent = null,
+                bookmarked = false,
+                isNew = false,
+                timestamp = null,
+                channelImage = null,
+                channelName = null,
+                categories = emptyList(),
+                readPercents = 0
+            )
+        }
+    }
+}
+

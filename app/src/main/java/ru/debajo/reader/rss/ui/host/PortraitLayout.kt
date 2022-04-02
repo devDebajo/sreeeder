@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.article.UiArticleWebRender
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -27,8 +27,8 @@ fun PortraitLayout(
     feedListViewModel: FeedListViewModel,
     bookmarksListViewModel: BookmarksListViewModel,
     uiArticleNavigator: UiArticleNavigator,
+    navController: NavHostController,
 ) {
-    val navController = rememberNavController()
     NavHost(
         modifier = Modifier.systemBarsPadding(),
         navController = navController,
