@@ -19,18 +19,18 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
 import ru.debajo.reader.rss.ui.main.MainTopBar
+import ru.debajo.reader.rss.ui.main.model.ChromeTabsParams
 import ru.debajo.reader.rss.ui.main.settingsTab
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SettingsList(
     innerPadding: PaddingValues,
-    parentNavController: NavController,
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
+    openChromeTabs: (ChromeTabsParams) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val expandedGroup = rememberSaveableMutableState(-1)
@@ -74,7 +74,7 @@ fun SettingsList(
                     state = calculateGroupState(expandedGroup, 2),
                     onHeaderClick = { expandedGroup.onGroupHeaderClick(2) }
                 ) {
-                    SettingsPrivacyPolicy(parentNavController)
+                    SettingsPrivacyPolicy(openChromeTabs)
                     SettingsAppVersion()
                 }
             }

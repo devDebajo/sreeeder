@@ -12,12 +12,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
-import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.bookmarksTab
@@ -27,10 +25,9 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 @OptIn(ExperimentalMaterial3Api::class)
 fun BookmarksList(
     innerPadding: PaddingValues,
-    navController: NavController,
     scrollController: ScrollController,
     viewModel: BookmarksListViewModel,
-    uiArticleNavigator: UiArticleNavigator
+    onArticleClick: (UiArticle) -> Unit,
 ) {
     LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
     val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
@@ -79,9 +76,8 @@ fun BookmarksList(
                 articles = articles,
                 innerPadding = innerPadding,
                 scrollController = scrollController,
-                uiArticleNavigator = uiArticleNavigator,
                 viewModel = viewModel,
-                navController = navController,
+                onArticleClick = onArticleClick,
             )
         }
     }
@@ -92,11 +88,9 @@ private fun List(
     articles: List<UiArticle>,
     innerPadding: PaddingValues,
     scrollController: ScrollController,
-    uiArticleNavigator: UiArticleNavigator,
     viewModel: BookmarksListViewModel,
-    navController: NavController,
+    onArticleClick: (UiArticle) -> Unit,
 ) {
-    val backgroundColor = MaterialTheme.colorScheme.background
     if (articles.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -132,9 +126,8 @@ private fun List(
                         ChannelArticle(
                             article = articles[index],
                             onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                        ) {
-                            uiArticleNavigator.open(it, navController, backgroundColor)
-                        }
+                            onClick = onArticleClick
+                        )
                     }
                 }
             )

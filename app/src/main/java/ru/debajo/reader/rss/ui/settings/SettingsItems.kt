@@ -17,12 +17,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.ext.optionalClickable
+import ru.debajo.reader.rss.ui.main.model.ChromeTabsParams
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
-import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.theme.AppTheme
 import ru.debajo.reader.rss.ui.theme.title
 
@@ -125,10 +124,10 @@ fun SettingsShowNavigationTitlesSwitch(state: SettingsState, viewModel: Settings
 }
 
 @Composable
-fun SettingsPrivacyPolicy(navController: NavController) {
+fun SettingsPrivacyPolicy(onClick: (ChromeTabsParams) -> Unit) {
     val backgroundColor = MaterialTheme.colorScheme.background
     SettingsText(stringResource(id = R.string.settings_privacy_policy)) {
-        NavGraph.ChromeTabs.navigate(navController, BuildConfig.PRIVACY_POLICY.toChromeTabsParams(backgroundColor))
+        onClick(BuildConfig.PRIVACY_POLICY.toChromeTabsParams(backgroundColor))
     }
 }
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -44,7 +45,7 @@ private val tabs = listOf(feedTab, channelsTab, bookmarksTab, settingsTab)
 
 @Composable
 fun MainScreen(
-    parentController: NavController,
+    parentController: NavHostController,
     mainViewModel: MainViewModel,
     settingsViewModel: SettingsViewModel,
     channelsViewModel: ChannelsViewModel,
@@ -54,7 +55,12 @@ fun MainScreen(
 ) {
     val navController = rememberNavController()
     val scrollController = rememberScrollController()
-    MainScaffold(parentController, navController, scrollController, mainViewModel) { innerPadding ->
+    MainScaffold(
+        navController = navController,
+        scrollController = scrollController,
+        viewModel = mainViewModel,
+        onFabClick = { NavGraph.AddChannel.navigate(parentController) }
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = tabs[0].navigation.route
@@ -77,15 +83,19 @@ fun MainScreen(
                 )
             }
             composable(bookmarksTab.navigation.route) {
+                val backgroundColor = MaterialTheme.colorScheme.background
                 BookmarksList(
-                    innerPadding,
-                    parentController,
-                    scrollController,
-                    bookmarksListViewModel,
-                    uiArticleNavigator
+                    innerPadding = innerPadding,
+                    scrollController = scrollController,
+                    viewModel = bookmarksListViewModel,
+                    onArticleClick = { uiArticleNavigator.open(it, parentController, backgroundColor) }
                 )
             }
-            composable(settingsTab.navigation.route) { SettingsList(innerPadding, parentController, settingsViewModel) }
+            composable(settingsTab.navigation.route) {
+                SettingsList(innerPadding, settingsViewModel) {
+                    NavGraph.ChromeTabs.navigate(parentController, it)
+                }
+            }
         }
     }
 }
@@ -93,10 +103,10 @@ fun MainScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun MainScaffold(
-    parentController: NavController,
     navController: NavController,
     scrollController: ScrollController,
     viewModel: MainViewModel,
+    onFabClick: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val selectedTab by viewModel.selectedTab.collectAsState()
@@ -133,7 +143,7 @@ private fun MainScaffold(
             val showButton = currentDestination?.hierarchy?.any { it.route == channelsTab.navigation.route } == true
             if (showButton) {
                 FloatingActionButton(
-                    onClick = { NavGraph.AddChannel.navigate(parentController) },
+                    onClick = onFabClick,
                     content = { Icon(Icons.Rounded.Search, contentDescription = null) }
                 )
             }
