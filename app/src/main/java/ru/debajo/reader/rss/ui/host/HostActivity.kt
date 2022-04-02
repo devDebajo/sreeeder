@@ -87,28 +87,27 @@ class HostActivity : ComponentActivity() {
 
         setContent {
             SreeeederTheme {
-                ConfigureSystemColors()
-                val navController = rememberAnimatedNavController()
-                navHostController = navController
+                ViewModels.WithViewModels(
+                    settingsViewModel = settingsViewModel,
+                    mainViewModel = mainViewModel,
+                    channelsViewModel = channelsViewModel,
+                    feedListViewModel = feedListViewModel,
+                    bookmarksListViewModel = bookmarksListViewModel,
+                ) {
+                    ConfigureSystemColors()
+                    val navController = rememberAnimatedNavController()
+                    navHostController = navController
 
-                LaunchedEffect(key1 = navController, block = { openUrlArticle(intent) })
+                    LaunchedEffect(key1 = navController, block = { openUrlArticle(intent) })
 
-                if (isLandscape() && BuildConfig.TABLET_SUPPORT) {
-                    LandscapeLayout(
-                        channelsViewModel = channelsViewModel,
-                        feedListViewModel = feedListViewModel,
-                        mainViewModel = mainViewModel,
-                    )
-                } else {
-                    PortraitLayout(
-                        settingsViewModel = settingsViewModel,
-                        mainViewModel = mainViewModel,
-                        channelsViewModel = channelsViewModel,
-                        feedListViewModel = feedListViewModel,
-                        bookmarksListViewModel = bookmarksListViewModel,
-                        uiArticleNavigator = uiArticleNavigator,
-                        navController = navController
-                    )
+                    if (isLandscape() && BuildConfig.TABLET_SUPPORT) {
+                        LandscapeLayout()
+                    } else {
+                        PortraitLayout(
+                            uiArticleNavigator = uiArticleNavigator,
+                            navController = navController
+                        )
+                    }
                 }
             }
         }

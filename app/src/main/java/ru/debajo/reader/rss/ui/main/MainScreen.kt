@@ -21,20 +21,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksList
-import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelsList
-import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.ext.animatedHeight
 import ru.debajo.reader.rss.ui.ext.toInt
 import ru.debajo.reader.rss.ui.feed.FeedList
-import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
+import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.list.rememberScrollController
 import ru.debajo.reader.rss.ui.main.model.ScreenTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsList
-import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 
 val feedTab = ScreenTab(R.string.screen_feed, Icons.Rounded.RssFeed, NavGraph.Main.Feed)
 val channelsTab = ScreenTab(R.string.screen_channels, Icons.Rounded.Favorite, NavGraph.Main.Channels)
@@ -46,11 +43,6 @@ private val tabs = listOf(feedTab, channelsTab, bookmarksTab, settingsTab)
 @Composable
 fun MainScreen(
     parentController: NavHostController,
-    mainViewModel: MainViewModel,
-    settingsViewModel: SettingsViewModel,
-    channelsViewModel: ChannelsViewModel,
-    feedListViewModel: FeedListViewModel,
-    bookmarksListViewModel: BookmarksListViewModel,
     uiArticleNavigator: UiArticleNavigator
 ) {
     val navController = rememberNavController()
@@ -58,7 +50,6 @@ fun MainScreen(
     MainScaffold(
         navController = navController,
         scrollController = scrollController,
-        viewModel = mainViewModel,
         onFabClick = { NavGraph.AddChannel.navigate(parentController) }
     ) { innerPadding ->
         NavHost(
@@ -70,7 +61,6 @@ fun MainScreen(
                 FeedList(
                     innerPadding = innerPadding,
                     scrollController = scrollController,
-                    viewModel = feedListViewModel,
                     onArticleClick = { uiArticleNavigator.open(it, parentController, backgroundColor) }
                 )
             }
@@ -78,7 +68,6 @@ fun MainScreen(
                 ChannelsList(
                     innerPadding = innerPadding,
                     scrollController = scrollController,
-                    viewModel = channelsViewModel,
                     onChannelClick = { NavGraph.ArticlesList.navigate(parentController, it) }
                 )
             }
@@ -87,12 +76,11 @@ fun MainScreen(
                 BookmarksList(
                     innerPadding = innerPadding,
                     scrollController = scrollController,
-                    viewModel = bookmarksListViewModel,
                     onArticleClick = { uiArticleNavigator.open(it, parentController, backgroundColor) }
                 )
             }
             composable(settingsTab.navigation.route) {
-                SettingsList(innerPadding, settingsViewModel) {
+                SettingsList(innerPadding) {
                     NavGraph.ChromeTabs.navigate(parentController, it)
                 }
             }
@@ -105,7 +93,7 @@ fun MainScreen(
 private fun MainScaffold(
     navController: NavController,
     scrollController: ScrollController,
-    viewModel: MainViewModel,
+    viewModel: MainViewModel = ViewModels.mainViewModel,
     onFabClick: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {

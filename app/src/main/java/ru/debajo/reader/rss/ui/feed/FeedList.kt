@@ -27,6 +27,7 @@ import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.StaggeredRecycler
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
+import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainScreenTopBarActions
 import ru.debajo.reader.rss.ui.main.MainTopBar
@@ -38,7 +39,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun FeedList(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     scrollController: ScrollController,
-    viewModel: FeedListViewModel,
+    viewModel: FeedListViewModel = ViewModels.feedListViewModel,
     forLandscape: Boolean = false,
     onArticleClick: (UiArticle) -> Unit,
 ) {

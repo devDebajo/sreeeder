@@ -12,10 +12,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.ChannelsList
-import ru.debajo.reader.rss.ui.channels.ChannelsViewModel
 import ru.debajo.reader.rss.ui.ext.getNavigationColor
 import ru.debajo.reader.rss.ui.feed.FeedList
-import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.list.rememberScrollController
 import ru.debajo.reader.rss.ui.main.MainViewModel
@@ -30,9 +28,7 @@ private val landscapeTabs = listOf(landscapeChannelsTab, bookmarksTab, settingsT
 
 @Composable
 fun LandscapeLayout(
-    channelsViewModel: ChannelsViewModel,
-    feedListViewModel: FeedListViewModel,
-    mainViewModel: MainViewModel,
+    mainViewModel: MainViewModel = ViewModels.mainViewModel,
 ) {
     val scrollController = rememberScrollController()
     Surface(
@@ -55,15 +51,14 @@ fun LandscapeLayout(
                 }
             }
 
-            SecondPane(channelsViewModel, scrollController)
-            ThirdPane(scrollController, feedListViewModel)
+            SecondPane(scrollController)
+            ThirdPane(scrollController)
         }
     }
 }
 
 @Composable
 private fun SecondPane(
-    channelsViewModel: ChannelsViewModel,
     scrollController: ScrollController,
 ) {
     Box(
@@ -73,7 +68,6 @@ private fun SecondPane(
     ) {
         ChannelsList(
             scrollController = scrollController,
-            viewModel = channelsViewModel,
             forLandscape = true,
             onChannelClick = {
 
@@ -88,11 +82,9 @@ private fun SecondPane(
 @Composable
 private fun ThirdPane(
     scrollController: ScrollController,
-    feedListViewModel: FeedListViewModel,
 ) {
     FeedList(
         scrollController = scrollController,
-        viewModel = feedListViewModel,
         forLandscape = true
     ) {
 

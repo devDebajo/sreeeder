@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
+import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.model.ChromeTabsParams
 import ru.debajo.reader.rss.ui.main.settingsTab
@@ -29,7 +30,7 @@ import ru.debajo.reader.rss.ui.main.settingsTab
 @OptIn(ExperimentalMaterial3Api::class)
 fun SettingsList(
     innerPadding: PaddingValues,
-    viewModel: SettingsViewModel,
+    viewModel: SettingsViewModel = ViewModels.settingsViewModel,
     openChromeTabs: (ChromeTabsParams) -> Unit
 ) {
     val state by viewModel.state.collectAsState()

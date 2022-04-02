@@ -23,6 +23,7 @@ import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.ext.composeColor
 import ru.debajo.reader.rss.ui.ext.getColorRoles
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
+import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.channelsTab
@@ -33,7 +34,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun ChannelsList(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     scrollController: ScrollController,
-    viewModel: ChannelsViewModel,
+    viewModel: ChannelsViewModel = ViewModels.channelsViewModel,
     forLandscape: Boolean = false,
     onChannelClick: (UiChannel) -> Unit,
     onFeedClick: () -> Unit = {},

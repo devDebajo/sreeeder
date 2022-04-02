@@ -16,6 +16,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
+import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.bookmarksTab
@@ -26,7 +27,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 fun BookmarksList(
     innerPadding: PaddingValues,
     scrollController: ScrollController,
-    viewModel: BookmarksListViewModel,
+    viewModel: BookmarksListViewModel = ViewModels.bookmarksListViewModel,
     onArticleClick: (UiArticle) -> Unit,
 ) {
     LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
