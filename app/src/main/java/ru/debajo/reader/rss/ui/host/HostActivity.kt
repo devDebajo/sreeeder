@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.di.diViewModels
@@ -65,6 +66,7 @@ class HostActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -86,7 +88,7 @@ class HostActivity : ComponentActivity() {
         setContent {
             SreeeederTheme {
                 ConfigureSystemColors()
-                val navController = rememberNavController()
+                val navController = rememberAnimatedNavController()
                 navHostController = navController
 
                 LaunchedEffect(key1 = navController, block = { openUrlArticle(intent) })

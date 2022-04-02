@@ -1,12 +1,14 @@
 package ru.debajo.reader.rss.ui.host
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 import ru.debajo.reader.rss.ui.add.AddChannelScreen
 import ru.debajo.reader.rss.ui.article.UiArticleWebRender
 import ru.debajo.reader.rss.ui.bookmarks.BookmarksListViewModel
@@ -20,6 +22,7 @@ import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 import ru.debajo.reader.rss.ui.settings.SettingsViewModel
 
 @Composable
+@OptIn(ExperimentalAnimationApi::class)
 fun PortraitLayout(
     settingsViewModel: SettingsViewModel,
     mainViewModel: MainViewModel,
@@ -29,10 +32,14 @@ fun PortraitLayout(
     uiArticleNavigator: UiArticleNavigator,
     navController: NavHostController,
 ) {
-    NavHost(
+    AnimatedNavHost(
         modifier = Modifier.systemBarsPadding(),
         navController = navController,
-        startDestination = NavGraph.Main.route
+        startDestination = NavGraph.Main.route,
+        enterTransition = { slideInVertically(animationSpec = tween(300)) { it } },
+        exitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() },
+        popExitTransition = { slideOutVertically(animationSpec = tween(300)) { it } }
     ) {
         composable(NavGraph.Main.route) {
             MainScreen(
