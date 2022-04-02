@@ -20,11 +20,10 @@ class SearchChannelsUseCase(
     private val htmlChannelUrlExtractor: HtmlChannelUrlExtractor,
 ) {
     fun search(input: String): Flow<List<DomainChannel>> {
-        val httpsUrl = input.replace("http://", "https://")
         return combine(
-            tryLoadAsIs(httpsUrl).ignoreError().withLeading(emptyList()),
-            tryAddRssOrFeedPath(httpsUrl).ignoreError().withLeading(emptyList()),
-            tryExtractFeedFromHtml(httpsUrl).ignoreError().withLeading(emptyList()),
+            tryLoadAsIs(input).ignoreError().withLeading(emptyList()),
+            tryAddRssOrFeedPath(input).ignoreError().withLeading(emptyList()),
+            tryExtractFeedFromHtml(input).ignoreError().withLeading(emptyList()),
             searchPlainText(input).ignoreError().withLeading(emptyList()),
         ) { a, b, c, d ->
             buildList {
@@ -48,9 +47,6 @@ class SearchChannelsUseCase(
     }
 
     private fun tryAddRssOrFeedPath(url: String): Flow<List<DomainChannel>> {
-        if (!url.startsWith("https")) {
-            return emptyFlow()
-        }
         return flow {
             val uri = Uri.parse(url)
             val feedUrl = uri.buildUpon().path("feed").toString()
