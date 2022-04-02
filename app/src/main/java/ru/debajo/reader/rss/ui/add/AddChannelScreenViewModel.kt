@@ -3,6 +3,7 @@ package ru.debajo.reader.rss.ui.add
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.data.converter.toUiList
@@ -26,8 +27,11 @@ class AddChannelScreenViewModel(
 
     fun requestFocus() {
         if (!focusRequested) {
-            requestFocusMutable.value = Unit
-            focusRequested = true
+            launch {
+                delay(500)
+                requestFocusMutable.value = Unit
+                focusRequested = true
+            }
         }
     }
 

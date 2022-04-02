@@ -42,10 +42,20 @@ fun AddChannelScreen(parentNavController: NavController) {
         viewModel.requestFocus.observe(lifecycleOwner) { focusRequester.requestFocus() }
         viewModel.requestFocus()
     })
+    val softwareKeyboardController = LocalSoftwareKeyboardController.current
+    val keyboardActions = remember(softwareKeyboardController) {
+        KeyboardActions(onSearch = {
+            viewModel.onLoadClick()
+            softwareKeyboardController?.hide()
+        })
+    }
     Scaffold(
         topBar = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { parentNavController.popBackStack() }) {
+                IconButton(onClick = {
+                    softwareKeyboardController?.hide()
+                    parentNavController.popBackStack()
+                }) {
                     Icon(Icons.Rounded.ArrowBack, contentDescription = null)
                 }
                 Text(
@@ -59,13 +69,6 @@ fun AddChannelScreen(parentNavController: NavController) {
             }
         }
     ) {
-        val softwareKeyboardController = LocalSoftwareKeyboardController.current
-        val keyboardActions = remember(softwareKeyboardController) {
-            KeyboardActions(onSearch = {
-                viewModel.onLoadClick()
-                softwareKeyboardController?.hide()
-            })
-        }
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -79,7 +82,9 @@ fun AddChannelScreen(parentNavController: NavController) {
                 singleLine = true,
                 keyboardActions = keyboardActions,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 label = { Text(stringResource(R.string.add_channel_placeholder)) },
                 shape = RoundedCornerShape(18.dp),
                 trailingIcon = {
