@@ -2,8 +2,8 @@ apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
     ext {
-        compose_version = '1.2.0-alpha06'
-        compose_meterial3_version = '1.0.0-alpha08'
+        compose_version = '1.2.0-alpha07'
+        compose_meterial3_version = '1.0.0-alpha09'
         compose_navigation_version = '2.4.1'
         compose_activity_version = '1.6.0-alpha01'
         compose_view_model_version = '2.5.0-alpha05'

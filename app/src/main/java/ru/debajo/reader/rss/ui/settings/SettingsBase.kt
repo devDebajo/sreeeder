@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -68,6 +69,9 @@ fun SettingsSwitch(text: String, checked: Boolean, onClick: () -> Unit) {
         )
 
         val haptic = LocalHapticFeedback.current
+        Snapshot.withoutReadObservation{
+
+        }
         Switch(
             checked = checked,
             onCheckedChange = {

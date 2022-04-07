@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.ui.article
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -49,6 +50,7 @@ import ru.debajo.reader.rss.ui.article.parser.WebPageTokenDecoration
 import ru.debajo.reader.rss.ui.article.parser.WebPageTokenStyle
 import ru.debajo.reader.rss.ui.common.AppImage
 import ru.debajo.reader.rss.ui.common.FontFamilies
+import ru.debajo.reader.rss.ui.common.IndeterminateProgressIndicator
 import ru.debajo.reader.rss.ui.common.rememberMutableState
 import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.ext.toFinite
@@ -135,10 +137,13 @@ fun UiArticleWebRender(
         }
     ) {
         val state by viewModel.state.collectAsState()
-        state.let {
-            when (it) {
-                is UiArticleWebRenderState.Error -> {
-                    Box(Modifier.fillMaxSize()) {
+        Crossfade(
+            modifier = Modifier.fillMaxSize(),
+            targetState = state
+        ) {
+            Box(Modifier.fillMaxSize()) {
+                when (it) {
+                    is UiArticleWebRenderState.Error -> {
                         Text(
                             modifier = Modifier
                                 .align(Alignment.Center)
@@ -147,21 +152,18 @@ fun UiArticleWebRender(
                             text = stringResource(R.string.article_web_render_load_failed)
                         )
                     }
-                }
-                is UiArticleWebRenderState.Loading -> {
-                    Box(Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(
+                    is UiArticleWebRenderState.Loading -> {
+                        IndeterminateProgressIndicator(
                             modifier = Modifier
                                 .size(30.dp)
                                 .align(Alignment.Center),
-                            strokeWidth = 2.dp,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                }
-                is UiArticleWebRenderState.Prepared -> {
-                    SelectionContainer {
-                        WebPageTokens(scrollState, it.tokens, uiArticle.title, navController, coroutineScope)
+                    is UiArticleWebRenderState.Prepared -> {
+                        SelectionContainer {
+                            WebPageTokens(scrollState, it.tokens, uiArticle.title, navController, coroutineScope)
+                        }
                     }
                 }
             }

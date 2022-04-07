@@ -29,6 +29,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelCard
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.common.IndeterminateProgressIndicator
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
@@ -154,13 +155,11 @@ private fun NoDataLoaded(state: LoadingState, message: String) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             when (state) {
-                LoadingState.LOADING -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 1.dp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                LoadingState.LOADING -> IndeterminateProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+
                 LoadingState.ERROR -> Icon(
                     imageVector = Icons.Rounded.Error,
                     tint = MaterialTheme.colorScheme.error,

@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.debajo.reader.rss.BuildConfig
 import ru.debajo.reader.rss.R
+import ru.debajo.reader.rss.ui.common.IndeterminateProgressIndicator
 import ru.debajo.reader.rss.ui.ext.optionalClickable
 import ru.debajo.reader.rss.ui.main.model.ChromeTabsParams
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
@@ -158,9 +158,8 @@ fun SettingsImportOpml(viewModel: SettingsViewModel) {
             fontSize = 14.sp
         )
         if (state.importing) {
-            CircularProgressIndicator(
+            IndeterminateProgressIndicator(
                 modifier = Modifier.size(24.dp),
-                strokeWidth = 1.dp,
                 color = MaterialTheme.colorScheme.primary
             )
         }
