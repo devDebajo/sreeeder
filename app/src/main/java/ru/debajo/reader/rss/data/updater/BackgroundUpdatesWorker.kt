@@ -2,12 +2,8 @@ package ru.debajo.reader.rss.data.updater
 
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import androidx.work.CoroutineWorker
-import androidx.work.ForegroundInfo
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
+import androidx.work.*
+import kotlinx.coroutines.runBlocking
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.di.inject
@@ -18,7 +14,7 @@ import timber.log.Timber
 class BackgroundUpdatesWorker(
     appContext: Context,
     params: WorkerParameters
-) : CoroutineWorker(appContext, params) {
+) : Worker(appContext, params) {
 
     private val workManager: WorkManager by inject()
     private val rssLoadDbManager: RssLoadDbManager by inject()
@@ -27,20 +23,16 @@ class BackgroundUpdatesWorker(
     private val notificationFactory: NotificationFactory by inject()
     private val newArticlesUseCase: NewArticlesUseCase by inject()
 
-    override suspend fun doWork(): Result {
-        setForeground(createForegroundInfo())
-        return withContext(IO) {
-            runCatching {
-                rssLoadDbManager.refreshSubscriptions(true).ignoreElements()
-                newArticlesUseCase.getNewIds().size
-            }
-                .onSuccess { count ->
-                    notificationManager.sendNewArticlesCount(count)
-                }
-                .onFailure { error -> Timber.e(error) }
-                .map { Result.success() }
-                .getOrElse { Result.failure() }
+    override fun doWork(): Result = runBlocking {
+        runCatching {
+            setForegroundAsync(createForegroundInfo()).await()
+            rssLoadDbManager.refreshSubscriptions(true).ignoreElements()
+            newArticlesUseCase.getNewIds().size
         }
+            .onSuccess { count -> notificationManager.sendNewArticlesCount(count) }
+            .onFailure { error -> Timber.e(error) }
+            .map { Result.success() }
+            .getOrElse { Result.failure() }
     }
 
     private fun createForegroundInfo(): ForegroundInfo {

@@ -1,7 +1,6 @@
 package ru.debajo.reader.rss.ui.article
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -37,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.take
@@ -52,6 +50,7 @@ import ru.debajo.reader.rss.ui.common.AppImage
 import ru.debajo.reader.rss.ui.common.FontFamilies
 import ru.debajo.reader.rss.ui.common.IndeterminateProgressIndicator
 import ru.debajo.reader.rss.ui.common.rememberMutableState
+import ru.debajo.reader.rss.ui.ext.animateTo
 import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.ext.toFinite
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
@@ -193,24 +192,24 @@ private fun WebPageTokens(
         for (token in tokens) {
             when (token) {
                 is WebPageToken.Image -> {
-                    var scale by remember { mutableStateOf(1f) }
-                    var offset by remember { mutableStateOf(Offset.Zero) }
+                    val scale = remember { mutableStateOf(1f) }
+                    val offset = remember { mutableStateOf(Offset.Zero) }
                     var zIndex by remember { mutableStateOf(0f) }
                     val transformableState = rememberTransformableState { zoomChange, offsetChange, _ ->
                         zIndex = 100f
-                        scale *= zoomChange
-                        scale = max(scale, 1f)
-                        offset += offsetChange
+                        scale.value = scale.value * zoomChange
+                        scale.value = max(scale.value, 1f)
+                        offset.value += offsetChange
                     }
                     AppImage(
                         url = token.url,
                         modifier = Modifier
                             .fillMaxWidth()
                             .graphicsLayer(
-                                scaleX = scale,
-                                scaleY = scale,
-                                translationX = offset.x,
-                                translationY = offset.y
+                                scaleX = scale.value,
+                                scaleY = scale.value,
+                                translationX = offset.value.x,
+                                translationY = offset.value.y
                             )
                             .transformable(state = transformableState)
                             .pointerInput(Unit) {
@@ -222,24 +221,12 @@ private fun WebPageTokens(
                                             val canceled = event.changes.any { it.consumed.positionChange }
                                         } while (!canceled && event.changes.any { it.pressed })
 
-                                        animateFromTo(
-                                            coroutineScope = coroutineScope,
-                                            typeConverter = Float.VectorConverter,
-                                            start = scale,
-                                            end = 1f,
-                                            onUpdate = { scale = it }
-                                        )
-
-                                        animateFromTo(
-                                            coroutineScope = coroutineScope,
-                                            typeConverter = Offset.VectorConverter,
-                                            start = offset,
-                                            end = Offset.Zero,
-                                            onUpdate = { offset = it }
-                                        )
-
                                         coroutineScope.launch {
-                                            delay(500)
+                                            scale.animateTo(1f)
+                                            zIndex = 0f
+                                        }
+                                        coroutineScope.launch {
+                                            offset.animateTo(Offset.Zero)
                                             zIndex = 0f
                                         }
                                     }
@@ -354,30 +341,5 @@ private fun buildStyledText(token: WebPageToken.Text, urlColor: Color): Annotate
                 }
             }
         }
-    }
-}
-
-private fun <T, V : AnimationVector> animateFromTo(
-    coroutineScope: CoroutineScope,
-    typeConverter: TwoWayConverter<T, V>,
-    start: T,
-    end: T,
-    onUpdate: (T) -> Unit,
-) {
-    val targetBasedAnimation = TargetBasedAnimation(
-        animationSpec = tween(300),
-        typeConverter = typeConverter,
-        initialValue = start,
-        targetValue = end
-    )
-
-    var playTime: Long
-    coroutineScope.launch {
-        val startTime = withFrameNanos { it }
-
-        do {
-            playTime = withFrameNanos { it } - startTime
-            onUpdate(targetBasedAnimation.getValueFromNanos(playTime))
-        } while (!targetBasedAnimation.isFinishedFromNanos(playTime))
     }
 }

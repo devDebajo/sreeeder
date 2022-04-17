@@ -85,7 +85,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
     implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
-    implementation "com.github.skydoves:landscapist-glide:1.4.5"
+    implementation "com.github.skydoves:landscapist-glide:$glide_landscapist"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // kotlin
@@ -110,6 +110,6 @@ dependencies {
     implementation "joda-time:joda-time:$joda_time_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "org.jsoup:jsoup:$jsoup_version"
-    implementation 'net.dankito.readability4j:readability4j:1.0.8'
-    implementation 'jp.wasabeef:glide-transformations:4.3.0'
+    implementation "net.dankito.readability4j:readability4j:$readability4j"
+    implementation "jp.wasabeef:glide-transformations:$glide_transformations"
 }
