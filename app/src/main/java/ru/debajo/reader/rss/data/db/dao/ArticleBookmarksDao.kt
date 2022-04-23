@@ -17,6 +17,9 @@ interface ArticleBookmarksDao {
     @Query("SELECT * FROM dbarticle WHERE id in (SELECT articleId FROM dbarticlebookmark)")
     fun observeArticles(): Flow<List<DbArticle>>
 
+    @Query("SELECT * FROM dbarticle WHERE id in (SELECT articleId FROM dbarticlebookmark)")
+    suspend fun getArticles(): List<DbArticle>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(bookmark: DbArticleBookmark)
 

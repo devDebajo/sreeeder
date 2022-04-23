@@ -158,8 +158,9 @@ class SettingsViewModel(
 
     private suspend fun importOpmlInternal(uri: Uri): Boolean {
         val fileRaw = fileSaver.readFileRaw(uri) ?: return false
-        val channelsUrls = opmlDumper.parse(fileRaw).map { DomainChannelUrl(it) }
+        val channelsUrls = opmlDumper.parseChannelsUrls(fileRaw).map { DomainChannelUrl(it) }
         subscribeChannelsListUseCase.subscribe(channelsUrls)
+        //opmlDumper.parseBookmarksUrls(fileRaw)
         return true
     }
 

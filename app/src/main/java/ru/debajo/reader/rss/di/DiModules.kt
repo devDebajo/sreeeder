@@ -121,7 +121,7 @@ val DbModule = module {
     single { get<RssDatabase>(RssDatabase::class.java).articleScrollPositionDao() }
     single { CacheManager(get()) }
     single { RssLoadDbManager(get(), get(), get(), get(), get(), get(), get()) }
-    single { OpmlDumper(get()) }
+    single { OpmlDumper(get(), get()) }
     single { FileSaver(get()) }
 }
 

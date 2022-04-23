@@ -33,6 +33,7 @@ buildscript {
         glide_transformations = '4.3.0'
         glide_landscapist = '1.5.1'
         readability4j = '1.0.8'
+        hyperion = '0.9.34'
     }
     repositories {
         gradlePluginPortal()

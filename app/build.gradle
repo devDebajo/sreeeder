@@ -41,7 +41,7 @@ android {
 
         kotlin {
             kotlinOptions {
-                freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+                freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
                 freeCompilerArgs += "-Xjvm-default=all"
             }
         }
@@ -78,6 +78,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.activity:activity-compose:$compose_activity_version"
     implementation "androidx.compose.material3:material3:$compose_meterial3_version"
+    //implementation "androidx.compose.material3:material3-window-size-class:$compose_meterial3_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_view_model_version"
@@ -112,4 +113,8 @@ dependencies {
     implementation "org.jsoup:jsoup:$jsoup_version"
     implementation "net.dankito.readability4j:readability4j:$readability4j"
     implementation "jp.wasabeef:glide-transformations:$glide_transformations"
+
+    debugImplementation "com.willowtreeapps.hyperion:hyperion-core:$hyperion"
+    debugImplementation "com.willowtreeapps.hyperion:hyperion-timber:$hyperion"
+    debugImplementation "com.willowtreeapps.hyperion:hyperion-crash:$hyperion"
 }

@@ -86,12 +86,13 @@ class UiArticleWebRenderViewModel(
     }
 
     fun saveScroll(articleId: String, scroll: Int, maxScroll: Int) {
-        val relativeScroll = ((scroll.toFloat() / maxScroll.toFloat()) * 100).roundToInt().coerceIn(0, 100)
         appScope.launch {
-            if (relativeScroll == 0 || relativeScroll > 95) {
+            val relativeScroll = ((scroll.toFloat() / maxScroll.toFloat()) * 100f).takeIf { it.isFinite() } ?: 0f
+            val relativeScrollRounded = relativeScroll.roundToInt().coerceIn(0, 100)
+            if (relativeScrollRounded == 0 || relativeScrollRounded > 95) {
                 articleScrollPositionUseCase.remove(articleId)
             } else {
-                articleScrollPositionUseCase.insert(articleId, relativeScroll)
+                articleScrollPositionUseCase.insert(articleId, relativeScrollRounded)
             }
         }
     }
