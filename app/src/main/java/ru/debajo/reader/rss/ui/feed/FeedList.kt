@@ -26,6 +26,7 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.StaggeredRecycler
+import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
 import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
@@ -77,7 +78,7 @@ fun FeedList(
             },
         ) {
             if (state.articles.isEmpty() && !isRefreshing) {
-                Box(Modifier.fillMaxSize()) {
+                Box(Modifier.fillMaxSize().padding(it)) {
                     Text(
                         text = stringResource(R.string.feed_is_empty),
                         textAlign = TextAlign.Center,
@@ -96,10 +97,10 @@ fun FeedList(
                 } else {
                     ScrollToTopButton(
                         listScrollState = listScrollState,
-                        contentPadding = innerPadding,
+                        contentPadding = innerPadding + it,
                     ) {
                         PortraitList(
-                            innerPadding = innerPadding,
+                            innerPadding = innerPadding + it,
                             lazyListState = listScrollState,
                             state = state,
                             viewModel = viewModel,
@@ -148,10 +149,10 @@ private fun PortraitList(
         state = lazyListState,
         contentPadding = PaddingValues(
             top = 12.dp,
-            bottom = innerPadding.calculateBottomPadding() + 80.dp,
+            bottom = 80.dp,
             start = 16.dp,
             end = 16.dp
-        ),
+        ) + innerPadding,
         verticalArrangement = Arrangement.spacedBy(12.dp),
         content = { articlesList(state.articles, viewModel, onArticleClick) }
     )

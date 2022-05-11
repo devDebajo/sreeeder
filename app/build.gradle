@@ -78,7 +78,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.activity:activity-compose:$compose_activity_version"
     implementation "androidx.compose.material3:material3:$compose_meterial3_version"
-    //implementation "androidx.compose.material3:material3-window-size-class:$compose_meterial3_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_view_model_version"

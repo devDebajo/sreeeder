@@ -22,6 +22,7 @@ import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.ext.composeColor
 import ru.debajo.reader.rss.ui.ext.getColorRoles
+import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
@@ -57,7 +58,7 @@ fun ChannelsList(
         val channels by viewModel.channels.collectAsState()
         if (channels.isEmpty() && !forLandscape) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(it),
             ) {
                 Text(
                     text = stringResource(R.string.channels_is_empty),
@@ -71,11 +72,11 @@ fun ChannelsList(
             val listScrollState = scrollController.rememberLazyListState(NavGraph.Main.Channels.route)
             ScrollToTopButton(
                 listScrollState = listScrollState,
-                contentPadding = innerPadding,
+                contentPadding = innerPadding + it,
             ) {
                 LazyColumn(
                     state = listScrollState,
-                    contentPadding = innerPadding.addPadding(bottom = 100.dp),
+                    contentPadding = innerPadding.addPadding(bottom = 100.dp) + it,
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {

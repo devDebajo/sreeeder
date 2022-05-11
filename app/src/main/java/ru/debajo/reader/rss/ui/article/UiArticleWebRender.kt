@@ -134,13 +134,16 @@ fun UiArticleWebRender(
                 )
             }
         }
-    ) {
+    ) { padding ->
         val state by viewModel.state.collectAsState()
         Crossfade(
             modifier = Modifier.fillMaxSize(),
             targetState = state
         ) {
-            Box(Modifier.fillMaxSize()) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)) {
                 when (it) {
                     is UiArticleWebRenderState.Error -> {
                         Text(

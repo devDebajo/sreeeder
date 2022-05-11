@@ -1,6 +1,7 @@
 package ru.debajo.reader.rss.ui.app
 
 import android.app.Application
+import androidx.work.Configuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -11,7 +12,7 @@ import ru.debajo.reader.rss.di.inject
 import ru.debajo.reader.rss.di.nonVariantModules
 import ru.debajo.reader.rss.ui.theme.AppThemeProvider
 
-open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()) {
+open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()), Configuration.Provider {
 
     private val backgroundUpdatesScheduler: BackgroundUpdatesScheduler by inject()
     private val themeProvider: AppThemeProvider by inject()
@@ -28,6 +29,10 @@ open class App : Application(), CoroutineScope by CoroutineScope(SupervisorJob()
     }
 
     open fun initTimber() = Unit
+
+    final override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder().build()
+    }
 
     private fun initApp() {
         launch {

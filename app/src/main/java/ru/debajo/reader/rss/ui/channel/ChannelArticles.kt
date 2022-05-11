@@ -18,6 +18,7 @@ import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
+import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
@@ -69,7 +70,7 @@ fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleN
         Box {
             val articles by viewModel.articles.collectAsState()
             LazyColumn(
-                contentPadding = PaddingValues(vertical = 12.dp),
+                contentPadding = PaddingValues(vertical = 12.dp) + it,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxSize()

@@ -100,7 +100,7 @@ class ComposeAdapter<T>(
 
         init {
             view.setViewCompositionStrategy(
-                ViewCompositionStrategy.DisposeOnDetachedFromWindowIfNotInPoolingContainer
+                ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool
             )
 
             view.setContent {

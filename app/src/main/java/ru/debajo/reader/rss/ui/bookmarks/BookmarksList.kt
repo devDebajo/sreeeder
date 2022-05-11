@@ -42,11 +42,11 @@ fun BookmarksList(
                 scrollBehavior = scrollBehavior
             )
         }
-    ) {
+    ) { padding ->
         val articles by viewModel.articles.collectAsState(emptyList())
         val tabs by viewModel.tabs.collectAsState(emptyList())
 
-        Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().padding(padding)) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier

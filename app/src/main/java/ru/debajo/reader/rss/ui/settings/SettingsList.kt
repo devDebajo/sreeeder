@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
+import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.model.ChromeTabsParams
@@ -45,7 +46,7 @@ fun SettingsList(
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding + it)
         ) {
             Column(
                 Modifier.padding(horizontal = 16.dp),
