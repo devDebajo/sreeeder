@@ -21,7 +21,7 @@ android {
         }
 
         buildConfigField "boolean", "CACHE_ENABLED", 'true'
-        buildConfigField "boolean", "TABLET_SUPPORT", 'false'
+        buildConfigField "boolean", "TABLET_SUPPORT", 'true'
         buildConfigField "String", "PRIVACY_POLICY", '"https://debajoapps.ru/static/sreeeder/privacy_policy.html"'
     }
 
@@ -32,6 +32,7 @@ android {
         release {
             minifyEnabled true
             buildConfigField "boolean", "CACHE_ENABLED", 'true'
+            buildConfigField "boolean", "TABLET_SUPPORT", 'false'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -86,6 +87,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
     implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
     implementation "com.github.skydoves:landscapist-glide:$glide_landscapist"
+    implementation "com.github.devDebajo:staggered_lazy_column:$staggered_lazy_column"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // kotlin

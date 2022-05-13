@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.common.StaggeredRecycler
 import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
 import ru.debajo.reader.rss.ui.host.ViewModels
@@ -34,6 +33,7 @@ import ru.debajo.reader.rss.ui.main.MainScreenTopBarActions
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.feedTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +78,11 @@ fun FeedList(
             },
         ) {
             if (state.articles.isEmpty() && !isRefreshing) {
-                Box(Modifier.fillMaxSize().padding(it)) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                ) {
                     Text(
                         text = stringResource(R.string.feed_is_empty),
                         textAlign = TextAlign.Center,
@@ -93,6 +97,7 @@ fun FeedList(
                         state = state,
                         viewModel = viewModel,
                         onArticleClick = onArticleClick,
+                        contentPadding = it,
                     )
                 } else {
                     ScrollToTopButton(
@@ -116,15 +121,21 @@ fun FeedList(
 @Composable
 private fun LandscapeList(
     state: FeedListState,
+    contentPadding: PaddingValues,
     viewModel: FeedListViewModel,
     onArticleClick: (UiArticle) -> Unit
 ) {
-    StaggeredRecycler(
+    StaggeredLazyColumn(
         modifier = Modifier.fillMaxSize(),
-        spanCount = 2,
-        data = state.articles,
-        keyEquality = { a, b -> a.id == b.id },
-        content = { article ->
+        columns = 2,
+        contentPadding = contentPadding,
+    ) {
+        items(
+            count = state.articles.size,
+            key = { state.articles[it].id },
+            contentType = { "article" },
+        ) { index ->
+            val article = state.articles[index]
             Box(Modifier.padding(8.dp)) {
                 ChannelArticle(
                     article = article,
@@ -134,7 +145,7 @@ private fun LandscapeList(
                 )
             }
         }
-    )
+    }
 }
 
 @Composable

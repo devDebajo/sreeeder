@@ -6,14 +6,14 @@ buildscript {
         compose_meterial3_version = '1.0.0-alpha11'
         compose_navigation_version = '2.4.2'
         compose_activity_version = '1.6.0-alpha03'
-        compose_view_model_version = '2.5.0-beta01'
+        compose_view_model_version = '2.5.0-rc01'
         accompanist_version = '0.24.7-alpha'
         kotlin_version = '1.6.21'
         coroutines_version = '1.6.1'
         core_ktx_version = '1.9.0-alpha03'
         work_version = "2.7.1"
 
-        lifecycle_version = '2.5.0-beta01'
+        lifecycle_version = '2.5.0-rc01'
         appcompat_version = '1.4.1'
         material_version = '1.6.0'
         androidx_browser = '1.4.0'
@@ -34,6 +34,7 @@ buildscript {
         glide_landscapist = '1.5.1'
         readability4j = '1.0.8'
         hyperion = '0.9.34'
+        staggered_lazy_column = '1.0.0-alpha02'
     }
     repositories {
         gradlePluginPortal()
