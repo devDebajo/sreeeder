@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
@@ -170,10 +171,14 @@ fun ScrollToTopButton(
     val coroutineScope = rememberCoroutineScope()
     var canScrollToTop by remember { mutableStateOf(false) }
     LaunchedEffect(listScrollState) {
-        snapshotFlow { listScrollState.scrollDirection }.collect {
-            canScrollToTop = it == StaggeredLazyColumnScrollState.ScrollDirection.DOWN
-                    //listScrollState.canScroll(StaggeredLazyColumnScrollState.ScrollDirection.DOWN)
-        }
+        combine(
+            snapshotFlow { listScrollState.isScrollInProgress },
+            snapshotFlow { listScrollState.scrollDirection }
+        ) { _, b -> b }
+            .collect {
+                canScrollToTop = it == StaggeredLazyColumnScrollState.ScrollDirection.DOWN &&
+                        listScrollState.canScroll(StaggeredLazyColumnScrollState.ScrollDirection.DOWN)
+            }
     }
     Box(Modifier.fillMaxSize()) {
         content()
