@@ -13,13 +13,27 @@ import androidx.compose.ui.unit.dp
 @Composable
 @Stable
 fun PaddingValues.addPadding(
+    horizontal: Dp = 0.dp,
+    vertical: Dp = 0.dp,
+): PaddingValues {
+    return addPadding(
+        top = vertical,
+        bottom = vertical,
+        start = horizontal,
+        end = horizontal,
+    )
+}
+
+@Composable
+@Stable
+fun PaddingValues.addPadding(
     start: Dp = 0.dp,
     top: Dp = 0.dp,
     end: Dp = 0.dp,
     bottom: Dp = 0.dp,
 ): PaddingValues {
     val layoutDirection = LocalLayoutDirection.current
-    return remember(layoutDirection, start, top, end, bottom) {
+    return remember(this, layoutDirection, start, top, end, bottom) {
         PaddingValues(
             start = start + calculateStartPadding(layoutDirection),
             top = top + calculateTopPadding(),

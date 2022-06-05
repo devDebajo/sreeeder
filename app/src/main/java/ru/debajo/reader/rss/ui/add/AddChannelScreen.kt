@@ -1,8 +1,6 @@
 package ru.debajo.reader.rss.ui.add
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,8 +28,12 @@ import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelCard
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.IndeterminateProgressIndicator
+import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
+import ru.debajo.staggeredlazycolumn.state.rememberStaggeredLazyColumnState
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -69,12 +71,12 @@ fun AddChannelScreen(parentNavController: NavController) {
                 )
             }
         }
-    ) {
+    ) { innerPadding ->
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 20.dp)
+                .padding(innerPadding.addPadding(horizontal = 16.dp, vertical = 20.dp)),
         ) {
             val text by viewModel.text.collectAsState()
             OutlinedTextField(
@@ -117,10 +119,11 @@ fun AddChannelScreen(parentNavController: NavController) {
                 is AddChannelScreenState.Loading -> NoDataLoaded(LoadingState.LOADING, stringResource(R.string.add_channel_loading))
                 is AddChannelScreenState.Idle -> Unit
                 is AddChannelScreenState.Loaded -> {
-                    val listScrollState = rememberLazyListState()
+                    val listScrollState = rememberStaggeredLazyColumnState()
                     ScrollToTopButton(listScrollState = listScrollState) {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        StaggeredLazyColumn(
+                            verticalSpacing = 16.dp,
+                            columns = StaggeredLazyColumnCells.Fixed(1),
                             state = listScrollState,
                             content = {
                                 items(

@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.ui.common
 
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -27,4 +28,14 @@ fun <T> rememberMutableState(
 @Composable
 fun <T> rememberSaveableMutableState(vararg keys: Any?, initialState: T): MutableState<T> {
     return rememberSaveable(*keys) { mutableStateOf(initialState) }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun rememberEnterAlwaysScrollBehavior(
+    topAppBarScrollState: TopAppBarScrollState = rememberTopAppBarScrollState()
+): TopAppBarScrollBehavior {
+    return remember(topAppBarScrollState) {
+        TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarScrollState)
+    }
 }

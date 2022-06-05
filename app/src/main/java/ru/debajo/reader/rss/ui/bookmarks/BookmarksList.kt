@@ -2,10 +2,12 @@ package ru.debajo.reader.rss.ui.bookmarks
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -15,12 +17,15 @@ import androidx.compose.ui.unit.dp
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
+import ru.debajo.reader.rss.ui.common.rememberEnterAlwaysScrollBehavior
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.bookmarksTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +36,7 @@ fun BookmarksList(
     onArticleClick: (UiArticle) -> Unit,
 ) {
     LaunchedEffect(key1 = "BookmarksList", block = { viewModel.load() })
-    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +51,11 @@ fun BookmarksList(
         val articles by viewModel.articles.collectAsState(emptyList())
         val tabs by viewModel.tabs.collectAsState(emptyList())
 
-        Column(Modifier.fillMaxSize().padding(padding)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
@@ -110,7 +119,7 @@ private fun List(
             listScrollState = listScrollState,
             contentPadding = innerPadding,
         ) {
-            LazyColumn(
+            StaggeredLazyColumn(
                 state = listScrollState,
                 contentPadding = PaddingValues(
                     top = 12.dp,
@@ -118,7 +127,8 @@ private fun List(
                     start = 16.dp,
                     end = 16.dp
                 ),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                columns = StaggeredLazyColumnCells.Fixed(1),
+                verticalSpacing = 12.dp,
                 content = {
                     items(
                         count = articles.size,

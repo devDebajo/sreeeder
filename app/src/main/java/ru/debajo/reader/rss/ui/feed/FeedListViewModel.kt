@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.ui.feed
 
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
@@ -21,6 +22,7 @@ import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
 
+@Stable
 class FeedListViewModel(
     private val useCase: FeedListUseCase,
     private val articleBookmarksRepository: ArticleBookmarksRepository,

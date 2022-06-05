@@ -1,7 +1,9 @@
 package ru.debajo.reader.rss.ui.channel
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Share
@@ -21,6 +23,8 @@ import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
 import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,12 +73,13 @@ fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleN
     ) {
         Box {
             val articles by viewModel.articles.collectAsState()
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 12.dp) + it,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+            StaggeredLazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
+                columns = StaggeredLazyColumnCells.Fixed(1),
+                contentPadding = PaddingValues(vertical = 12.dp) + it,
+                verticalSpacing = 12.dp,
                 content = {
                     items(
                         count = articles.size,

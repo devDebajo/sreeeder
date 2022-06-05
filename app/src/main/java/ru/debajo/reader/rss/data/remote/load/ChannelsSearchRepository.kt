@@ -13,11 +13,19 @@ class ChannelsSearchRepository(
         return runCatching {
             feedlyService.search(query, 10).results
                 .filter { it.contentType == FeedlyContentType.ARTICLE }
-                .mapNotNull { it.feedId }
+                .mapNotNull { it.feedId?.replacePrefix() }
                 .map { RemoteChannelUrl(clearUrl(it)) }
         }
             .onFailure { Timber.e(it) }
             .getOrElse { emptyList() }
+    }
+
+    private fun String.replacePrefix(): String {
+        return if (startsWith("feed/")) {
+            drop(5)
+        } else {
+            this
+        }
     }
 
     private fun clearUrl(feedlyUrl: String): String {

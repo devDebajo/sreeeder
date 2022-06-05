@@ -3,8 +3,10 @@ package ru.debajo.reader.rss.ui.channels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.common.rememberEnterAlwaysScrollBehavior
 import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.ext.composeColor
 import ru.debajo.reader.rss.ui.ext.getColorRoles
@@ -29,6 +32,8 @@ import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.channelsTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +46,7 @@ fun ChannelsList(
     onFeedClick: () -> Unit = {},
 ) {
     LaunchedEffect("ChannelsList", block = { viewModel.load() })
-    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +63,9 @@ fun ChannelsList(
         val channels by viewModel.channels.collectAsState()
         if (channels.isEmpty() && !forLandscape) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(it),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
             ) {
                 Text(
                     text = stringResource(R.string.channels_is_empty),
@@ -74,11 +81,12 @@ fun ChannelsList(
                 listScrollState = listScrollState,
                 contentPadding = innerPadding + it,
             ) {
-                LazyColumn(
+                StaggeredLazyColumn(
                     state = listScrollState,
                     contentPadding = innerPadding.addPadding(bottom = 100.dp) + it,
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalSpacing = 16.dp,
+                    columns = StaggeredLazyColumnCells.Fixed(1)
                 ) {
                     if (forLandscape) {
                         item {

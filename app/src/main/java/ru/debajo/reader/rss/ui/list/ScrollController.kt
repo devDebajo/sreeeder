@@ -1,12 +1,13 @@
 package ru.debajo.reader.rss.ui.list
 
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.ui.list.ScrollController.Scroller
+import ru.debajo.staggeredlazycolumn.state.StaggeredLazyColumnScrollState
+import ru.debajo.staggeredlazycolumn.state.rememberStaggeredLazyColumnState
 
 class ScrollController(coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
@@ -23,8 +24,8 @@ class ScrollController(coroutineScope: CoroutineScope) : CoroutineScope by corou
         area: String,
         initialFirstVisibleItemIndex: Int = 0,
         initialFirstVisibleItemScrollOffset: Int = 0
-    ): LazyListState {
-        val state = androidx.compose.foundation.lazy.rememberLazyListState(
+    ): StaggeredLazyColumnScrollState {
+        val state = rememberStaggeredLazyColumnState(
             initialFirstVisibleItemIndex,
             initialFirstVisibleItemScrollOffset
         )
