@@ -1,12 +1,11 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package ru.debajo.reader.rss.ui.article
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
-import androidx.compose.foundation.gestures.rememberTransformableState
-import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,12 +17,14 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
@@ -55,7 +56,8 @@ import ru.debajo.reader.rss.ui.ext.pxToDp
 import ru.debajo.reader.rss.ui.ext.toFinite
 import ru.debajo.reader.rss.ui.main.model.toChromeTabsParams
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import kotlin.math.max
+import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +145,8 @@ fun UiArticleWebRender(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .padding(padding)) {
+                    .padding(padding)
+            ) {
                 when (it) {
                     is UiArticleWebRenderState.Error -> {
                         Text(
@@ -198,23 +201,28 @@ private fun WebPageTokens(
                     val scale = remember { mutableStateOf(1f) }
                     val offset = remember { mutableStateOf(Offset.Zero) }
                     var zIndex by remember { mutableStateOf(0f) }
-                    val transformableState = rememberTransformableState { zoomChange, offsetChange, _ ->
-                        zIndex = 100f
-                        scale.value = scale.value * zoomChange
-                        scale.value = max(scale.value, 1f)
-                        offset.value += offsetChange
-                    }
                     AppImage(
                         url = token.url,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .graphicsLayer(
-                                scaleX = scale.value,
-                                scaleY = scale.value,
-                                translationX = offset.value.x,
-                                translationY = offset.value.y
-                            )
-                            .transformable(state = transformableState)
+                            .pointerInput(Unit) {
+                                detectTransformGestures(
+                                    panZoomLock = true,
+                                    onGesture = { centroid, pan, gestureZoom, _ ->
+                                        zIndex = 100f
+                                        val oldScale = scale.value
+                                        val newScale = scale.value * gestureZoom
+                                        offset.value = (offset.value + centroid / oldScale) - (centroid / newScale + pan / oldScale)
+                                        scale.value = newScale
+                                    }
+                                )
+                            }
+                            .graphicsLayer {
+                                translationX = -offset.value.x * scale.value
+                                translationY = -offset.value.y * scale.value
+                                scaleX = scale.value
+                                scaleY = scale.value
+                                transformOrigin = TransformOrigin(0f, 0f)
+                            }
                             .pointerInput(Unit) {
                                 forEachGesture {
                                     awaitPointerEventScope {
@@ -236,7 +244,8 @@ private fun WebPageTokens(
                                 }
                             }
                             .clip(RoundedCornerShape(10.dp))
-                            .zIndex(zIndex),
+                            .zIndex(zIndex)
+                            .fillMaxWidth(),
                     )
                 }
                 is WebPageToken.Text -> {
@@ -345,4 +354,90 @@ private fun buildStyledText(token: WebPageToken.Text, urlColor: Color): Annotate
             }
         }
     }
+}
+
+private suspend fun PointerInputScope.detectTransformGestures(
+    panZoomLock: Boolean = false,
+    onGesture: (centroid: Offset, pan: Offset, zoom: Float, rotation: Float) -> Unit
+) {
+    forEachGesture {
+        awaitPointerEventScope {
+            var rotation = 0f
+            var zoom = 1f
+            var pan = Offset.Zero
+            var pastTouchSlop = false
+            val touchSlop = viewConfiguration.touchSlop
+            var lockedToPanZoom = false
+
+            awaitTwoDowns(requireUnconsumed = false)
+            do {
+                val event = awaitPointerEvent()
+                val canceled = event.changes.any { it.isConsumed }
+                if (!canceled) {
+                    val zoomChange = event.calculateZoom()
+                    val rotationChange = event.calculateRotation()
+                    val panChange = event.calculatePan()
+
+                    if (!pastTouchSlop) {
+                        zoom *= zoomChange
+                        rotation += rotationChange
+                        pan += panChange
+
+                        val centroidSize = event.calculateCentroidSize(useCurrent = false)
+                        val zoomMotion = abs(1 - zoom) * centroidSize
+                        val rotationMotion = abs(rotation * PI.toFloat() * centroidSize / 180f)
+                        val panMotion = pan.getDistance()
+
+                        if (zoomMotion > touchSlop ||
+                            rotationMotion > touchSlop ||
+                            panMotion > touchSlop
+                        ) {
+                            pastTouchSlop = true
+                            lockedToPanZoom = panZoomLock && rotationMotion < touchSlop
+                        }
+                    }
+
+                    if (pastTouchSlop) {
+                        val centroid = event.calculateCentroid(useCurrent = false)
+                        val effectiveRotation = if (lockedToPanZoom) 0f else rotationChange
+                        if (effectiveRotation != 0f ||
+                            zoomChange != 1f ||
+                            panChange != Offset.Zero
+                        ) {
+                            onGesture(centroid, panChange, zoomChange, effectiveRotation)
+                        }
+                        event.changes.forEach {
+                            if (it.positionChanged()) {
+                                it.consume()
+                            }
+                        }
+                    }
+                }
+            } while (!canceled && event.changes.any { it.pressed })
+        }
+    }
+}
+
+private suspend fun AwaitPointerEventScope.awaitTwoDowns(requireUnconsumed: Boolean = true) {
+    var event: PointerEvent
+    var firstDown: PointerId? = null
+    do {
+        event = awaitPointerEvent()
+        var downPointers = if (firstDown != null) 1 else 0
+        event.changes.forEach {
+            val isDown =
+                if (requireUnconsumed) it.changedToDown() else it.changedToDownIgnoreConsumed()
+            val isUp =
+                if (requireUnconsumed) it.changedToUp() else it.changedToUpIgnoreConsumed()
+            if (isUp && firstDown == it.id) {
+                firstDown = null
+                downPointers -= 1
+            }
+            if (isDown) {
+                firstDown = it.id
+                downPointers += 1
+            }
+        }
+        val satisfied = downPointers > 1
+    } while (!satisfied)
 }

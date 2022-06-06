@@ -17,11 +17,13 @@ class ReadableArticleHelper(private val httpClient: OkHttpClient) {
             val charset = detectCharset(String(htmlBytes))
             val document = Jsoup.parse(String(htmlBytes, charset))
             val foreignAgentElement = document.findForeignAgentHtmlElement()
+            document.fixImages()
             val readability4J = Readability4J(url, document)
             val article = readability4J.parse()
             if (foreignAgentElement != null) {
                 article.articleContent?.prependChild(foreignAgentElement)
             }
+
             article.content?.let { ReadableArticle(article.title, it) }
         }
             .onFailure { Timber.tag("ReadableArticleHelper").e(it) }
@@ -40,6 +42,18 @@ class ReadableArticleHelper(private val httpClient: OkHttpClient) {
 
     private fun Document.findForeignAgentHtmlElement(): Element? {
         return body().allElements.firstOrNull { it.ownText().contains("иностранного агента", true) }
+    }
+
+    private fun Document.fixImages() {
+        allElements
+            .filter { it.`is`("img") }
+            .forEach { imgElement ->
+                val dataSrc = imgElement.attr("data-src")
+                if (!dataSrc.isNullOrEmpty()) {
+                    imgElement.removeAttr("src")
+                    imgElement.attr("src", dataSrc)
+                }
+            }
     }
 
     class ReadableArticle(

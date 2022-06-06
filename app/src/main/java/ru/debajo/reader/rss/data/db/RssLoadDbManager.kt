@@ -79,7 +79,7 @@ class RssLoadDbManager(
         return document.allElements
             .asSequence()
             .filter { it.tagName() == "img" }
-            .map { it.attr("src") }
+            .map { it.attr("data-src") ?: it.attr("src") }
             .filter { it.isNotEmpty() }
             .firstOrNull()
     }
