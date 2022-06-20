@@ -2,39 +2,39 @@ apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
     ext {
-        compose_version = '1.2.0-beta03'
+        compose_version = '1.2.0-rc01'
         compose_meterial3_version = '1.0.0-alpha13'
         compose_navigation_version = '2.4.2'
-        compose_activity_version = '1.6.0-alpha03'
-        compose_view_model_version = '2.5.0-rc01'
-        accompanist_version = '0.24.7-alpha'
+        compose_activity_version = '1.6.0-alpha05'
+        compose_view_model_version = '2.5.0-rc02'
+        accompanist_version = '0.24.11-rc'
         kotlin_version = '1.6.21'
-        coroutines_version = '1.6.1'
-        core_ktx_version = '1.9.0-alpha04'
+        coroutines_version = '1.6.2'
+        core_ktx_version = '1.9.0-alpha05'
         work_version = "2.7.1"
 
-        lifecycle_version = '2.5.0-rc01'
+        lifecycle_version = '2.5.0-rc02'
         appcompat_version = '1.4.2'
         material_version = '1.6.1'
         androidx_browser = '1.4.0'
 
-        room_version = '2.4.2'
+        room_version = '2.5.0-alpha02'
         koin_version = '2.1.5'
         joda_time_version = '2.10.14'
         rss_parser_version = '4.0.2'
-        jsoup_version = '1.14.3'
-        okhttp_version = '5.0.0-alpha.6'
+        jsoup_version = '1.15.1'
+        okhttp_version = '5.0.0-alpha.9'
         timber_version = '5.0.1'
         retrofit_version = '2.9.0'
         retrofit_coroutines_adapter = '0.9.2'
         opml_parser_version = '2.2.0'
-        android_gradle_plugin_version = '7.0.3'
+        android_gradle_plugin_version = '7.2.0'
         google_services_plugin_version = '4.3.10'
         glide_transformations = '4.3.0'
-        glide_landscapist = '1.5.1'
+        glide_landscapist = '1.5.2'
         readability4j = '1.0.8'
         hyperion = '0.9.34'
-        staggered_lazy_column = '1.0.0-beta04'
+        staggered_lazy_column = '1.0.0-beta05'
     }
     repositories {
         gradlePluginPortal()

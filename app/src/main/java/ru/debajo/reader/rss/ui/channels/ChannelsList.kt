@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
 import ru.debajo.reader.rss.ui.common.AppCard
+import ru.debajo.reader.rss.ui.common.list.SreeederList
 import ru.debajo.reader.rss.ui.common.rememberEnterAlwaysScrollBehavior
 import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.ext.composeColor
@@ -32,8 +33,6 @@ import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.channelsTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,27 +80,24 @@ fun ChannelsList(
                 listScrollState = listScrollState,
                 contentPadding = innerPadding + it,
             ) {
-                StaggeredLazyColumn(
+                SreeederList(
                     state = listScrollState,
                     contentPadding = innerPadding.addPadding(bottom = 100.dp) + it,
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalSpacing = 16.dp,
-                    columns = StaggeredLazyColumnCells.Fixed(1)
-                ) {
-                    if (forLandscape) {
-                        item {
-                            FeedCard(onClick = onFeedClick)
-                        }
-                    }
-                    items(
-                        count = channels.size,
-                        key = { channels[it].url.url }
-                    ) {
-                        ChannelCard(channel = channels[it]) { channel ->
+                    key = { index -> channels[index].url.url },
+                    itemCount = channels.size,
+                    itemFactory = { index ->
+                        ChannelCard(channel = channels[index]) { channel ->
                             onChannelClick(channel)
                         }
+                    },
+                    header = if (forLandscape) {
+                        { FeedCard(onClick = onFeedClick) }
+                    } else {
+                        null
                     }
-                }
+                )
             }
         }
     }

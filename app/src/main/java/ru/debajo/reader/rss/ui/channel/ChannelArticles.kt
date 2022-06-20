@@ -19,12 +19,11 @@ import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.channels.model.UiChannel
+import ru.debajo.reader.rss.ui.common.list.SreeederList
 import ru.debajo.reader.rss.ui.common.rememberSaveableMutableState
 import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.feed.UiArticleNavigator
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,25 +72,22 @@ fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleN
     ) {
         Box {
             val articles by viewModel.articles.collectAsState()
-            StaggeredLazyColumn(
+            SreeederList(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
-                columns = StaggeredLazyColumnCells.Fixed(1),
                 contentPadding = PaddingValues(vertical = 12.dp) + it,
                 verticalSpacing = 12.dp,
-                content = {
-                    items(
-                        count = articles.size,
-                        key = { index -> articles[index].id }
-                    ) { index ->
-                        ChannelArticle(
-                            article = articles[index],
-                            onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                        ) {
-                            uiArticleNavigator.open(it, navController, backgroundColor)
-                        }
+                itemCount = articles.size,
+                key = { index -> articles[index].id },
+                itemFactory = { index ->
+                    ChannelArticle(
+                        article = articles[index],
+                        onFavoriteClick = { viewModel.onFavoriteClick(it) },
+                    ) {
+                        uiArticleNavigator.open(it, navController, backgroundColor)
                     }
+
                 })
 
             UnsubscribeDialog(channel, viewModel, unsubscribeDialogVisible)

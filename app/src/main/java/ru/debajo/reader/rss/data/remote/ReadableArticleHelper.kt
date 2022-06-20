@@ -46,6 +46,7 @@ class ReadableArticleHelper(private val httpClient: OkHttpClient) {
 
     private fun Document.fixImages() {
         allElements
+            .asSequence()
             .filter { it.`is`("img") }
             .forEach { imgElement ->
                 val dataSrc = imgElement.attr("data-src")

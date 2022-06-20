@@ -24,6 +24,9 @@ import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
+import ru.debajo.reader.rss.ui.common.list.SreeederList
+import ru.debajo.reader.rss.ui.common.list.SreeederListState
+import ru.debajo.reader.rss.ui.common.list.rememberSreeederListState
 import ru.debajo.reader.rss.ui.common.rememberEnterAlwaysScrollBehavior
 import ru.debajo.reader.rss.ui.ext.plus
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
@@ -33,10 +36,6 @@ import ru.debajo.reader.rss.ui.main.MainScreenTopBarActions
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.feedTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
-import ru.debajo.staggeredlazycolumn.state.StaggeredLazyColumnScrollState
-import ru.debajo.staggeredlazycolumn.state.rememberStaggeredLazyColumnState
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,22 +118,14 @@ fun FeedList(
 private fun ArticlesList(
     forLandscape: Boolean,
     innerPadding: PaddingValues,
-    listState: StaggeredLazyColumnScrollState = rememberStaggeredLazyColumnState(),
+    listState: SreeederListState = rememberSreeederListState(),
     state: FeedListState,
     viewModel: FeedListViewModel,
     onArticleClick: (UiArticle) -> Unit,
 ) {
-    val cells = remember(forLandscape) {
-        if (forLandscape) {
-            StaggeredLazyColumnCells.Adaptive(200.dp, 3)
-        } else {
-            StaggeredLazyColumnCells.Fixed(1)
-        }
-    }
-
-    StaggeredLazyColumn(
+    SreeederList(
         modifier = Modifier.fillMaxSize(),
-        columns = cells,
+        columns = if (forLandscape) 3 else 1,
         state = listState,
         contentPadding = PaddingValues(
             top = 12.dp,
@@ -143,19 +134,16 @@ private fun ArticlesList(
             end = 16.dp
         ) + innerPadding,
         verticalSpacing = 12.dp,
-        content = {
-            items(
-                count = state.articles.size,
-                key = { state.articles[it].id + state.articles[it].channelName },
-                contentType = { "article" }
-            ) { index ->
-                ChannelArticle(
-                    article = state.articles[index],
-                    onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                    onView = { viewModel.onArticleViewed(it) },
-                    onClick = onArticleClick
-                )
-            }
+        itemCount = state.articles.size,
+        key = { state.articles[it].id + state.articles[it].channelName },
+        contentType = { "article" },
+        itemFactory = { index ->
+            ChannelArticle(
+                article = state.articles[index],
+                onFavoriteClick = { viewModel.onFavoriteClick(it) },
+                onView = { viewModel.onArticleViewed(it) },
+                onClick = onArticleClick
+            )
         }
     )
 }
@@ -165,7 +153,7 @@ fun ScrollToTopButton(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.scroll_to_top),
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    listScrollState: StaggeredLazyColumnScrollState,
+    listScrollState: SreeederListState,
     content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -173,11 +161,11 @@ fun ScrollToTopButton(
     LaunchedEffect(listScrollState) {
         combine(
             snapshotFlow { listScrollState.isScrollInProgress },
-            snapshotFlow { listScrollState.scrollDirection }
+            listScrollState.observeScrollDirection(),
         ) { _, b -> b }
             .collect {
-                canScrollToTop = it == StaggeredLazyColumnScrollState.ScrollDirection.DOWN &&
-                        listScrollState.canScroll(StaggeredLazyColumnScrollState.ScrollDirection.DOWN)
+                canScrollToTop = it == SreeederListState.ScrollDirection.DOWN &&
+                        listScrollState.canScroll(SreeederListState.ScrollDirection.DOWN)
             }
     }
     Box(Modifier.fillMaxSize()) {

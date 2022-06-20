@@ -28,12 +28,11 @@ import ru.debajo.reader.rss.di.diViewModel
 import ru.debajo.reader.rss.ui.channels.ChannelCard
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.IndeterminateProgressIndicator
+import ru.debajo.reader.rss.ui.common.list.SreeederList
+import ru.debajo.reader.rss.ui.common.list.rememberSreeederListState
 import ru.debajo.reader.rss.ui.ext.addPadding
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
-import ru.debajo.staggeredlazycolumn.state.rememberStaggeredLazyColumnState
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -119,21 +118,17 @@ fun AddChannelScreen(parentNavController: NavController) {
                 is AddChannelScreenState.Loading -> NoDataLoaded(LoadingState.LOADING, stringResource(R.string.add_channel_loading))
                 is AddChannelScreenState.Idle -> Unit
                 is AddChannelScreenState.Loaded -> {
-                    val listScrollState = rememberStaggeredLazyColumnState()
+                    val listScrollState = rememberSreeederListState()
                     ScrollToTopButton(listScrollState = listScrollState) {
-                        StaggeredLazyColumn(
+                        SreeederList(
                             verticalSpacing = 16.dp,
-                            columns = StaggeredLazyColumnCells.Fixed(1),
                             state = listScrollState,
-                            content = {
-                                items(
-                                    count = stateLocal.channels.size,
-                                    key = { stateLocal.channels[it].url.url }
-                                ) {
-                                    val channel = stateLocal.channels[it]
-                                    ChannelCard(channel = channel) {
-                                        NavGraph.ArticlesList.navigate(parentNavController, channel)
-                                    }
+                            itemCount = stateLocal.channels.size,
+                            key = { stateLocal.channels[it].url.url },
+                            itemFactory = {
+                                val channel = stateLocal.channels[it]
+                                ChannelCard(channel = channel) {
+                                    NavGraph.ArticlesList.navigate(parentNavController, channel)
                                 }
                             }
                         )

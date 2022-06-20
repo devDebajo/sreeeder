@@ -5,9 +5,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import ru.debajo.reader.rss.ui.common.list.SreeederListState
+import ru.debajo.reader.rss.ui.common.list.rememberSreeederListState
 import ru.debajo.reader.rss.ui.list.ScrollController.Scroller
-import ru.debajo.staggeredlazycolumn.state.StaggeredLazyColumnScrollState
-import ru.debajo.staggeredlazycolumn.state.rememberStaggeredLazyColumnState
 
 class ScrollController(coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
@@ -24,8 +24,8 @@ class ScrollController(coroutineScope: CoroutineScope) : CoroutineScope by corou
         area: String,
         initialFirstVisibleItemIndex: Int = 0,
         initialFirstVisibleItemScrollOffset: Int = 0
-    ): StaggeredLazyColumnScrollState {
-        val state = rememberStaggeredLazyColumnState(
+    ): SreeederListState {
+        val state = rememberSreeederListState(
             initialFirstVisibleItemIndex,
             initialFirstVisibleItemScrollOffset
         )

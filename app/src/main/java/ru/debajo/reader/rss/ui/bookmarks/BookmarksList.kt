@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.ui.article.ChannelArticle
 import ru.debajo.reader.rss.ui.article.model.UiArticle
+import ru.debajo.reader.rss.ui.common.list.SreeederList
 import ru.debajo.reader.rss.ui.common.rememberEnterAlwaysScrollBehavior
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
 import ru.debajo.reader.rss.ui.host.ViewModels
@@ -24,8 +25,6 @@ import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
 import ru.debajo.reader.rss.ui.main.bookmarksTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumn
-import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,27 +118,23 @@ private fun List(
             listScrollState = listScrollState,
             contentPadding = innerPadding,
         ) {
-            StaggeredLazyColumn(
-                state = listScrollState,
+            SreeederList(
+                verticalSpacing = 12.dp,
+                itemCount = articles.size,
                 contentPadding = PaddingValues(
                     top = 12.dp,
                     bottom = innerPadding.calculateBottomPadding() + 80.dp,
                     start = 16.dp,
                     end = 16.dp
                 ),
-                columns = StaggeredLazyColumnCells.Fixed(1),
-                verticalSpacing = 12.dp,
-                content = {
-                    items(
-                        count = articles.size,
-                        key = { index -> articles[index].id + articles[index].channelName }
-                    ) { index ->
-                        ChannelArticle(
-                            article = articles[index],
-                            onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                            onClick = onArticleClick
-                        )
-                    }
+                state = listScrollState,
+                key = { index -> articles[index].id + articles[index].channelName },
+                itemFactory = { index ->
+                    ChannelArticle(
+                        article = articles[index],
+                        onFavoriteClick = { viewModel.onFavoriteClick(it) },
+                        onClick = onArticleClick
+                    )
                 }
             )
         }

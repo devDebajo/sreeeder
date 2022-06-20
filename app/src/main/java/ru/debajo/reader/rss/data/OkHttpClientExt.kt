@@ -10,7 +10,7 @@ import ru.debajo.reader.rss.data.remote.load.ext.await
 suspend fun OkHttpClient.getRawText(url: String): String {
     val response = getResponse(url)
     return withContext(IO) {
-        response.body?.byteStream()?.bufferedReader()?.use { it.readText() }.orEmpty()
+        response.body.byteStream().bufferedReader().use { it.readText() }
     }
 }
 
@@ -18,7 +18,7 @@ suspend fun OkHttpClient.getRawText(url: String): String {
 suspend fun OkHttpClient.getBytes(url: String): ByteArray {
     val response = getResponse(url)
     return withContext(IO) {
-        response.body?.bytes()!!
+        response.body.bytes()
     }
 }
 
