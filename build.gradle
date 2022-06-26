@@ -34,7 +34,7 @@ buildscript {
         glide_landscapist = '1.5.2'
         readability4j = '1.0.8'
         hyperion = '0.9.34'
-        staggered_lazy_column = '1.0.0-beta05'
+        staggered_lazy_column = '1.0.0-beta06'
     }
     repositories {
         gradlePluginPortal()
