@@ -46,6 +46,7 @@ android {
             kotlinOptions {
                 freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
                 freeCompilerArgs += "-Xjvm-default=all"
+                freeCompilerArgs += "-Xcontext-receivers"
             }
         }
     }
@@ -56,7 +57,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
     packagingOptions {
         resources {
