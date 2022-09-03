@@ -8,11 +8,11 @@ import ru.debajo.reader.rss.ui.article.model.UiArticle
 @Immutable
 data class FeedListState(
     val allArticles: List<UiArticle> = emptyList(),
-    val offlineStatuses: Map<String, ArticleOfflineStatus> = emptyMap(),
+    val loadingIds: Set<String> = emptySet(),
     val showOnlyNewArticles: Boolean = false,
 ) {
     private val elements: List<UiArticleElement> =
-        allArticles.map { UiArticleElement.from(it, offlineStatuses) }
+        allArticles.map { UiArticleElement.from(it, loadingIds) }
 
     val showOnlyNewArticlesButtonVisible: Boolean = elements.any { it.article.isNew }
 
@@ -34,14 +34,13 @@ data class UiArticleElement(
     }
 
     companion object {
-        fun from(article: UiArticle, map: Map<String, ArticleOfflineStatus>): UiArticleElement {
-            var offlineStatus = map[article.id]
-            if (offlineStatus == null) {
-                offlineStatus = if (article.rawHtmlContent.isNullOrEmpty()) {
-                    ArticleOfflineStatus.NOT_LOADED
-                } else {
-                    ArticleOfflineStatus.LOADED
-                }
+        fun from(article: UiArticle, loadingIds: Set<String>): UiArticleElement {
+            val offlineStatus = if (article.id in loadingIds) {
+                ArticleOfflineStatus.LOADING
+            } else if (article.rawHtmlContent.isNullOrEmpty()) {
+                ArticleOfflineStatus.NOT_LOADED
+            } else {
+                ArticleOfflineStatus.LOADED
             }
 
             return UiArticleElement(article, offlineStatus)

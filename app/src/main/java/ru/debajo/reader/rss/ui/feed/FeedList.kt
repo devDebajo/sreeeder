@@ -153,6 +153,7 @@ private fun ArticlesList(
                 articleElement = element,
                 onFavoriteClick = { viewModel.onFavoriteClick(it) },
                 onView = { viewModel.onArticleViewed(it) },
+                onLoadContentClick = { viewModel.loadContent(it) },
                 onClick = onArticleClick
             )
         }

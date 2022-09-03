@@ -2,12 +2,17 @@ package ru.debajo.reader.rss.data.db
 
 import android.content.Context
 import android.net.Uri
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import org.jsoup.Jsoup
 import ru.debajo.reader.rss.data.converter.toDb
 import ru.debajo.reader.rss.data.converter.toDbList
@@ -24,7 +29,6 @@ import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
 import ru.debajo.reader.rss.domain.model.DomainChannel
 import ru.debajo.reader.rss.domain.model.DomainChannelUrl
-import java.util.concurrent.TimeUnit
 
 class RssLoadDbManager(
     private val context: Context,
@@ -123,7 +127,7 @@ class RssLoadDbManager(
         channelsDao.add(channel.toDb(context))
         val dbArticles = channel.currentArticles.toDbList(channel)
         persistNewArticles(dbArticles, url)
-        articlesDao.insert(dbArticles)
+        articlesDao.insertAndMergeContentField(dbArticles)
         cacheManager.saveMarker(createCacheKey(url))
     }
 

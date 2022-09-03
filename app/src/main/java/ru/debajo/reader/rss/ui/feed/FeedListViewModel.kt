@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
@@ -54,9 +55,9 @@ class FeedListViewModel(
             }
         }
         launch(IO) {
-            articleOfflineContentUseCase.observe().collect {
+            articleOfflineContentUseCase.observeLoadingIds().collect {
                 updateState {
-                    copy(offlineStatuses = it)
+                    copy(loadingIds = it)
                 }
             }
         }
@@ -95,6 +96,10 @@ class FeedListViewModel(
         launch(IO) { newArticlesUseCase.markAllAsRead() }
         backgroundUpdatesNotificationManager.cancel()
         onPullToRefresh(force = true)
+    }
+
+    fun loadContent(article: UiArticle) {
+        articleOfflineContentUseCase.enqueuePreloading(article.toDomain())
     }
 
     override fun onCleared() {

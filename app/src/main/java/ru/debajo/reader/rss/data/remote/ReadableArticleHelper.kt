@@ -1,5 +1,6 @@
 package ru.debajo.reader.rss.data.remote
 
+import java.nio.charset.Charset
 import net.dankito.readability4j.Readability4J
 import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
@@ -7,7 +8,6 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import ru.debajo.reader.rss.data.getBytes
 import timber.log.Timber
-import java.nio.charset.Charset
 
 class ReadableArticleHelper(private val httpClient: OkHttpClient) {
 

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
+import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
 import ru.debajo.reader.rss.domain.article.ArticleOfflineContentUseCase
@@ -80,10 +81,10 @@ class BookmarksListViewModel(
         launch(IO) {
             combine(
                 articleScrollPositionUseCase.observeNotFullyReadArticles(),
-                articleOfflineContentUseCase.observe(),
-            ) { articles, offline ->
+                articleOfflineContentUseCase.observeLoadingIds(),
+            ) { articles, loading ->
                 articles.map { domain ->
-                    UiArticleElement.from(domain.toUi(false), offline)
+                    UiArticleElement.from(domain.toUi(false), loading)
                 }
             }
                 .collectTo(notFullyReadArticlesMutable)
@@ -92,10 +93,10 @@ class BookmarksListViewModel(
         launch(IO) {
             combine(
                 loadArticlesUseCase.loadBookmarked(),
-                articleOfflineContentUseCase.observe(),
-            ) { bookmarked, offline ->
+                articleOfflineContentUseCase.observeLoadingIds(),
+            ) { bookmarked, loading ->
                 bookmarked.map { domain ->
-                    UiArticleElement.from(domain.toUi(false, bookmarked = true), offline)
+                    UiArticleElement.from(domain.toUi(false, bookmarked = true), loading)
                 }
             }
                 .collectTo(bookmarkedArticlesMutable)
@@ -110,6 +111,10 @@ class BookmarksListViewModel(
 
     fun onTabClick(tab: Tab) {
         modeMutable.value = tab.mode
+    }
+
+    fun loadContent(article: UiArticle) {
+        articleOfflineContentUseCase.enqueuePreloading(article.toDomain())
     }
 
     class Tab(

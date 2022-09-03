@@ -95,6 +95,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
     implementation "com.github.skydoves:landscapist-glide:$glide_landscapist"
     implementation "com.github.devDebajo:staggered_lazy_column:$staggered_lazy_column"
+    implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // kotlin

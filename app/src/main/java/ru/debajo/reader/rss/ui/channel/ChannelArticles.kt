@@ -94,10 +94,9 @@ fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleN
                     ChannelArticle(
                         articleElement = articles[index],
                         onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                    ) {
-                        uiArticleNavigator.open(it, navController, backgroundColor)
-                    }
-
+                        onClick = { uiArticleNavigator.open(it, navController, backgroundColor) },
+                        onLoadContentClick = { viewModel.loadContent(it) }
+                    )
                 })
 
             UnsubscribeDialog(channel, viewModel, unsubscribeDialogVisible)

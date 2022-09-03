@@ -10,11 +10,6 @@ import ru.debajo.reader.rss.domain.model.DomainChannelUrl
 
 class ArticlesRepository(private val articlesDao: ArticlesDao) {
 
-    fun getArticles(articlesIds: List<String>): Flow<List<DomainArticle>> {
-        return articlesDao.observeArticles(articlesIds)
-            .map { articles -> articles.toDomainList() }
-    }
-
     fun getArticles(channelUrl: DomainChannelUrl): Flow<List<DomainArticle>> {
         return articlesDao.observeChannelArticles(channelUrl.url)
             .map { articles -> articles.toDomainList() }

@@ -39,12 +39,12 @@ class ChannelArticlesViewModel(
         launch {
             combine(
                 loadArticlesUseCase.load(channel.toDomain()),
-                articleOfflineContentUseCase.observe()
-            ) { articles, offline ->
+                articleOfflineContentUseCase.observeLoadingIds()
+            ) { articles, loading ->
                 articles.map { domain ->
                     UiArticleElement.from(
                         article = domain.toUi(false),
-                        map = offline
+                        loadingIds = loading
                     )
                 }
             }
@@ -67,6 +67,10 @@ class ChannelArticlesViewModel(
         launch {
             articleBookmarksRepository.toggle(article.id)
         }
+    }
+
+    fun loadContent(article: UiArticle) {
+        articleOfflineContentUseCase.enqueuePreloading(article.toDomain())
     }
 
     override fun onCleared() {

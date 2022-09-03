@@ -15,6 +15,9 @@ interface ArticlesDao {
     @Query("SELECT * FROM dbarticle WHERE id in (:ids) ORDER BY timestamp DESC")
     fun observeArticles(ids: List<String>): Flow<List<DbArticle>>
 
+    @Query("SELECT * FROM dbarticle WHERE id=:id")
+    suspend fun getArticle(id: String): DbArticle?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(articles: List<DbArticle>)
 
@@ -26,6 +29,17 @@ interface ArticlesDao {
 
     @Query("SELECT id FROM dbarticle WHERE id in (:ids)")
     suspend fun getAllByIds(ids: List<String>): List<String>
+
+    suspend fun insertAndMergeContentField(articles: List<DbArticle>) {
+        for (article in articles) {
+            val persistedArticle = getArticle(article.id)
+            if (persistedArticle == null) {
+                insert(article)
+            } else {
+                insert(article.copy(contentHtml = article.contentHtml ?: persistedArticle.contentHtml))
+            }
+        }
+    }
 }
 
 suspend fun ArticlesDao.getNonExistIds(articleIds: List<String>): List<String> {

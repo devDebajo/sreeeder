@@ -52,6 +52,7 @@ import ru.debajo.reader.rss.ui.feed.model.UiArticleElement
 fun ChannelArticle(
     articleElement: UiArticleElement,
     onFavoriteClick: (UiArticle) -> Unit,
+    onLoadContentClick: (UiArticle) -> Unit,
     onView: (UiArticle) -> Unit = {},
     onClick: (UiArticle) -> Unit,
 ) {
@@ -98,10 +99,9 @@ fun ChannelArticle(
                         .clip(RoundedCornerShape(10.dp))
                         .hapticClickable(
                             hapticFeedbackType = HapticFeedbackType.LongPress,
-                            enabled = articleElement.offlineStatus == ArticleOfflineStatus.NOT_LOADED
-                        ) {
-
-                        }
+                            enabled = articleElement.offlineStatus == ArticleOfflineStatus.NOT_LOADED,
+                            onClick = { onLoadContentClick(article) },
+                        )
                         .padding(10.dp),
                     imageVector = when (articleElement.offlineStatus) {
                         ArticleOfflineStatus.LOADED -> Icons.Rounded.OfflinePin

@@ -142,7 +142,8 @@ private fun List(
                     ChannelArticle(
                         articleElement = articles[index],
                         onFavoriteClick = { viewModel.onFavoriteClick(it) },
-                        onClick = onArticleClick
+                        onClick = onArticleClick,
+                        onLoadContentClick = { viewModel.loadContent(it) }
                     )
                 }
             )
