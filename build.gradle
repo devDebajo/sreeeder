@@ -4,7 +4,7 @@ buildscript {
     ext {
         compose_version = '1.2.1'
         compose_compiler_version = '1.3.0'
-        compose_meterial3_version = '1.0.0-beta01'
+        compose_meterial3_version = '1.0.0-alpha14'
         compose_navigation_version = '2.5.1'
         compose_activity_version = '1.6.0-rc01'
         compose_view_model_version = '2.5.1'
@@ -35,7 +35,7 @@ buildscript {
         glide_landscapist = '1.5.2'
         readability4j = '1.0.8'
         hyperion = '0.9.34'
-        staggered_lazy_column = '1.0.0-beta06'
+        staggered_lazy_column = '1.0.0-rc01'
     }
     repositories {
         gradlePluginPortal()
