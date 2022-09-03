@@ -1,6 +1,5 @@
 package ru.debajo.reader.rss.domain.article
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -10,7 +9,6 @@ import kotlinx.coroutines.sync.withLock
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsUseCase
 import ru.debajo.reader.rss.ui.article.model.UiArticle
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class NewArticlesUseCase(
     private val newArticlesRepository: NewArticlesRepository,
     private val channelsSubscriptionsUseCase: ChannelsSubscriptionsUseCase,

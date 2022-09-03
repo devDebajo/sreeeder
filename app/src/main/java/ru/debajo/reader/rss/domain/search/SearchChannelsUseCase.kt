@@ -1,8 +1,12 @@
 package ru.debajo.reader.rss.domain.search
 
 import android.net.Uri
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.db.await
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
@@ -68,7 +72,6 @@ class SearchChannelsUseCase(
         }
     }
 
-    @OptIn(FlowPreview::class)
     private fun searchPlainText(query: String): Flow<List<DomainChannel>> {
         return flow {
             val urls = channelsSearchRepository.search(query)

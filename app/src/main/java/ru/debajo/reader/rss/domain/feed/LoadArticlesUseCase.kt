@@ -1,7 +1,6 @@
 package ru.debajo.reader.rss.domain.feed
 
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
@@ -17,7 +16,6 @@ class LoadArticlesUseCase(
     private val articleBookmarksRepository: ArticleBookmarksRepository,
 ) {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun loadBookmarked(): Flow<List<DomainArticle>> {
         return articleBookmarksRepository.observeArticles()
             .map { articles -> articles.toDomainList() }

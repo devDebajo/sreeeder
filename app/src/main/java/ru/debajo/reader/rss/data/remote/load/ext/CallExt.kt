@@ -1,14 +1,12 @@
 package ru.debajo.reader.rss.data.remote.load.ext
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.io.IOException
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
-import java.io.IOException
-import kotlin.coroutines.resumeWithException
 
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun Call.await(): Response {
     return suspendCancellableCoroutine {
         enqueue(object : Callback {

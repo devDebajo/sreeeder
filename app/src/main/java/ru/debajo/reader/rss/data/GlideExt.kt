@@ -7,10 +7,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun loadImage(context: Context, url: String): Bitmap? {
     return suspendCancellableCoroutine {
         val future = Glide.with(context)

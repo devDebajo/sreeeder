@@ -5,7 +5,13 @@ import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Visibility
-import androidx.compose.material3.*
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -23,7 +29,6 @@ import ru.debajo.reader.rss.ui.feed.FeedListViewModel
 import ru.debajo.reader.rss.ui.feed.model.FeedListState
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun MainScreenTopBarActions(state: FeedListState, viewModel: FeedListViewModel) {
     Text(stringResource(R.string.feed_only_new), fontSize = 10.sp)
     Checkbox(checked = state.showOnlyNewArticles, onCheckedChange = {

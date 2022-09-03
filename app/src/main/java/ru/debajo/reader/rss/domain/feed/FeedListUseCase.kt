@@ -1,7 +1,11 @@
 package ru.debajo.reader.rss.domain.feed
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsUseCase
 import ru.debajo.reader.rss.domain.model.DomainArticle
 import ru.debajo.reader.rss.domain.model.DomainChannel
@@ -12,7 +16,6 @@ class FeedListUseCase(
     private val loadArticlesUseCase: LoadArticlesUseCase,
 ) {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<List<DomainArticle>> {
         return subscriptionsUseCase.observe()
             .flatMapLatest { subscribedChannels -> loadArticles(subscribedChannels) }

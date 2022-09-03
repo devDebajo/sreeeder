@@ -1,9 +1,18 @@
 package ru.debajo.reader.rss.ui.bookmarks
 
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,7 +36,6 @@ import ru.debajo.reader.rss.ui.main.bookmarksTab
 import ru.debajo.reader.rss.ui.main.navigation.NavGraph
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun BookmarksList(
     innerPadding: PaddingValues,
     scrollController: ScrollController,
