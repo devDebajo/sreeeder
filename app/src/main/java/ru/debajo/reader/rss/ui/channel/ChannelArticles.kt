@@ -89,10 +89,10 @@ fun ChannelArticles(channel: UiChannel, navController: NavController, uiArticleN
                 contentPadding = PaddingValues(vertical = 12.dp) + it,
                 verticalSpacing = 12.dp,
                 itemCount = articles.size,
-                key = { index -> articles[index].id },
+                key = { index -> articles[index].article.id },
                 itemFactory = { index ->
                     ChannelArticle(
-                        article = articles[index],
+                        articleElement = articles[index],
                         onFavoriteClick = { viewModel.onFavoriteClick(it) },
                     ) {
                         uiArticleNavigator.open(it, navController, backgroundColor)

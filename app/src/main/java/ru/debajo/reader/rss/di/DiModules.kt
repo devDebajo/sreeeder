@@ -16,7 +16,12 @@ import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.db.migrations.MIGRATIONS
 import ru.debajo.reader.rss.data.dump.FileSaver
 import ru.debajo.reader.rss.data.dump.OpmlDumper
-import ru.debajo.reader.rss.data.preferences.*
+import ru.debajo.reader.rss.data.preferences.AppThemePreference
+import ru.debajo.reader.rss.data.preferences.BackgroundUpdatesEnabledPreference
+import ru.debajo.reader.rss.data.preferences.DynamicThemePreference
+import ru.debajo.reader.rss.data.preferences.MetricsEnabledPreference
+import ru.debajo.reader.rss.data.preferences.ShowNavigationTitlesPreference
+import ru.debajo.reader.rss.data.preferences.UseEmbeddedWebPageRenderPreference
 import ru.debajo.reader.rss.data.preferences.base.PreferenceObserver
 import ru.debajo.reader.rss.data.remote.ReadableArticleHelper
 import ru.debajo.reader.rss.data.remote.load.ChannelsSearchRepository
@@ -28,7 +33,13 @@ import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesScheduler
 import ru.debajo.reader.rss.data.updater.NotificationChannelCreator
 import ru.debajo.reader.rss.data.updater.NotificationFactory
-import ru.debajo.reader.rss.domain.article.*
+import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ArticleOfflineContentUseCase
+import ru.debajo.reader.rss.domain.article.ArticleScrollPositionUseCase
+import ru.debajo.reader.rss.domain.article.ArticlesRepository
+import ru.debajo.reader.rss.domain.article.ClearArticlesUseCase
+import ru.debajo.reader.rss.domain.article.NewArticlesRepository
+import ru.debajo.reader.rss.domain.article.NewArticlesUseCase
 import ru.debajo.reader.rss.domain.cache.CacheManager
 import ru.debajo.reader.rss.domain.channel.ChannelsRepository
 import ru.debajo.reader.rss.domain.channel.ChannelsSubscriptionsRepository
@@ -142,18 +153,19 @@ val UseCaseModule = module {
     single { ClearArticlesUseCase(get(), get(), get()) }
     single { SubscribeChannelsListUseCase(get(), get()) }
     single { ArticleScrollPositionUseCase(get()) }
+    single { ArticleOfflineContentUseCase(get(), get(), get()) }
 }
 
 val ViewModelModule = module {
     factory { ChannelsViewModel(get()) }
     factory { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { AddChannelScreenViewModel(get()) }
-    factory { ChannelArticlesViewModel(get(), get(), get(), get()) }
-    factory { FeedListViewModel(get(), get(), get(), get(), get()) }
-    factory { BookmarksListViewModel(get(), get(), get(), get()) }
+    factory { ChannelArticlesViewModel(get(), get(), get(), get(), get()) }
+    factory { FeedListViewModel(get(), get(), get(), get(), get(), get()) }
+    factory { BookmarksListViewModel(get(), get(), get(), get(), get()) }
     factory { MainViewModel(get(), get(), get()) }
     factory { HostViewModel(get()) }
-    factory { UiArticleWebRenderViewModel(get(), get(), get(), get(), get(), get()) }
+    factory { UiArticleWebRenderViewModel(get(), get(), get(), get()) }
 }
 
 val WorkerModule = module {

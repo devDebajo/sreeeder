@@ -3,6 +3,7 @@ package ru.debajo.reader.rss.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ru.debajo.reader.rss.domain.model.DomainArticle
 
 @Entity
 data class DbArticle(
@@ -41,3 +42,18 @@ data class DbArticle(
     val categories: List<String>,
 )
 
+fun DomainArticle.toDb(): DbArticle {
+    return DbArticle(
+        id = id,
+        channelUrl = channelUrl.url,
+        channelName = channelName,
+        channelImage = channelImage,
+        author = author,
+        title = title,
+        image = image,
+        url = url,
+        contentHtml = contentHtml,
+        timestamp = timestamp?.toDb(),
+        categories = categories,
+    )
+}

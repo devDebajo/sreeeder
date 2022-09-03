@@ -29,6 +29,7 @@ import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.list.SreeederList
 import ru.debajo.reader.rss.ui.common.rememberEnterAlwaysScrollBehavior
 import ru.debajo.reader.rss.ui.feed.ScrollToTopButton
+import ru.debajo.reader.rss.ui.feed.model.UiArticleElement
 import ru.debajo.reader.rss.ui.host.ViewModels
 import ru.debajo.reader.rss.ui.list.ScrollController
 import ru.debajo.reader.rss.ui.main.MainTopBar
@@ -102,7 +103,7 @@ fun BookmarksList(
 
 @Composable
 private fun List(
-    articles: List<UiArticle>,
+    articles: List<UiArticleElement>,
     innerPadding: PaddingValues,
     scrollController: ScrollController,
     viewModel: BookmarksListViewModel,
@@ -136,10 +137,10 @@ private fun List(
                     end = 16.dp
                 ),
                 state = listScrollState,
-                key = { index -> articles[index].id + articles[index].channelName },
+                key = { index -> articles[index].article.id + articles[index].article.channelName },
                 itemFactory = { index ->
                     ChannelArticle(
-                        article = articles[index],
+                        articleElement = articles[index],
                         onFavoriteClick = { viewModel.onFavoriteClick(it) },
                         onClick = onArticleClick
                     )

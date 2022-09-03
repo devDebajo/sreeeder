@@ -14,6 +14,7 @@ import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.data.db.RssLoadDbManager
 import ru.debajo.reader.rss.data.updater.BackgroundUpdatesNotificationManager
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ArticleOfflineContentUseCase
 import ru.debajo.reader.rss.domain.article.NewArticlesUseCase
 import ru.debajo.reader.rss.domain.feed.FeedListUseCase
 import ru.debajo.reader.rss.domain.model.DomainArticle
@@ -29,10 +30,11 @@ class FeedListViewModel(
     private val rssLoadDbManager: RssLoadDbManager,
     private val backgroundUpdatesNotificationManager: BackgroundUpdatesNotificationManager,
     private val newArticlesUseCase: NewArticlesUseCase,
+    private val articleOfflineContentUseCase: ArticleOfflineContentUseCase,
 ) : BaseViewModel() {
 
     private var refreshingJob: Job? = null
-    private val stateMutable: MutableStateFlow<FeedListState> = MutableStateFlow(FeedListState(emptyList(), false))
+    private val stateMutable: MutableStateFlow<FeedListState> = MutableStateFlow(FeedListState())
     private val isRefreshingMutable: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val state: StateFlow<FeedListState> = stateMutable
@@ -49,6 +51,13 @@ class FeedListViewModel(
             while (true) {
                 delay(10_000)
                 newArticlesUseCase.saveViewedArticles()
+            }
+        }
+        launch(IO) {
+            articleOfflineContentUseCase.observe().collect {
+                updateState {
+                    copy(offlineStatuses = it)
+                }
             }
         }
     }

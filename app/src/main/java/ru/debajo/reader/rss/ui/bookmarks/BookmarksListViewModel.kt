@@ -6,16 +6,17 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.debajo.reader.rss.R
 import ru.debajo.reader.rss.data.converter.toUi
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ArticleOfflineContentUseCase
 import ru.debajo.reader.rss.domain.article.ArticleScrollPositionUseCase
 import ru.debajo.reader.rss.domain.feed.LoadArticlesUseCase
 import ru.debajo.reader.rss.ext.collectTo
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
+import ru.debajo.reader.rss.ui.feed.model.UiArticleElement
 
 @SuppressLint("StaticFieldLeak")
 class BookmarksListViewModel(
@@ -23,11 +24,12 @@ class BookmarksListViewModel(
     private val loadArticlesUseCase: LoadArticlesUseCase,
     private val articleBookmarksRepository: ArticleBookmarksRepository,
     private val articleScrollPositionUseCase: ArticleScrollPositionUseCase,
+    private val articleOfflineContentUseCase: ArticleOfflineContentUseCase,
 ) : BaseViewModel() {
 
     private val modeMutable: MutableStateFlow<Mode> = MutableStateFlow(Mode.BOOKMARKED)
-    private val notFullyReadArticlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
-    private val bookmarkedArticlesMutable: MutableStateFlow<List<UiArticle>> = MutableStateFlow(emptyList())
+    private val notFullyReadArticlesMutable: MutableStateFlow<List<UiArticleElement>> = MutableStateFlow(emptyList())
+    private val bookmarkedArticlesMutable: MutableStateFlow<List<UiArticleElement>> = MutableStateFlow(emptyList())
 
     val tabs: Flow<List<Tab>> = combine(
         notFullyReadArticlesMutable,
@@ -52,7 +54,7 @@ class BookmarksListViewModel(
         }
     }
 
-    val articles: Flow<List<UiArticle>> = combine(
+    val articles: Flow<List<UiArticleElement>> = combine(
         notFullyReadArticlesMutable,
         bookmarkedArticlesMutable,
         modeMutable
@@ -63,8 +65,10 @@ class BookmarksListViewModel(
                     bookmarkedArticles
                 } else {
                     notFullyReadArticles.map { article ->
-                        val bookmarkedIds = bookmarkedArticles.map { it.id }.toHashSet()
-                        article.copy(bookmarked = article.id in bookmarkedIds)
+                        val bookmarkedIds = bookmarkedArticles.map { it.article.id }.toHashSet()
+                        article.updateArticle {
+                            copy(bookmarked = id in bookmarkedIds)
+                        }
                     }
                 }
             }
@@ -74,13 +78,26 @@ class BookmarksListViewModel(
 
     fun load() {
         launch(IO) {
-            articleScrollPositionUseCase.observeNotFullyReadArticles()
-                .map { domain -> domain.map { it.toUi(false) } }
+            combine(
+                articleScrollPositionUseCase.observeNotFullyReadArticles(),
+                articleOfflineContentUseCase.observe(),
+            ) { articles, offline ->
+                articles.map { domain ->
+                    UiArticleElement.from(domain.toUi(false), offline)
+                }
+            }
                 .collectTo(notFullyReadArticlesMutable)
         }
+
         launch(IO) {
-            loadArticlesUseCase.loadBookmarked()
-                .map { domain -> domain.map { it.toUi(false, bookmarked = true) } }
+            combine(
+                loadArticlesUseCase.loadBookmarked(),
+                articleOfflineContentUseCase.observe(),
+            ) { bookmarked, offline ->
+                bookmarked.map { domain ->
+                    UiArticleElement.from(domain.toUi(false, bookmarked = true), offline)
+                }
+            }
                 .collectTo(bookmarkedArticlesMutable)
         }
     }

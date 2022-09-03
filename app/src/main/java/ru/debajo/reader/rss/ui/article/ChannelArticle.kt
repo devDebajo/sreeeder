@@ -4,11 +4,24 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DownloadForOffline
+import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkBorder
+import androidx.compose.material.icons.rounded.OfflinePin
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.pow
+import kotlin.math.sqrt
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import ru.debajo.reader.rss.R
@@ -31,16 +46,16 @@ import ru.debajo.reader.rss.ui.article.model.UiArticle
 import ru.debajo.reader.rss.ui.common.AppCard
 import ru.debajo.reader.rss.ui.common.AppImage
 import ru.debajo.reader.rss.ui.ext.hapticClickable
-import kotlin.math.pow
-import kotlin.math.sqrt
+import ru.debajo.reader.rss.ui.feed.model.UiArticleElement
 
 @Composable
 fun ChannelArticle(
-    article: UiArticle,
+    articleElement: UiArticleElement,
     onFavoriteClick: (UiArticle) -> Unit,
     onView: (UiArticle) -> Unit = {},
     onClick: (UiArticle) -> Unit,
 ) {
+    val article = articleElement.article
     LaunchedEffect(key1 = article.id, block = { onView(article) })
     AppCard(
         onClick = { onClick(article) },
@@ -78,6 +93,23 @@ fun ChannelArticle(
                 Box(Modifier.weight(1f)) {
                     article.categories.firstOrNull()?.let { CategoryText(it) }
                 }
+                Icon(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .hapticClickable(
+                            hapticFeedbackType = HapticFeedbackType.LongPress,
+                            enabled = articleElement.offlineStatus == ArticleOfflineStatus.NOT_LOADED
+                        ) {
+
+                        }
+                        .padding(10.dp),
+                    imageVector = when (articleElement.offlineStatus) {
+                        ArticleOfflineStatus.LOADED -> Icons.Rounded.OfflinePin
+                        ArticleOfflineStatus.NOT_LOADED -> Icons.Outlined.DownloadForOffline
+                        ArticleOfflineStatus.LOADING -> Icons.Outlined.Downloading
+                    },
+                    contentDescription = null
+                )
                 Icon(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
@@ -180,4 +212,10 @@ private fun DateTime.format(): String {
 
         else -> toString("dd MMMM yyyy HH:mm")
     }
+}
+
+enum class ArticleOfflineStatus {
+    LOADED,
+    NOT_LOADED,
+    LOADING,
 }

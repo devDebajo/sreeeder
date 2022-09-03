@@ -1,28 +1,24 @@
 package ru.debajo.reader.rss.ui.article
 
-import kotlinx.coroutines.*
+import kotlin.math.roundToInt
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import ru.debajo.reader.rss.data.converter.toDb
-import ru.debajo.reader.rss.data.db.RssLoadDbManager
-import ru.debajo.reader.rss.data.remote.ReadableArticleHelper
+import kotlinx.coroutines.launch
+import ru.debajo.reader.rss.data.converter.toDomain
 import ru.debajo.reader.rss.domain.article.ArticleBookmarksRepository
+import ru.debajo.reader.rss.domain.article.ArticleOfflineContentUseCase
 import ru.debajo.reader.rss.domain.article.ArticleScrollPositionUseCase
-import ru.debajo.reader.rss.domain.article.ArticlesRepository
 import ru.debajo.reader.rss.ui.arch.BaseViewModel
 import ru.debajo.reader.rss.ui.article.model.UiArticle
-import ru.debajo.reader.rss.ui.article.parser.WebPageParser
-import timber.log.Timber
-import kotlin.math.roundToInt
 
 class UiArticleWebRenderViewModel(
-    private val readableArticleHelper: ReadableArticleHelper,
     private val articleBookmarksRepository: ArticleBookmarksRepository,
     private val articleScrollPositionUseCase: ArticleScrollPositionUseCase,
-    private val articlesRepository: ArticlesRepository,
     private val appScope: CoroutineScope,
-    private val rssLoadDbManager: RssLoadDbManager,
+    private val articleOfflineContentUseCase: ArticleOfflineContentUseCase,
 ) : BaseViewModel() {
 
     private var loadJobs: MutableList<Job> = mutableListOf()
@@ -39,17 +35,17 @@ class UiArticleWebRenderViewModel(
             launch(IO) {
                 subscribeBookmarked(uiArticle.id)
             }
-            stateMutable.value = if (!uiArticle.rawHtmlContent.isNullOrEmpty()) {
-                parseHtml(uiArticle.rawHtmlContent)
+
+            val tokens = articleOfflineContentUseCase.getWepPageTokens(uiArticle.toDomain())
+            stateMutable.value = if (tokens == null) {
+                UiArticleWebRenderState.Error(
+                    bookmarked = stateMutable.value.bookmarked,
+                )
             } else {
-                withContext(IO) {
-                    readableArticleHelper.loadReadableArticleHtml(uiArticle.url)
-                        ?.let {
-                            persistIfNeed(uiArticle, it)
-                            parseHtml(it.html)
-                        }
-                        ?: UiArticleWebRenderState.Error(stateMutable.value.bookmarked)
-                }
+                UiArticleWebRenderState.Prepared(
+                    bookmarked = stateMutable.value.bookmarked,
+                    tokens = tokens,
+                )
             }
         }
 
@@ -58,24 +54,6 @@ class UiArticleWebRenderViewModel(
             if (scroll != null) {
                 scrollPositionMutable.value = scroll
             }
-        }
-    }
-
-    private suspend fun persistIfNeed(
-        uiArticle: UiArticle,
-        readableArticle: ReadableArticleHelper.ReadableArticle
-    ) {
-        if (!articlesRepository.contains(uiArticle.id)) {
-            var toPersist = uiArticle
-            if (toPersist.image.isNullOrEmpty()) {
-                toPersist = toPersist.copy(
-                    image = rssLoadDbManager.tryExtractImage(readableArticle.html)
-                )
-            }
-            if (toPersist.title.isEmpty() && !readableArticle.title.isNullOrEmpty()) {
-                toPersist = toPersist.copy(title = readableArticle.title)
-            }
-            articlesRepository.persist(toPersist.toDb())
         }
     }
 
@@ -105,17 +83,5 @@ class UiArticleWebRenderViewModel(
                 is UiArticleWebRenderState.Prepared -> currentState.copy(bookmarked = bookmarked)
             }
         }
-    }
-
-    private suspend fun parseHtml(html: String): UiArticleWebRenderState {
-        return runCatching { withContext(Dispatchers.Default) { WebPageParser.parse(html) } }
-            .onFailure { Timber.tag("UiArticleWebRenderViewModel").e(it) }
-            .map { tokens ->
-                UiArticleWebRenderState.Prepared(
-                    bookmarked = stateMutable.value.bookmarked,
-                    tokens = tokens,
-                )
-            }
-            .getOrElse { UiArticleWebRenderState.Error(stateMutable.value.bookmarked) }
     }
 }

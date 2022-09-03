@@ -3,7 +3,11 @@ package ru.debajo.reader.rss.ui.ext
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
-import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -20,11 +24,12 @@ fun Modifier.optionalClickable(onClick: (() -> Unit)?): Modifier {
 
 fun Modifier.hapticClickable(
     hapticFeedbackType: HapticFeedbackType = HapticFeedbackType.TextHandleMove,
+    enabled: Boolean = true,
     onClick: (() -> Unit)
 ): Modifier {
     return composed {
         val hapticFeedback = LocalHapticFeedback.current
-        clickable {
+        clickable(enabled = enabled) {
             hapticFeedback.performHapticFeedback(hapticFeedbackType)
             onClick()
         }

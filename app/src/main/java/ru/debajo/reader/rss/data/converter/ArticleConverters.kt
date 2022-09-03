@@ -69,6 +69,7 @@ fun DomainArticle.toUi(isNew: Boolean, bookmarked: Boolean = this.bookmarked): U
         timestamp = timestamp,
         channelImage = channelImage,
         channelName = channelName,
+        channelUrl = channelUrl.url,
         categories = categories,
         isNew = isNew,
         rawHtmlContent = contentHtml,
@@ -91,6 +92,24 @@ fun DbArticle.toDomain(): DomainArticle {
         bookmarked = false,
         categories = categories,
         readPercents = 0,
+    )
+}
+
+fun UiArticle.toDomain(): DomainArticle {
+    return DomainArticle(
+        id = id,
+        author = author,
+        title = title,
+        image = image,
+        url = url,
+        contentHtml = rawHtmlContent,
+        timestamp = timestamp,
+        channelUrl = DomainChannelUrl(channelUrl),
+        channelImage = channelImage,
+        channelName = channelName.orEmpty(),
+        bookmarked = bookmarked,
+        categories = categories,
+        readPercents = readPercents,
     )
 }
 

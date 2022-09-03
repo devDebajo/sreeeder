@@ -17,4 +17,3 @@ data class DomainArticle(
     val categories: List<String>,
     val readPercents: Int,
 )
-

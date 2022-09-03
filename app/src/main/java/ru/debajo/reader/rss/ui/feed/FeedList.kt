@@ -145,11 +145,12 @@ private fun ArticlesList(
         ) + innerPadding,
         verticalSpacing = 12.dp,
         itemCount = state.articles.size,
-        key = { state.articles[it].id + state.articles[it].channelName },
+        key = { state.articles[it].article.id + state.articles[it].article.channelName },
         contentType = { "article" },
         itemFactory = { index ->
+            val element = state.articles[index]
             ChannelArticle(
-                article = state.articles[index],
+                articleElement = element,
                 onFavoriteClick = { viewModel.onFavoriteClick(it) },
                 onView = { viewModel.onArticleViewed(it) },
                 onClick = onArticleClick
